@@ -8,7 +8,7 @@ $(TARGET): $(OBJS)
 
 level.o: global.h level.c
 heap.o: global.h heap.c
-hashtable.o: global.h hashtabel.c
+#hashtable.o: global.h hashtable.c
 lsm-tree.o: lsm-tree.c global.h
 
 
