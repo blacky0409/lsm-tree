@@ -13,7 +13,6 @@ Level *CreateLevel(int size, double fpr){
 		printf("There is not enough memory for the array of runs.");
 		return NULL;
 	}
-//	level->filters = (BloomFilter *) malloc(size * sizeof(BloomFilter));
 	level->targetfpr = fpr;
 	return level;
 }
@@ -37,7 +36,6 @@ Run PopRun(Level *level){
 
 void ClearLevel(Level *l){
 	int i;
-	free(l->filters);
 	free(l->array);
 	free(l);
 }

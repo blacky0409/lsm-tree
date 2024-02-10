@@ -27,12 +27,6 @@ typedef struct Heap{
 	int size;
 } Heap;
 
-typedef struct BloomFilter{
-	void *bits;
-	int k;
-	size_t size;
-} BloomFilter;
-
 typedef struct Run{
 	int count;
 	int size;
@@ -45,7 +39,6 @@ typedef struct Level{
 	int count;
 	int size;
 	double targetfpr;
-	BloomFilter *filters;
 } Level;
 
 typedef struct LevelNode{
@@ -53,11 +46,6 @@ typedef struct LevelNode{
 	int number;
 	struct LevelNode *next;
 } LevelNode;
-
-typedef struct ChainNode{
-	char key[STRING_SIZE];
-	struct ChainNode *next;
-} ChainNode;
 
 typedef struct HashTable{
 	int count;
@@ -72,29 +60,13 @@ typedef struct LSMtree{
 	pthread_mutex_t lock;
 } LSMtree;
 
-typedef struct Worker{
-	void *(*process) (void *arg);
-	void *arg;
-	struct Worker *next;
-} Worker;
+typedef struct ValueLog{
+	FILE *fp;
+	size_t head;
+	size_t tail;
+} ValueLog;
 
-typedef struct ThreadPool{
-	pthread_mutex_t lock;
-	pthread_cond_t ready;
-	int threadnumber;
-	pthread_t *threadid;
-	Worker *head;
-	int count;
-	bool shutdown;
-} ThreadPool;
-
-typedef struct ThreadArg{
-	int sockfd;
-	int first;
-	int second;
-} ThreadArg;
-
-//declaration for heap.c
+//heap.c
 Heap *CreateHeap(int size);
 int GetKeyPos(Heap *h, char * key);
 void HeapifyBottomTop(Heap *h, int index);
@@ -104,19 +76,19 @@ Node PopMin(Heap *h);
 void PrintNode(Heap *h);
 void ClearHeap(Heap *h);
 
-//declaration for level.c
+//level.c
 Level *CreateLevel(int size, double fpr);
 void InsertRun(Level *level, int count, int size, char * start, char * end);
 Run PopRun(Level *level);
 void ClearLevel(Level *l);
 
-//declaration for hashtable.c
+//hashtable.c
 HashTable *CreateHashTable(int size);
 void AddToTable(HashTable *table, char * key);
 bool CheckTable(HashTable *table, char * key);
 void ClearTable(HashTable *table);
 
-//declaration for lsm.c
+//lsm-tree.c
 LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr);
 void Merge(LevelNode *Current, int origin, int levelsize,
 	int runcount, int runsize, Node *sortedrun, double targetfpr);
@@ -125,19 +97,10 @@ void Get(LSMtree *lsm, char * key, char *result);
 void Range(LSMtree *lsm, char * start, char * end);
 void PrintStats(LSMtree *lsm);
 
-//declaration for server.c
-bool Respond(int sockfd, LSMtree *lsm);
 
-//declaration for client.c
-void Query(int sockfd, char *filename);
+//value-log.c
+ValueLog *CreateLog(size_t head, size_t tail);i
+void ValuePut(ValueLog *log, size_t *loc, const char * key, uint64_t key_len, int value);
+int ValueGet(ValueLog *log, size_t loc);
+void ClearLog(ValueLog *log);
 
-//declaration for parallelizedserver.c
-void CreateThreadPool(int threadnumber);
-void AddToPool(void *(*process) (void *arg), void *arg);
-int ClearPool();
-void *ThreadRoutine(void *arg);
-void *ParallelizedPut(void *arg);
-void *ParallelizedGet(void *arg);
-void *ParallelizedRange(void *arg);
-void *ParallelizedDelete(void *arg);
-bool ParallelizedRespond(int sockfd, LSMtree *lsm);
