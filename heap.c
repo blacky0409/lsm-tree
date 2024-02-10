@@ -72,7 +72,7 @@ void HeapifyTopBottom(Heap *h, int parent){
 }
 
 void InsertKey(Heap *h, char * key, int value, bool flag){
-	strcpy(key, h->array[h->count].key);
+	strcpy(h->array[h->count].key,key);
 	h->array[h->count].value = value;
 	h->array[h->count].flag = flag;
 	HeapifyBottomTop(h, h->count);

@@ -21,21 +21,24 @@ LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr){
 
 void Merge(LevelNode *Current, int origin, int levelsize,
 	int runcount, int runsize, Node *sortedrun, double targetfpr){
+	char * start = (char *) malloc(sizeof(char) * STRING_SIZE);
+	char * end = (char *) malloc(sizeof(char) * STRING_SIZE);
+
 	if(Current->next == NULL){ //no level
 		
 		Current->next = (LevelNode *) malloc(sizeof(LevelNode));
 		Current->next->level = CreateLevel(levelsize, targetfpr);
-		char * start="";
 		strcpy(start,sortedrun[0].key);
-		char * end="";
 		strcpy(end, sortedrun[runcount - 1].key);
 		
 		char filename[14];
 		sprintf(filename, "data/L%dN%d", (origin+1), Current->next->level->count);
 		FILE *fp = fopen(filename, "wt");
+		if(fp == NULL){
+			fprintf(stderr, "Couldn't open %s: %s\n", filename, strerror(errno));	
+		}
 		fwrite(sortedrun, sizeof(Node), runcount, fp);
 		fclose(fp);
-		
 		InsertRun(Current->next->level, runcount, runsize, start, end);
 		Current->next->number = origin + 1;
 		Current->next->next = NULL;
@@ -52,9 +55,7 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 		int *distance = (int *) malloc(destlevel->count * sizeof(int));
 		int *overlap = (int *) malloc(destlevel->count * sizeof(int));
 		
-		char * start="";
 		strcpy(start,sortedrun[0].key); //most small
-		char * end="";
 		strcpy(end,sortedrun[runcount - 1].key); //most large
 	
 		int bump;
@@ -104,9 +105,7 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 			//겹치는 key가 없음
 			if(destlevel->count < destlevel->size){
 				// 아직 run이 들어갈 공간이 있음.
-				char * start="";
 				strcpy(start,sortedrun[0].key);
-				char * end="";
 				strcpy(end,sortedrun[runcount - 1].key);
 
 				char filename[14];
@@ -301,8 +300,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 					for(i = numrun; i < j; i++){
 						oldrun = destlevel->array[overlap[i]];
 						oldrun.count = 0;
-						strcpy(oldrun.start , "fffffffffffffffffe");
-						strcpy(oldrun.end , "ffffffffffffffffff");
+						strcpy(oldrun.start , "fffffffffe");
+						strcpy(oldrun.end , "fffffffff");
 						destlevel->array[overlap[i]] = oldrun;
 					}
 				}
@@ -351,11 +350,12 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 		free(overlap);
 		free(distance);
 	}
+	free(start);
+	free(end);
 }
 
 void Put(LSMtree *lsm, char * key, int value, bool flag){
 	int position = GetKeyPos(lsm->buffer, key);
-	
 	if(position >= 0){
 		lsm->buffer->array[position].value = value;
 		lsm->buffer->array[position].flag = flag;
@@ -560,74 +560,41 @@ void PrintStats(LSMtree *lsm){
 
 int main(){
 	LSMtree *lsm = CreateLSM(4, 4, 0.0000001);
-	Put(lsm, "hi", 2, true);
-	Put(lsm, "hello", 10, true);
-	Put(lsm, "jang", 6, true);
-	Put(lsm, "hee", 20, true);
-	Put(lsm, "ji", 8, true);
-	Put(lsm, "ilove", 86, true);
-	Put(lsm, "you", 40, true);
-	Put(lsm, "very", 4, true);
-	Put(lsm, "much", 18, true);
-/*	Put(lsm, 52, 104, true);
-	Put(lsm, 103, 206, true);
-	Put(lsm, 94, 188, true);
-	Put(lsm, 5, 11, true);
-	Put(lsm, 11, 22, true);
-	Put(lsm, 30, 60, true);
-	Put(lsm, 40, 80, true);
-	Put(lsm, 120, 240, true);
-	Put(lsm, 39, 78, true);
-	Put(lsm, 10, 21, true);
-	Put(lsm, 44, 88, true);
-	Put(lsm, 6, 12, true);
-	Put(lsm, 34, 68, true);
-	Put(lsm, 106, 212, true);
-	Put(lsm, 41, 82, true);
-	Put(lsm, 14, 28, true);
-	Put(lsm, 23, 46, true);
-	Put(lsm, 30, 61, true);
-	Put(lsm, 17, 34, true);
-	Put(lsm, 57, 114, true);
-	Put(lsm, 66, 132, true);
-	Put(lsm, 2, 5, true);
-	Put(lsm, 22, 44, true);
-	Put(lsm, 29, 58, true);
-	Put(lsm, 18, 36, true);
-	Put(lsm, 31, 62, true);
-	Put(lsm, 67, 134, true);
-	Put(lsm, 55, 110, true);
-	Put(lsm, 27, 54, true);
-	Put(lsm, 90, 180, true);
-	Put(lsm, 4, 9, true);
-	Put(lsm, 88, 176, true);
-	Put(lsm, 53, 106, true);
-	Put(lsm, 61, 132, true);
-	Put(lsm, 93, 186, true);
-	Put(lsm, 13, 26, true);
-	Put(lsm, 71, 142, true);
-	Put(lsm, 59, 118, true);
-	ClearLSM(lsm);
-	Put(lsm, 97, 194, true);
-	Put(lsm, 11, 22, true);
-	Put(lsm, 110, 220, true);
-	Put(lsm, 47, 94, true);
-	Put(lsm, 93, 187, true);
-	Put(lsm, 39, 78, true);
-	Put(lsm, 56, 112, true);
-	Put(lsm, 58, 116, true);
-	Put(lsm, 85, 170, true);
-	Put(lsm, 95, 190, true);
-	Put(lsm, 19, 38, true);
-	Put(lsm, -39, -78, true);*/
 
-	Load(lsm, "data/load_file");
-	
-	char val[16];
-	char * key = "very";
-	Get(lsm, key, val);
-	printf("value of key %s is %s \n", key, val);
-	printf("\n");
+	srand((unsigned int) time(NULL));
+
+	char Get_want[100][10];
+	int index = 0;
+	for(int i=0; i< 100 ; i++){
+		
+		char string[10] = "";
+		int w = 0;
+		for(w = 0 ; w < 9; w++){
+			string[w] = 'a' + rand() % 26;
+		}
+
+		string[w] = 0;
+		
+		int key_value = rand()%1000 + 1;
+		
+		Put(lsm,string, key_value,true);
+
+		if(i%5 == 0){
+			strcpy(Get_want[index],string);
+			printf("%s의 key는 %d입니다\n",string,key_value);
+			index++;
+		}
+	}
+
+	printf("\n\n");
+	for(int i = 0 ; i < index; i ++){
+		char val[16];
+		Get(lsm, Get_want[i], val);
+		printf("value of key %s is %s \n", Get_want[i], val);
+		printf("\n");
+	}
+
+//	Load(lsm, "data/load_file");
 
 //	int start = 90;
 //	int end = 103;

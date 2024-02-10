@@ -1,6 +1,6 @@
 CC= gcc
 CFLAGS= -g -Wall
-OBJS= lsm-tree.o level.o heap.o hashtable.o
+OBJS= lsm-tree.o level.o heap.o #hashtable.o
 TARGET= lsm_tree.out
 
 $(TARGET): $(OBJS)

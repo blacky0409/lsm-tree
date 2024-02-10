@@ -11,9 +11,12 @@
 #include <sys/types.h>
 #include <time.h>
 #include <pthread.h>
+#include <errno.h>
+
+#define STRING_SIZE 10
 
 typedef struct Node{
-	char * key;
+	char key[STRING_SIZE];
 	int value;
 	bool flag;
 } Node;
@@ -33,8 +36,8 @@ typedef struct BloomFilter{
 typedef struct Run{
 	int count;
 	int size;
-	char * start;
-	char * end;
+	char start[STRING_SIZE];
+	char end[STRING_SIZE];
 } Run;
 
 typedef struct Level{
@@ -52,13 +55,13 @@ typedef struct LevelNode{
 } LevelNode;
 
 typedef struct ChainNode{
-	char * key;
+	char key[STRING_SIZE];
 	struct ChainNode *next;
 } ChainNode;
 
 typedef struct HashTable{
 	int count;
-	char **array;
+	char *array[STRING_SIZE];
 } HashTable;
 
 typedef struct LSMtree{
@@ -125,8 +128,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 	int runcount, int runsize, Node *sortedrun, double targetfpr);
 void Put(LSMtree *lsm, char * key, int value, bool flag);
 void Get(LSMtree *lsm, char * key, char *result);
-void Range(LSMtree *lsm, char * start, char * end, char *result);
-void Load(LSMtree *lsm, char *binaryfile);
+//void Range(LSMtree *lsm, char * start, char * end, char *result);
+//void Load(LSMtree *lsm, char *binaryfile);
 void PrintStats(LSMtree *lsm);
 
 //declaration for server.c
