@@ -449,38 +449,34 @@ void Get(LSMtree *lsm, char * key, char *result){
 		return;
 	}
 }
-/*
-void Range(LSMtree *lsm, int start, int end, char *result){
+
+void Range(LSMtree *lsm, char * start, char * end){
 	int i;
 	int j;
 	int find = 0;
 	//use hash table to record keys found
 	HashTable *table = CreateHashTable(128);
+	
+	printf("range query result for [%s, %s) is ", start, end);
 	char str[32];
 	for(i = 0; i < lsm->buffer->count; i++){
-		if((lsm->buffer->array[i].key >= start) && (lsm->buffer->array[i].key < end)){
+		if((strcmp(lsm->buffer->array[i].key , start) >= 0) && (strcmp(lsm->buffer->array[i].key , end)) < 0){
 			if(!CheckTable(table, lsm->buffer->array[i].key)){
 				find += 1;
 				AddToTable(table, lsm->buffer->array[i].key);
 				if(lsm->buffer->array[i].flag){
 					bzero(str, 32);
 					sprintf(str, "%s:%d ", lsm->buffer->array[i].key, lsm->buffer->array[i].value);
-					strcat(result, str);
+					printf("%s ",str);
 				}
 			}
-		}
-		if(find == (end - start)){
-			break;
 		}
 	}
 	LevelNode *currentlevelnode = lsm->L0->next;
 	while(currentlevelnode != NULL){
-		if(find == (end - start)){
-			break;
-		}
 		int levelnum = currentlevelnode->number;
 		for(i = 0; i < currentlevelnode->level->count; i++){
-			if((currentlevelnode->level->array[i].end >= start) || (currentlevelnode->level->array[i].start < end)){
+			if((strcmp(currentlevelnode->level->array[i].end , start) >= 0) || (strcmp(currentlevelnode->level->array[i].start , end) < 0)){
 				Node *currentarray = (Node *) malloc(currentlevelnode->level->array[i].count * sizeof(Node));
 				char filename[14];
 				sprintf(filename, "data/L%dN%d", levelnum, i);
@@ -488,16 +484,16 @@ void Range(LSMtree *lsm, int start, int end, char *result){
 				fread(currentarray, sizeof(Node), currentlevelnode->level->array[i].count, fp);
 				fclose(fp);
 				for(j = 0; j < currentlevelnode->level->array[i].count; j++){
-					if(currentarray[j].key >= end){
+					if(strcmp(currentarray[j].key , end) >= 0){
 						break;
-					}else if(currentarray[j].key >= start){
+					}else if(strcmp(currentarray[j].key , start) >= 0){
 						if(!CheckTable(table, currentarray[j].key)){
 							find += 1;
 							AddToTable(table, currentarray[j].key);
 							if(currentarray[j].flag){
 								bzero(str, 32);
 								sprintf(str, "%s:%d ", currentarray[j].key, currentarray[j].value);
-								strcat(result, str);
+								printf("%s ",str);
 							}
 						}
 					}
@@ -509,18 +505,7 @@ void Range(LSMtree *lsm, int start, int end, char *result){
 	}
 	ClearTable(table);
 }
-*/
-//load data if there is a directory
-/*void Load(LSMtree *lsm, char *binaryfile){
-	char data[1024];
-	FILE *fp = fopen(binaryfile, "rb");
-	int count = fread(data, sizeof(int), 1024, fp);
-	fclose(fp);
-	int i;
-	for(i = 0; i < (count / 2); i++){
-		Put(lsm, data[2 * i], data[2 * i + 1], true);
-	}
-}*/
+
 
 void PrintStats(LSMtree *lsm){
 	int i;
@@ -529,7 +514,7 @@ void PrintStats(LSMtree *lsm){
 
 	LevelNode *Current = lsm->L0;
 	LevelNode *currentlevelnode = lsm->L0->next;
-
+	
 	while(currentlevelnode != NULL){
 		int levelnum = currentlevelnode->number;
 		int currentcount = 0;
@@ -563,9 +548,9 @@ int main(){
 
 	srand((unsigned int) time(NULL));
 
-	char Get_want[100][10];
+	char Get_want[250][10];
 	int index = 0;
-	for(int i=0; i< 100 ; i++){
+	for(int i=0; i < 400 ; i++){
 		
 		char string[10] = "";
 		int w = 0;
@@ -594,14 +579,11 @@ int main(){
 		printf("\n");
 	}
 
-//	Load(lsm, "data/load_file");
+	char start[10] = "aaaaaaaaa\0";
+	char end[10] = "ccccccccc\0";
+	Range(lsm, start, end);
 
-//	int start = 90;
-//	int end = 103;
-//	char result[1000] = {""};
-//	Range(lsm, start, end, result);
-//	printf("range query result for [%d, %d) is %s\n", start, end, result);
-	printf("\n");
+	printf("\n\n");
 
 	PrintNode(lsm->buffer);
 	printf("\n");

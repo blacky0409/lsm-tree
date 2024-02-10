@@ -61,7 +61,7 @@ typedef struct ChainNode{
 
 typedef struct HashTable{
 	int count;
-	char *array[STRING_SIZE];
+	char **array;
 } HashTable;
 
 typedef struct LSMtree{
@@ -110,12 +110,6 @@ void InsertRun(Level *level, int count, int size, char * start, char * end);
 Run PopRun(Level *level);
 void ClearLevel(Level *l);
 
-//declaration for bloom.c
-unsigned int djb2(char * key);
-unsigned int jenkins(char * key);
-void InsertEntry(BloomFilter filter, char * key);
-bool LookUp(BloomFilter filter, char * key);
-
 //declaration for hashtable.c
 HashTable *CreateHashTable(int size);
 void AddToTable(HashTable *table, char * key);
@@ -128,8 +122,7 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 	int runcount, int runsize, Node *sortedrun, double targetfpr);
 void Put(LSMtree *lsm, char * key, int value, bool flag);
 void Get(LSMtree *lsm, char * key, char *result);
-//void Range(LSMtree *lsm, char * start, char * end, char *result);
-//void Load(LSMtree *lsm, char *binaryfile);
+void Range(LSMtree *lsm, char * start, char * end);
 void PrintStats(LSMtree *lsm);
 
 //declaration for server.c

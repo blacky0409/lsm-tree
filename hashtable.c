@@ -7,7 +7,10 @@ HashTable *CreateHashTable(int size){
 		return NULL;
 	}
 	table->count = 0;
-	table->array = (char *) malloc(size * sizeof(char));
+	table->array = (char **) malloc(size * sizeof(char *));
+	for(int i = 0 ; i < size; i ++){
+		table->array[i] = (char *) malloc( STRING_SIZE * sizeof(char));
+	}
 	if(table->array == NULL){
 		printf("There is not enough memory for an array in the hash table.");
 	}
