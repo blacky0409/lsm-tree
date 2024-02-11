@@ -1,6 +1,6 @@
 #include "global.h"
 
-#define INT_MAX -2147483647
+#define INT_MAX 2147483647
 
 LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr){
 	LSMtree *lsm = (LSMtree *) malloc(sizeof(LSMtree));
@@ -45,7 +45,6 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 	
 	}
 	else{ //exist level
-		//do some statistics to enable partial compaction
 		int i;
 		int j = 0;
 		int min = INT_MAX;
@@ -59,21 +58,16 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 		strcpy(end,sortedrun[runcount - 1].key); //most large
 	
 		int bump;
-		//checking overlap space at keys array
 		for(i = 0; i < destlevel->count; i++){
 			if(strcmp(destlevel->array[i].start , end) > 0){
-				bump = strcmp(destlevel->array[i].start , end);
-
-				if (bump < 0) bump *= -1;
-
-				distance[i] = bump;
+				distance[i] = destlevel->array[i].start[0] - end[0];
+				
+				distance[i] += destlevel->array[i].start[1] - end[1];
 
 			}else if(strcmp(destlevel->array[i].end , start) < 0){
-			    bump = strcmp(start , destlevel->array[i].end);
-
-				if(bump < 0) bump *= -1;
-
-				distance[i] =bump;
+				distance[i] = start[0] - destlevel->array[i].end[0];
+				
+				distance[i] += start[1] - destlevel->array[i].end[1];
 			}else{
 				distance[i] = 0;
 				if(j == 0){
@@ -95,7 +89,7 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 				}
 			}
 			if((destlevel->array[i].count + runcount) < destlevel->array[i].size){
-				if(distance[i] > min){
+				if(distance[i] < min){
 					min = distance[i];
 					minpos = i;
 				}
@@ -121,6 +115,48 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 					//하지만 기존의 run에 새로들어오는 sstable이 들어갈 공간이 있음.
 					Run oldrun = destlevel->array[minpos];
 					Node *newarray = (Node *) malloc((oldrun.count + runcount) * sizeof(Node));
+					
+					Node *oldbump = (Node *) malloc(oldrun.count * sizeof(Node));
+					char name[14];
+					sprintf(name, "data/L%dN%d", Current->next->number, minpos);
+					FILE *fp = fopen(name, "rt");
+					fread(oldbump, sizeof(Node), oldrun.count, fp);
+					fclose(fp);
+					
+					int a = 0;
+					int b = 0;
+					int c = 0;
+					while((a < oldrun.count) && (b < runcount)){
+						
+						if(strcmp(oldbump[a].key , sortedrun[b].key) < 0){
+							newarray[c] = oldbump[a];
+							a += 1;
+							c += 1;
+						}else if(strcmp(oldbump[a].key , sortedrun[b].key) > 0 ){
+							newarray[c] = sortedrun[b];
+							b += 1;
+							c += 1;
+						}else{
+							newarray[c] = sortedrun[b];
+							a += 1;
+							b += 1;
+							c += 1;
+						}
+					}
+					while(a < oldrun.count){
+						newarray[c] = oldbump[a];
+						a += 1;
+						c += 1;
+					}
+					while (b < runcount){
+						newarray[c] = sortedrun[b];
+						b += 1;
+						c += 1;
+					}
+					
+					free(oldbump);
+
+/*
 					if(strcmp(oldrun.start , sortedrun[0].key) > 0 ){
 						for(i = 0; i < runcount; i++){
 							newarray[i] = sortedrun[i];
@@ -139,10 +175,9 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 						for(i = 0; i < runcount; i++){
 							newarray[oldrun.count + i] = sortedrun[i];
 						}
-					}
-					char name[14];
+					} */
 					sprintf(name, "data/L%dN%d", Current->next->number, minpos);
-					FILE *fp = fopen(name, "wt");
+					fp = fopen(name, "wt");
 					fwrite(newarray, sizeof(Node), (oldrun.count + runcount), fp);
 					fclose(fp);
 
@@ -155,8 +190,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 					//현재 이 level에는 들어갈 공간이 없음 따라서 새로운 level로 merge 작업이 또 진행될 것임.
 					Run pushtonext = PopRun(destlevel);
 					Node *topush = (Node *) malloc(pushtonext.count * sizeof(Node));
-					
-					char name[14];
+				
+					char name[15];
 					sprintf(name, "data/L%dN%d", Current->next->number, destlevel->count);
 					FILE *fp = fopen(name, "rt");
 					fread(topush, sizeof(Node), pushtonext.count, fp);
@@ -167,7 +202,47 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 					
 					Run oldrun = destlevel->array[destlevel->count - 1];
 					Node *newarray = (Node *) malloc((oldrun.count + runcount) * sizeof(Node));
-					if(strcmp(oldrun.start , sortedrun[0].key) > 0 ){
+					
+
+					Node *oldbump = (Node *) malloc(oldrun.count * sizeof(Node));
+					sprintf(name, "data/L%dN%d", Current->next->number, (destlevel->count - 1));
+					fp = fopen(name, "rt");
+					fread(oldbump, sizeof(Node), oldrun.count, fp);
+					fclose(fp);
+					
+					int a = 0;
+					int b = 0;
+					int c = 0;
+					while((a < oldrun.count) && (b < runcount)){
+						
+						if(strcmp(oldbump[a].key , sortedrun[b].key) < 0){
+							newarray[c] = oldbump[a];
+							a += 1;
+							c += 1;
+						}else if(strcmp(oldbump[a].key , sortedrun[b].key) > 0 ){
+							newarray[c] = sortedrun[b];
+							b += 1;
+							c += 1;
+						}else{
+							newarray[c] = sortedrun[b];
+							a += 1;
+							b += 1;
+							c += 1;
+						}
+					}
+					while(a < oldrun.count){
+						newarray[c] = oldbump[a];
+						a += 1;
+						c += 1;
+					}
+					while (b < runcount){
+						newarray[c] = sortedrun[b];
+						b += 1;
+						c += 1;
+					}
+					
+					free(oldbump);
+					/*if(strcmp(oldrun.start , sortedrun[0].key) > 0 ){
 						for(i = 0; i < runcount; i++){
 							newarray[i] = sortedrun[i];
 						}
@@ -185,7 +260,7 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 						for(i = 0; i < runcount; i++){
 							newarray[oldrun.count + i] = sortedrun[i];
 						}
-					}					
+					}	*/				
 
 					char newname[14];
 					sprintf(newname, "data/L%dN%d", Current->next->number, (destlevel->count - 1));
@@ -321,7 +396,6 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 				}
 
 				if(destlevel->count == destlevel->size){
-					//if there is no space for the new array, push the last run to the next level
 					Run pushtonext = PopRun(destlevel);
 					Node *topush = (Node *) malloc(pushtonext.count * sizeof(Node));
 					char name[14];
@@ -333,7 +407,6 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 							pushtonext.count, (pushtonext.size * (levelsize + 1)), topush, (targetfpr * (levelsize + 1)));
 				}
 
-				//insert the run directly to the current level 
 				char filename[14];
 				sprintf(filename, "data/L%dN%d", (origin+1), destlevel->count);
 				Run oldrun = destlevel->array[0];
@@ -354,8 +427,9 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 	free(end);
 }
 
-void Put(LSMtree *lsm, char * key, int value, bool flag){
+void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){
 	int position = GetKeyPos(lsm->buffer, key);
+	printf("before loc is %d, ",value);
 	if(position >= 0){
 		lsm->buffer->array[position].value = value;
 		lsm->buffer->array[position].flag = flag;
@@ -373,25 +447,27 @@ void Put(LSMtree *lsm, char * key, int value, bool flag){
 			InsertKey(lsm->buffer, key, value, flag);
 		}
 	}
+
+	printf("loc is %d\n",Get(lsm,key,log));
 }
 
-void Get(LSMtree *lsm, char * key, char *result){
+int Get(LSMtree *lsm, char * key, ValueLog *log){
 	int position = GetKeyPos(lsm->buffer, key);
 	int i;
 	if(position != -1){
 		if(lsm->buffer->array[position].flag){
+			printf("set\n");
 			int val = lsm->buffer->array[position].value;
-			sprintf(result, "%d", val);
-		}else{
+			return val;
 		}
 	}else{
 		LevelNode *current = lsm->L0->next;
 		bool find = false;
+		int w=0;
 		while(current != NULL){
 			Level *exploringlevel = current->level;
 			for(i = 0; i < exploringlevel->count; i++){
 				if(strcmp(exploringlevel->array[i].start , key) <= 0 && strcmp(exploringlevel->array[i].end , key) >= 0){
-					//binary search through the run to search key
 					Node *currentarray = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
 					char filename[14];
 					sprintf(filename, "data/L%dN%d", current->number, i);
@@ -404,18 +480,14 @@ void Get(LSMtree *lsm, char * key, char *result){
 					if(strcmp(key , currentarray[left].key) == 0){
 						if(currentarray[left].flag){
 							int val = currentarray[left].value;
-							sprintf(result, "%d", val);
-							find = true;
-							break;
+							return val;
 						}else{
 							return;
 						}
 					}else if(strcmp( key , currentarray[right].key) == 0){
 						if(currentarray[right].flag){
 							int val = currentarray[right].value;
-							sprintf(result, "%d", val);
-							find = true;
-							break;
+							return val;
 						}else{
 							return;
 						}
@@ -424,9 +496,7 @@ void Get(LSMtree *lsm, char * key, char *result){
 						if(strcmp( key , currentarray[mid].key) == 0){
 							if(currentarray[mid].flag){
 								int val = currentarray[mid].value;
-								sprintf(result, "%d", val);
-								find = true;
-								break;
+								return val;
 							}else{
 								return;
 							}
@@ -437,8 +507,14 @@ void Get(LSMtree *lsm, char * key, char *result){
 							right = mid;
 							mid = (left + right) / 2;
 						}
+						/*if(strcmp(key,currentarray[left].key) == 0 ){
+							int val = currentarray[left].value;
+							return val;
+						}
+						left++;*/
 					}
 					free(currentarray);						
+					
 				}
 			}
 			if(find){
@@ -446,15 +522,15 @@ void Get(LSMtree *lsm, char * key, char *result){
 			}
 			current = current->next;
 		}
+		printf("funck you man\n");
 		return;
 	}
 }
 
-void Range(LSMtree *lsm, char * start, char * end){
+void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 	int i;
 	int j;
 	int find = 0;
-	//use hash table to record keys found
 	HashTable *table = CreateHashTable(128);
 	
 	printf("range query result for [%s, %s) is ", start, end);
@@ -466,7 +542,7 @@ void Range(LSMtree *lsm, char * start, char * end){
 				AddToTable(table, lsm->buffer->array[i].key);
 				if(lsm->buffer->array[i].flag){
 					bzero(str, 32);
-					sprintf(str, "%s:%d ", lsm->buffer->array[i].key, lsm->buffer->array[i].value);
+					sprintf(str, "%s:%ld ", lsm->buffer->array[i].key, ValueGet(log,lsm->buffer->array[i].value));
 					printf("%s ",str);
 				}
 			}
@@ -492,7 +568,7 @@ void Range(LSMtree *lsm, char * start, char * end){
 							AddToTable(table, currentarray[j].key);
 							if(currentarray[j].flag){
 								bzero(str, 32);
-								sprintf(str, "%s:%d ", currentarray[j].key, currentarray[j].value);
+								sprintf(str, "%s:%ld ", currentarray[j].key, ValueGet(log,currentarray[j].value));
 								printf("%s ",str);
 							}
 						}
@@ -507,7 +583,7 @@ void Range(LSMtree *lsm, char * start, char * end){
 }
 
 
-void PrintStats(LSMtree *lsm){
+void PrintStats(LSMtree *lsm, ValueLog *log){
 	int i;
 	int j;
 	int total = 0;
@@ -527,7 +603,7 @@ void PrintStats(LSMtree *lsm){
 			fread(currentarray, sizeof(Node), currentlevelnode->level->array[i].count, fp);
 			fclose(fp);
 			for(j = 0; j < currentlevelnode->level->array[i].count; j++){
-				printf("%s:%d:L%d  ", currentarray[j].key, currentarray[j].value, levelnum);
+				printf("%s:%d:L%ld  ", currentarray[j].key, ValueGet(log,currentarray[j].value), levelnum);
 				if(!currentarray[j].flag){
 					total -= 1;
 				}
@@ -545,49 +621,65 @@ void PrintStats(LSMtree *lsm){
 
 int main(){
 	LSMtree *lsm = CreateLSM(4, 4, 0.0000001);
-
+	ValueLog *log = CreateLog(0,4000);
 	srand((unsigned int) time(NULL));
 
-	char Get_want[250][10];
+	char Get_want[500][10];
+	int Get_re[500];
 	int index = 0;
-	for(int i=0; i < 400 ; i++){
+	char input[10];
+	for(int i=0; i < 500 ; i++){
 		
-		char string[10] = "";
 		int w = 0;
 		for(w = 0 ; w < 9; w++){
-			string[w] = 'a' + rand() % 26;
+			input[w] = 'a' + rand() % 26;
 		}
 
-		string[w] = 0;
-		
+		input[w] = 0;
 		int key_value = rand()%1000 + 1;
-		
-		Put(lsm,string, key_value,true);
+
+		Get_re[i] = key_value;
+
+		int loc;
+	
+		ValuePut(log,&loc, input, strlen(input) + 1 , key_value);
+		ValueLog_sync(log);
+
+
+		Put(lsm,input, loc,true,log);
 
 		if(i%5 == 0){
-			strcpy(Get_want[index],string);
-			printf("%s의 key는 %d입니다\n",string,key_value);
+			strcpy(Get_want[index],input);
+			printf("%s의 key는 %d입니다, loc is %d\n",input,key_value,loc);
 			index++;
 		}
 	}
 
 	printf("\n\n");
+
+	int return_val;
 	for(int i = 0 ; i < index; i ++){
-		char val[16];
-		Get(lsm, Get_want[i], val);
-		printf("value of key %s is %s \n", Get_want[i], val);
+		return_val = Get(lsm, Get_want[i], log);
+		char result_re[20];
+		sprintf(result_re, "%d", ValueGet(log,return_val));
+		char collect_re[20];
+		sprintf(collect_re,"%d", Get_re[i]);
+		ValueLog_sync(log);
+		printf("value of key %s is %s, loc is %d\n", Get_want[i], result_re,return_val);
 		printf("\n");
 	}
 
 	char start[10] = "aaaaaaaaa\0";
 	char end[10] = "ccccccccc\0";
-	Range(lsm, start, end);
+	Range(lsm, start, end,log);
 
 	printf("\n\n");
 
-	PrintNode(lsm->buffer);
+	PrintNode(lsm->buffer,log);
 	printf("\n");
-	PrintStats(lsm);
+	PrintStats(lsm,log);
+
+	ClearLog(log);
 	return 0;
 }
 

@@ -46,7 +46,7 @@ void HeapifyBottomTop(Heap *h, int index){
 
 void HeapifyTopBottom(Heap *h, int parent){
 	int left = parent * 2 + 1;
-	int right = parent * 2 + 1;
+	int right = parent * 2 + 2;
 	int min;
 	Node temp;
 	if(left >= h->count){
@@ -88,10 +88,10 @@ Node PopMin(Heap *h){
 	return pair;
 }
 
-void PrintNode(Heap *h){
+void PrintNode(Heap *h, ValueLog *log){
 	int i;
 	for(i=0; i<h->count; i++){
-		printf("%s:%d:L0 ", h->array[i].key, h->array[i].value);
+		printf("%s:%d:L0 ", h->array[i].key, ValueGet(log,h->array[i].value));
 	}
 	printf("\nThere are %d pairs on buffer. \n", h->count);
 }

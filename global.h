@@ -12,6 +12,7 @@
 #include <time.h>
 #include <pthread.h>
 #include <errno.h>
+#include <unistd.h>
 
 #define STRING_SIZE 10
 
@@ -62,8 +63,8 @@ typedef struct LSMtree{
 
 typedef struct ValueLog{
 	FILE *fp;
-	size_t head;
-	size_t tail;
+	int head;
+	int tail;
 } ValueLog;
 
 //heap.c
@@ -73,7 +74,7 @@ void HeapifyBottomTop(Heap *h, int index);
 void HeapifyTopBottom(Heap *h, int parent);
 void InsertKey(Heap *h, char * key, int value, bool flag);
 Node PopMin(Heap *h);
-void PrintNode(Heap *h);
+void PrintNode(Heap *h,ValueLog *log);
 void ClearHeap(Heap *h);
 
 //level.c
@@ -92,15 +93,16 @@ void ClearTable(HashTable *table);
 LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr);
 void Merge(LevelNode *Current, int origin, int levelsize,
 	int runcount, int runsize, Node *sortedrun, double targetfpr);
-void Put(LSMtree *lsm, char * key, int value, bool flag);
-void Get(LSMtree *lsm, char * key, char *result);
-void Range(LSMtree *lsm, char * start, char * end);
-void PrintStats(LSMtree *lsm);
+void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log);
+int Get(LSMtree *lsm, char * key, ValueLog *log);
+void Range(LSMtree *lsm, char * start, char * end, ValueLog *log);
+void PrintStats(LSMtree *lsm,ValueLog *log);
 
 
 //value-log.c
-ValueLog *CreateLog(size_t head, size_t tail);i
-void ValuePut(ValueLog *log, size_t *loc, const char * key, uint64_t key_len, int value);
-int ValueGet(ValueLog *log, size_t loc);
+ValueLog *CreateLog(int head, int tail);
+void ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value);
+uint64_t ValueGet(ValueLog *log, int loc);
 void ClearLog(ValueLog *log);
+int ValueLog_sync(ValueLog *log);
 
