@@ -94,10 +94,10 @@ LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr);
 void Merge(LevelNode *Current, int origin, int levelsize,
 	int runcount, int runsize, Node *sortedrun, double targetfpr);
 void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log);
-int Get(LSMtree *lsm, char * key, ValueLog *log);
+int Get_loc(LSMtree *lsm, char * key);
 void Range(LSMtree *lsm, char * start, char * end, ValueLog *log);
 void PrintStats(LSMtree *lsm,ValueLog *log);
-
+int Get(LSMtree *lsm, char * key, ValueLog *log);
 
 //value-log.c
 ValueLog *CreateLog(int head, int tail);

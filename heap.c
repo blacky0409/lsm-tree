@@ -91,7 +91,7 @@ Node PopMin(Heap *h){
 void PrintNode(Heap *h, ValueLog *log){
 	int i;
 	for(i=0; i<h->count; i++){
-		printf("%s:%d:L0 ", h->array[i].key, ValueGet(log,h->array[i].value));
+		printf("%s:%ld:L0 ", h->array[i].key, ValueGet(log,h->array[i].value));
 	}
 	printf("\nThere are %d pairs on buffer. \n", h->count);
 }

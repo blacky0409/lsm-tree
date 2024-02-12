@@ -17,13 +17,13 @@ ValueLog *CreateLog(int head, int tail){
 
 void ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value){
 	
-	int res = fseek(log->fp, (int) log->head, SEEK_SET);
+	fseek(log->fp, (int) log->head, SEEK_SET);
 	
-	int b_writed = fwrite(&key_len, sizeof(uint64_t),1, log->fp);
+	fwrite(&key_len, sizeof(uint64_t),1, log->fp);
 	
-	b_writed = fwrite(key, sizeof(char),key_len, log->fp);
+	fwrite(key, sizeof(char),key_len, log->fp);
 	
-	b_writed = fwrite(&value, sizeof(uint64_t),1,log-> fp);
+	fwrite(&value, sizeof(uint64_t),1,log-> fp);
 
 	*loc = log->head;
 
@@ -33,15 +33,15 @@ void ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint6
 
 uint64_t ValueGet(ValueLog *log,int loc){
 
-	int res = fseek(log->fp, (int) loc, SEEK_SET);
+	fseek(log->fp, (int) loc, SEEK_SET);
 
 	uint64_t key_len;
-	int b_read = fread(&key_len,sizeof(uint64_t),1,log->fp);
+	fread(&key_len,sizeof(uint64_t),1,log->fp);
 
-	res = fseek(log->fp, (int)key_len, SEEK_CUR);
+	fseek(log->fp, (int)key_len, SEEK_CUR);
 	
 	uint64_t value;
-	b_read = fread(&value,sizeof(uint64_t),1,log->fp);
+	fread(&value,sizeof(uint64_t),1,log->fp);
 
 	return value;
 }

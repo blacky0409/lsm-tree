@@ -35,7 +35,6 @@ Run PopRun(Level *level){
 }
 
 void ClearLevel(Level *l){
-	int i;
 	free(l->array);
 	free(l);
 }
