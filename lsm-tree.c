@@ -25,6 +25,18 @@ int cmpfunc(const void *a, const void *b){
 	return strcmp(((Node *)a)->key,((Node *)b)->key);
 }
 
+int Delete_flag(Node * sort, int size){
+		
+	int index = 0;
+
+	for(int i = 0 ; i < size; i++){
+		if(sort[i].flag){
+			
+	
+		}
+	}
+}
+
 void Merge(LevelNode *Current, int origin, int levelsize,
 	int runcount, int runsize, Node *sortedrun, double targetfpr){
 	char * start = (char *) malloc(sizeof(char) * STRING_SIZE);
@@ -158,26 +170,6 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 					
 					free(oldbump);
 
-/*
-					if(strcmp(oldrun.start , sortedrun[0].key) > 0 ){
-						for(i = 0; i < runcount; i++){
-							newarray[i] = sortedrun[i];
-						}
-						char name[14];
-						sprintf(name, "data/L%dN%d", Current->next->number, minpos);
-						FILE *fp = fopen(name, "rt");
-						fread(&newarray[runcount], sizeof(Node), oldrun.count, fp);
-						fclose(fp);
-					}else{
-						char name[14];
-						sprintf(name, "data/L%dN%d", Current->next->number, minpos);
-						FILE *fp = fopen(name, "rt");
-						fread(newarray, sizeof(Node), oldrun.count, fp);
-						fclose(fp);
-						for(i = 0; i < runcount; i++){
-							newarray[oldrun.count + i] = sortedrun[i];
-						}
-					} */
 					sprintf(name, "data/L%dN%d", Current->next->number, minpos);
 					fp = fopen(name, "wt");
 					fwrite(newarray, sizeof(Node), (oldrun.count + runcount), fp);
