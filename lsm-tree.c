@@ -245,32 +245,32 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 
 						if(strcmp(oldbump[a].key , sortedrun[b].key) < 0){
 							if(oldbump[a].flag){
-							newarray[c] = oldbump[a];
-							a += 1;
-							c += 1;
+								newarray[c] = oldbump[a];
+								a += 1;
+								c += 1;
 							}
 							else
 								a += 1;
 						}else if(strcmp(oldbump[a].key , sortedrun[b].key) > 0 ){
 							if(sortedrun[b].flag){
-							newarray[c] = sortedrun[b];
-							b += 1;
-							c += 1;
+								newarray[c] = sortedrun[b];
+								b += 1;
+								c += 1;
 							}
 							else
 								b += 1;
 						}else{
 							if(sortedrun[b].flag){
-							newarray[c] = sortedrun[b];
-							a += 1;
-							b += 1;
-							c += 1;
+								newarray[c] = sortedrun[b];
+								a += 1;
+								b += 1;
+								c += 1;
 							}
 							else if(oldbump[a].flag){
-							newarray[c] = oldbump[a];
-							a += 1;
-							b += 1;
-							c += 1;
+								newarray[c] = oldbump[a];
+								a += 1;
+								b += 1;
+								c += 1;
 							}
 							else{
 								a += 1;
@@ -280,59 +280,59 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 					}
 					while(a < oldrun.count){
 						if(oldbump[a].flag){
-						newarray[c] = oldbump[a];
-						a += 1;
-						c += 1;
+							newarray[c] = oldbump[a];
+							a += 1;
+							c += 1;
 						}
 						else
 							a += 1;
 					}
 					while (b < runcount){
 						if(sortedrun[b].flag){
-						newarray[c] = sortedrun[b];
-						b += 1;
-						c += 1;
+							newarray[c] = sortedrun[b];
+							b += 1;
+							c += 1;
 						}
 						else
 							b += 1;
 					}
 
 					free(oldbump);
-					
+
 					if ( c - oldrun.size > 0){
-					char newname[14];
-					sprintf(newname, "data/L%dN%d", Current->next->number, (destlevel->count - 1));
-					fp = fopen(newname, "wt");
-					fwrite(newarray, sizeof(Node), oldrun.size, fp);
-					fclose(fp);
+						char newname[14];
+						sprintf(newname, "data/L%dN%d", Current->next->number, (destlevel->count - 1));
+						fp = fopen(newname, "wt");
+						fwrite(newarray, sizeof(Node), oldrun.size, fp);
+						fclose(fp);
 
-					oldrun.count = oldrun.size;
-					strcpy(oldrun.start , newarray[0].key);
-					strcpy(oldrun.end , newarray[oldrun.size - 1].key);
+						oldrun.count = oldrun.size;
+						strcpy(oldrun.start , newarray[0].key);
+						strcpy(oldrun.end , newarray[oldrun.size - 1].key);
 
-					destlevel->array[destlevel->count - 1] = oldrun;
+						destlevel->array[destlevel->count - 1] = oldrun;
 
-					char filename[14];
-					sprintf(filename, "data/L%dN%d", (origin+1), destlevel->count);
-					FILE *fpw = fopen(filename, "wt");
-					fwrite(&newarray[oldrun.size], sizeof(Node), (c - oldrun.size), fpw);
-					fclose(fpw);
+						char filename[14];
+						sprintf(filename, "data/L%dN%d", (origin+1), destlevel->count);
+						FILE *fpw = fopen(filename, "wt");
+						fwrite(&newarray[oldrun.size], sizeof(Node), (c - oldrun.size), fpw);
+						fclose(fpw);
 
-					InsertRun(destlevel, (c - oldrun.size), oldrun.size, 
-							newarray[oldrun.size].key, newarray[c - 1].key);
+						InsertRun(destlevel, (c - oldrun.size), oldrun.size, 
+								newarray[oldrun.size].key, newarray[c - 1].key);
 					}
 					else{
-					char newname[14];
-					sprintf(newname, "data/L%dN%d", Current->next->number, (destlevel->count - 1));
-					fp = fopen(newname, "wt");
-					fwrite(newarray, sizeof(Node), c, fp);
-					fclose(fp);
+						char newname[14];
+						sprintf(newname, "data/L%dN%d", Current->next->number, (destlevel->count - 1));
+						fp = fopen(newname, "wt");
+						fwrite(newarray, sizeof(Node), c, fp);
+						fclose(fp);
 
-					oldrun.count = c;
-					strcpy(oldrun.start , newarray[0].key);
-					strcpy(oldrun.end , newarray[c - 1].key);
+						oldrun.count = c;
+						strcpy(oldrun.start , newarray[0].key);
+						strcpy(oldrun.end , newarray[c - 1].key);
 
-					destlevel->array[destlevel->count - 1] = oldrun;
+						destlevel->array[destlevel->count - 1] = oldrun;
 
 					}
 					free(newarray);
@@ -367,54 +367,54 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 			while((a < oldcount) && (b < runcount)){
 				if(strcmp(oldarray[a].key , sortedrun[b].key) < 0){
 					if(oldarray[a].flag){
-					newarray[c] = oldarray[a];
-					a += 1;
-					c += 1;
+						newarray[c] = oldarray[a];
+						a += 1;
+						c += 1;
 					}
 					else
 						a += 1;
 				}else if(strcmp(oldarray[a].key , sortedrun[b].key) > 0 ){
 					if(sortedrun[b].flag){
-					newarray[c] = sortedrun[b];
-					b += 1;
-					c += 1;
+						newarray[c] = sortedrun[b];
+						b += 1;
+						c += 1;
 					}
 					else
 						b += 1;
 				}else{
 					if(sortedrun[b].flag){
-					newarray[c] = sortedrun[b];
-					a += 1;
-					b += 1;
-					c += 1;
+						newarray[c] = sortedrun[b];
+						a += 1;
+						b += 1;
+						c += 1;
 					}
 					else if(oldarray[a].flag){
-					newarray[c] = oldarray[a];
-					a += 1;
-					b += 1;
-					c += 1;
+						newarray[c] = oldarray[a];
+						a += 1;
+						b += 1;
+						c += 1;
 					}
 					else{
-					a += 1;
-					b += 1;
+						a += 1;
+						b += 1;
 					}
-					
+
 				}
 			}
 			while(a < oldcount){
 				if(oldarray[a].flag){
-				newarray[c] = oldarray[a];
-				a += 1;
-				c += 1;
+					newarray[c] = oldarray[a];
+					a += 1;
+					c += 1;
 				}
 				else
 					a+= 1;
 			}
 			while (b < runcount){
 				if(sortedrun[b].flag){
-				newarray[c] = sortedrun[b];
-				b += 1;
-				c += 1;
+					newarray[c] = sortedrun[b];
+					b += 1;
+					c += 1;
 				}
 				else
 					b += 1;
@@ -538,13 +538,19 @@ void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){
 
 }
 
-int Get_loc(LSMtree *lsm, char * key){
+SaveArray * Get_array(LSMtree *lsm, char * key){
 	int position = GetKeyPos(lsm->buffer, key);
 	int i;
+	SaveArray * save = (SaveArray *)malloc(sizeof(SaveArray));
+	save->index = -1;
+	strcpy(save->filename,"");
 	if(position != -1){
 		if(lsm->buffer->array[position].flag){
-			int val = lsm->buffer->array[position].value;
-			return val;
+			save->array = (Node *) malloc(4*sizeof(Node));
+			memcpy(save->array,lsm->buffer->array, 4 * sizeof(Node));
+			save->index=position;
+			save->size=4;
+			return save;
 		}
 	}else{
 		LevelNode *current = lsm->L0->next;
@@ -564,28 +570,38 @@ int Get_loc(LSMtree *lsm, char * key){
 					int mid = (left + right) / 2;
 					if(strcmp(key , currentarray[left].key) == 0){
 						if(currentarray[left].flag){
-							int val = currentarray[left].value;
-							return val;
+							save->array = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
+							memcpy(save->array , currentarray,exploringlevel->array[i].count * sizeof(Node));
+							save->index = left;
+							strcpy(save->filename,filename);
+							save->size = exploringlevel->array[i].count;
+							return save;
 						}else{
-							return 0;
+							return NULL;
 						}
 					}else if(strcmp( key , currentarray[right].key) == 0){
 						if(currentarray[right].flag){
-							int val = currentarray[right].value;
-							return val;
+							save->array = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
+							memcpy(save->array , currentarray,exploringlevel->array[i].count * sizeof(Node));
+							save->index=right;
+							strcpy(save->filename,filename);
+							save->size = exploringlevel->array[i].count;
+							return save;
 						}else{
-							return 0;
+							return NULL;
 						}
 					}
-					char old[10];
-					strcpy(old,currentarray[left].key);
 					while(left != mid){
 						if(strcmp( key , currentarray[mid].key) == 0){
 							if(currentarray[mid].flag){
-								int val = currentarray[mid].value;
-								return val;
+								save->array = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
+								memcpy(save->array , currentarray,exploringlevel->array[i].count * sizeof(Node));
+								save->index = mid;
+								strcpy(save->filename,filename);
+								save->size = exploringlevel->array[i].count;
+								return save;
 							}else{
-								return 0;
+								return NULL;
 							}
 						}else if(strcmp ( key , currentarray[mid].key) > 0){
 							left = mid;
@@ -595,7 +611,7 @@ int Get_loc(LSMtree *lsm, char * key){
 							mid = (left + right) / 2;
 						}
 					}
-					free(currentarray);						
+					free(currentarray);	
 
 				}
 			}
@@ -605,8 +621,71 @@ int Get_loc(LSMtree *lsm, char * key){
 			current = current->next;
 		}
 	}
-	printf("Can't find key\n");
-	return 0;
+	return NULL;
+}
+
+Node * Get_loc(LSMtree *lsm, char * key){
+	int position = GetKeyPos(lsm->buffer, key);
+	int i;
+	if(position != -1){
+		if(lsm->buffer->array[position].flag){
+			return &lsm->buffer->array[position];
+		}
+	}else{
+		LevelNode *current = lsm->L0->next;
+		bool find = false;
+		while(current != NULL){
+			Level *exploringlevel = current->level;
+			for(i = 0; i < exploringlevel->count; i++){
+				if(strcmp(exploringlevel->array[i].start , key) <= 0 && strcmp(exploringlevel->array[i].end , key) >= 0){
+					Node *currentarray = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
+					char filename[14];
+					sprintf(filename, "data/L%dN%d", current->number, i);
+					FILE *fp = fopen(filename, "rt");
+					fread(currentarray, sizeof(Node), exploringlevel->array[i].count, fp);
+					fclose(fp);
+					int left = 0;
+					int right = exploringlevel->array[i].count - 1;
+					int mid = (left + right) / 2;
+					if(strcmp(key , currentarray[left].key) == 0){
+						if(currentarray[left].flag){
+							return &currentarray[left];
+						}else{
+							return NULL;
+						}
+					}else if(strcmp( key , currentarray[right].key) == 0){
+						if(currentarray[right].flag){
+							return &currentarray[right];
+						}else{
+							return NULL;
+						}
+					}
+					while(left != mid){
+						if(strcmp( key , currentarray[mid].key) == 0){
+							if(currentarray[mid].flag){
+								return &currentarray[mid];
+							}else{
+								return NULL;
+							}
+						}else if(strcmp ( key , currentarray[mid].key) > 0){
+							left = mid;
+							mid = (left + right) / 2;
+						}else{
+							right = mid;
+							mid = (left + right) / 2;
+						}
+					}
+					free(currentarray);	
+
+				}
+			}
+			if(find){
+				break;
+			}
+			current = current->next;
+		}
+	}
+	return NULL;
 }
 
 void Delete(LSMtree *lsm, char * key){
@@ -648,8 +727,6 @@ void Delete(LSMtree *lsm, char * key){
 							return ;
 						}
 					}
-					char old[10];
-					strcpy(old,currentarray[left].key);
 					while(left != mid){
 						if(strcmp( key , currentarray[mid].key) == 0){
 							if(currentarray[mid].flag){
@@ -687,7 +764,7 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 	ValueLog_sync(log);
 	HashTable *table = CreateHashTable(128);
 
-	printf("range query result for [%s, %s) is ", start, end);
+	printf("range query result for [%s, %s] is ", start, end);
 	char str[32];
 	for(i = 0; i < lsm->buffer->count; i++){
 		if((strcmp(lsm->buffer->array[i].key , start) >= 0) && (strcmp(lsm->buffer->array[i].key , end)) < 0){
@@ -773,11 +850,17 @@ void PrintStats(LSMtree *lsm, ValueLog *log){
 }
 
 int Get(LSMtree *lsm, char * key, ValueLog *log){
-	return (ValueGet(log,Get_loc(lsm, key)));
+	Node * dest = Get_loc(lsm,key);
+	if(dest == NULL){
+		printf("Don't find key\n");
+		return -1;
+	}
+	printf("value %d\n",dest->value);
+	return (ValueGet(log,dest->value));
 }
 int main(){
 	LSMtree *lsm = CreateLSM(4, 4, 0.0000001);
-	ValueLog *log = CreateLog(0,4000);
+	ValueLog *log = CreateLog(0,0);
 	srand((unsigned int) time(NULL));
 
 	char Get_want[1000][10];
@@ -799,6 +882,13 @@ int main(){
 
 		Put(lsm,input, key_value,true,log);
 
+		/*		strcpy(Get_want[i],input);
+				Get_re[i] = key_value;
+				if(5 <= d && d < 8)
+				{
+				Delete(lsm,input);
+				}
+				d++;*/
 		if(i%5 == 0){
 			if(5 <= d && d < 8)
 			{
@@ -816,11 +906,12 @@ int main(){
 
 	int return_val;
 	int false_count = 0;
+
 	for(int i = 0 ; i < index; i ++){
 		return_val = Get(lsm, Get_want[i], log);
 		char answer[10];
 		strcpy(answer,(return_val == Get_re[i])? "true" : "false");
-		printf("value of key %s is %d, answer : %s\n", Get_want[i],return_val, answer);
+		printf("%d : value of key %s is %d, answer : %s\n", i,Get_want[i],return_val, answer);
 		if(strcmp(answer,"false") == 0){
 			printf("\n\n");
 			false_count++;
@@ -838,7 +929,24 @@ int main(){
 	printf("\n");
 	PrintStats(lsm,log);
 
+	GC(lsm,log);
+
+	for(int i = 0 ; i < index; i ++){
+		return_val = Get(lsm, Get_want[i], log);
+		char answer[10];
+		strcpy(answer,(return_val == Get_re[i])? "true" : "false");
+		printf("%d : value of key %s is %d, answer : %s\n", i,Get_want[i],return_val, answer);
+		if(strcmp(answer,"false") == 0){
+			printf("\n\n");
+			false_count++;
+		}
+		printf("\n");
+	}
+
 	ClearLog(log);
+
+
+
 
 	printf("false count : %d, dead : %d\n",false_count,dead);
 	return 0;

@@ -1,5 +1,7 @@
 #include "global.h"
 
+#define READ_LOG_SIZE 10
+
 ValueLog *CreateLog(int head, int tail){
 
 	char filename[25] = "data/valuelog/log";
@@ -16,33 +18,47 @@ ValueLog *CreateLog(int head, int tail){
 }
 
 void ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value){
+
+	if(log->tail == (log->head + sizeof(SaveLog)) || (log->tail == 0 && (log->head + sizeof(SaveLog) > 70000))){
+			printf("full..\n");
+			exit(-1);
+	}
+	SaveLog *save = (SaveLog *)malloc(sizeof(SaveLog));
 	
+	save->key_len = key_len;
+	strncpy(save->key,key,key_len);
+	save->value = value;
+
 	fseek(log->fp, (int) log->head, SEEK_SET);
 	
-	fwrite(&key_len, sizeof(uint64_t),1, log->fp);
+	fwrite(save, sizeof(SaveLog),1, log->fp);
 	
-	fwrite(key, sizeof(char),key_len, log->fp);
-	
-	fwrite(&value, sizeof(uint64_t),1,log-> fp);
-
 	*loc = log->head;
 
-	log->head += sizeof(uint64_t) + key_len + sizeof(uint64_t);
-	
+	log->head += sizeof(SaveLog);
+
+	if(log->head > 70000)
+		log->head = 0;
+	free(save);	
 }
 
 uint64_t ValueGet(ValueLog *log,int loc){
-
-	fseek(log->fp, (int) loc, SEEK_SET);
-
-	uint64_t key_len;
-	fread(&key_len,sizeof(uint64_t),1,log->fp);
-
-	fseek(log->fp, (int)key_len, SEEK_CUR);
 	
-	uint64_t value;
-	fread(&value,sizeof(uint64_t),1,log->fp);
+	uint64_t value = -1;
+	if((log->tail < log->head && (loc >= log->tail)) || 
+			((log->tail > log->head) && (log->tail < 70000 || loc < log->head))){
+		SaveLog *save = (SaveLog *)malloc(sizeof(SaveLog));
 
+		fseek(log->fp, (int) loc, SEEK_SET);
+
+		fread(save,sizeof(SaveLog),1,log->fp);
+
+		value = save->value;
+
+		free(save);
+
+	}
+	
 	return value;
 }
 int ValueLog_sync(ValueLog *log) {
@@ -58,6 +74,50 @@ int ValueLog_sync(ValueLog *log) {
         return -1;
     }
     return 0;
+}
+
+void GC(LSMtree *lsm,ValueLog *log){
+	int end = log->head;	
+	int size = 0;
+	while(log->tail != end){
+		SaveLog * save;
+		save = (SaveLog *)malloc(sizeof(SaveLog) * READ_LOG_SIZE);
+		SaveLog * save_keep = save;
+		fseek(log->fp,log->tail,SEEK_SET);
+		fread(save,sizeof(SaveLog),READ_LOG_SIZE,log->fp);
+		size = 0;
+		printf("hi\n");
+		for(; size < READ_LOG_SIZE; size++){
+				char str_key[STRING_SIZE];
+				strncpy(str_key,save[size].key,save[size].key_len);
+				SaveArray * dest = Get_array(lsm,str_key);
+				if(dest != NULL){
+					int loc;
+					ValuePut(log,&loc,str_key,save[size].key_len,save[size].value);
+					dest->array[dest->index].value = loc;
+					
+					printf("%s\n",dest->filename);
+					if(strcmp(dest->filename,"")!=0){
+						FILE *fp = fopen(dest->filename, "wt");
+						if(fp == NULL)
+							printf("what\n");
+						fwrite(dest->array, sizeof(Node), dest->size, fp);
+						fclose(fp);
+					}
+				}
+				else
+					printf("Can't find key\n");
+				dest = NULL;
+		}
+		log->tail += (sizeof(SaveLog) * size);
+		if(log->tail > 70000)
+			log->tail = 0;
+		free(save_keep);
+	}
+
+	if(log->tail > log->head){
+		log->tail = log->head;
+	}
 }
 void ClearLog(ValueLog *log){
 	fclose(log->fp);

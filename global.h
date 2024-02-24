@@ -15,6 +15,9 @@
 #include <unistd.h>
 
 #define STRING_SIZE 10
+#define MAX_VALUE_SIZE 10
+#define MAX_PAGE 70000
+
 
 typedef struct Node{
 	char key[STRING_SIZE];
@@ -67,6 +70,18 @@ typedef struct ValueLog{
 	int tail;
 } ValueLog;
 
+typedef struct Save_Log{
+	char key[STRING_SIZE];
+	int key_len;
+	int value;
+} SaveLog;
+
+typedef struct Save_Array{
+	Node * array;
+	int index;
+	char filename[14];
+	int size;
+}SaveArray;
 //heap.c
 Heap *CreateHeap(int size);
 int GetKeyPos(Heap *h, char * key);
@@ -94,10 +109,11 @@ LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr);
 void Merge(LevelNode *Current, int origin, int levelsize,
 	int runcount, int runsize, Node *sortedrun, double targetfpr);
 void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log);
-int Get_loc(LSMtree *lsm, char * key);
+Node * Get_loc(LSMtree *lsm, char * key);
 void Range(LSMtree *lsm, char * start, char * end, ValueLog *log);
 void PrintStats(LSMtree *lsm,ValueLog *log);
 int Get(LSMtree *lsm, char * key, ValueLog *log);
+SaveArray * Get_array(LSMtree *lsm, char * key);
 
 //value-log.c
 ValueLog *CreateLog(int head, int tail);
@@ -105,4 +121,4 @@ void ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint6
 uint64_t ValueGet(ValueLog *log, int loc);
 void ClearLog(ValueLog *log);
 int ValueLog_sync(ValueLog *log);
-
+void GC(LSMtree *lsm,ValueLog *log);
