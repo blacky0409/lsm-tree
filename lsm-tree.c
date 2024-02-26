@@ -1,6 +1,7 @@
 #include "global.h"
 
 #define INT_MAX 2147483647
+#define REPEAT 12
 
 int dead = 0;
 
@@ -515,7 +516,6 @@ void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){
 
 	int loc;
 	ValuePut(log,&loc, key, strlen(key) + 1 , value);
-	ValueLog_sync(log);
 
 	int position = GetKeyPos(lsm->buffer, key);
 	if(position >= 0){
@@ -761,7 +761,6 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 	int i;
 	int j;
 	int find = 0;
-	ValueLog_sync(log);
 	HashTable *table = CreateHashTable(128);
 
 	printf("range query result for [%s, %s] is ", start, end);
@@ -882,13 +881,13 @@ int main(){
 
 		Put(lsm,input, key_value,true,log);
 
-		/*		strcpy(Get_want[i],input);
-				Get_re[i] = key_value;
-				if(5 <= d && d < 8)
-				{
-				Delete(lsm,input);
-				}
-				d++;*/
+	/*	strcpy(Get_want[i],input);
+		Get_re[i] = key_value;
+		if(5 <= d && d < 8)
+		{
+		Delete(lsm,input);
+		}
+		d++;*/
 		if(i%5 == 0){
 			if(5 <= d && d < 8)
 			{
@@ -929,6 +928,7 @@ int main(){
 	printf("\n");
 	PrintStats(lsm,log);
 
+	for(int w=0; w < REPEAT; w++){
 	GC(lsm,log);
 
 	for(int i = 0 ; i < index; i ++){
@@ -942,13 +942,15 @@ int main(){
 		}
 		printf("\n");
 	}
+	}
+
 
 	ClearLog(log);
 
 
 
 
-	printf("false count : %d, dead : %d\n",false_count,dead);
+	printf("false count : %d = %d, dead : %d\n",false_count,3 * REPEAT + 3,dead);
 	return 0;
 }
 

@@ -17,7 +17,7 @@
 #define STRING_SIZE 10
 #define MAX_VALUE_SIZE 10
 #define MAX_PAGE 70000
-
+#define MAX_LOG_SIZE sizeof(SaveLog) * (2000)
 
 typedef struct Node{
 	char key[STRING_SIZE];
@@ -65,9 +65,12 @@ typedef struct LSMtree{
 } LSMtree;
 
 typedef struct ValueLog{
-	FILE *fp;
+	FILE *fp1;
+	FILE *fp2;
 	int head;
 	int tail;
+	FILE *curhead;
+	FILE *curtail;
 } ValueLog;
 
 typedef struct Save_Log{
@@ -82,6 +85,7 @@ typedef struct Save_Array{
 	char filename[14];
 	int size;
 }SaveArray;
+
 //heap.c
 Heap *CreateHeap(int size);
 int GetKeyPos(Heap *h, char * key);
@@ -120,5 +124,5 @@ ValueLog *CreateLog(int head, int tail);
 void ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value);
 uint64_t ValueGet(ValueLog *log, int loc);
 void ClearLog(ValueLog *log);
-int ValueLog_sync(ValueLog *log);
+int ValueLog_sync(FILE *fp);
 void GC(LSMtree *lsm,ValueLog *log);
