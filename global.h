@@ -86,6 +86,11 @@ typedef struct Save_Array{
 	int size;
 }SaveArray;
 
+typedef struct Queue{
+	int count;
+	int *array;
+} Queue;
+
 //heap.c
 Heap *CreateHeap(int size);
 int GetKeyPos(Heap *h, char * key);

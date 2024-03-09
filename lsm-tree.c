@@ -698,7 +698,6 @@ void Delete(LSMtree *lsm, char * key){
 		}
 	}else{
 		LevelNode *current = lsm->L0->next;
-		bool find = false;
 		while(current != NULL){
 			Level *exploringlevel = current->level;
 			for(i = 0; i < exploringlevel->count; i++){
@@ -715,25 +714,16 @@ void Delete(LSMtree *lsm, char * key){
 					if(strcmp(key , currentarray[left].key) == 0){
 						if(currentarray[left].flag){
 							currentarray[left].flag = false;
-							return;
-						}else{
-							return;
 						}
 					}else if(strcmp( key , currentarray[right].key) == 0){
 						if(currentarray[right].flag){
 							currentarray[right].flag = false;
-							return ;
-						}else{
-							return ;
 						}
 					}
 					while(left != mid){
 						if(strcmp( key , currentarray[mid].key) == 0){
 							if(currentarray[mid].flag){
 								currentarray[mid].flag = false;
-								return;
-							}else{
-								return;
 							}
 						}else if(strcmp ( key , currentarray[mid].key) > 0){
 							left = mid;
@@ -747,13 +737,9 @@ void Delete(LSMtree *lsm, char * key){
 
 				}
 			}
-			if(find){
-				break;
-			}
 			current = current->next;
 		}
 	}
-	printf("Can't find key\n");
 	return;
 }
 
@@ -927,7 +913,7 @@ int main(){
 	PrintNode(lsm->buffer,log);
 	printf("\n");
 	PrintStats(lsm,log);
-
+/*
 	for(int w=0; w < REPEAT; w++){
 	GC(lsm,log);
 
@@ -943,7 +929,7 @@ int main(){
 		printf("\n");
 	}
 	}
-
+*/
 
 	ClearLog(log);
 
