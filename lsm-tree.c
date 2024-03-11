@@ -742,24 +742,47 @@ void Delete(LSMtree *lsm, char * key){
 	}
 	return;
 }
+void *get_log(void *argument){
+	TakeArg * arg = (TakeArg *)argument;
+	while(!is_empty(arg->q)||!arg->finish){
+		Element *element = GetToQueue(arg->q);
+		if(element != NULL)
+			printf("%s:%ld ",element->key,ValueGet(arg->log,element->loc));
+	}
+	return NULL;
+}
 
 void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
+	printf("start range\n");
 	int i;
 	int j;
 	int find = 0;
 	HashTable *table = CreateHashTable(128);
+	Queue *q = CreateQueue(128);
+	pthread_t thread[MAX_THREAD];
+	void *result;
+
+	TakeArg *arg = (TakeArg *)malloc(sizeof(TakeArg));
+	arg->q = q;
+	arg->log = log;
+	arg->finish = false;
+
+	for(int i = 0 ; i < (sizeof(thread) / sizeof(thread[0])); i++){
+		int r = pthread_create(&thread[i],NULL, get_log,arg);
+		if(r == -1){
+			printf("falut create thread\n");
+			return;
+		}
+	}
 
 	printf("range query result for [%s, %s] is ", start, end);
-	char str[32];
 	for(i = 0; i < lsm->buffer->count; i++){
 		if((strcmp(lsm->buffer->array[i].key , start) >= 0) && (strcmp(lsm->buffer->array[i].key , end)) < 0){
 			if(!CheckTable(table, lsm->buffer->array[i].key)){
 				find += 1;
 				AddToTable(table, lsm->buffer->array[i].key);
 				if(lsm->buffer->array[i].flag){
-					bzero(str, 32);
-					sprintf(str, "%s:%ld ", lsm->buffer->array[i].key, ValueGet(log,lsm->buffer->array[i].value));
-					printf("%s ",str);
+					AddToQueue(q,lsm->buffer->array[i].key,lsm->buffer->array[i].value);
 				}
 			}
 		}
@@ -783,9 +806,7 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 							find += 1;
 							AddToTable(table, currentarray[j].key);
 							if(currentarray[j].flag){
-								bzero(str, 32);
-								sprintf(str, "%s:%ld ", currentarray[j].key, ValueGet(log,currentarray[j].value));
-								printf("%s ",str);
+								AddToQueue(q,currentarray[j].key,currentarray[j].value);
 							}
 						}
 					}
@@ -795,7 +816,18 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 		}
 		currentlevelnode = currentlevelnode->next;
 	}
+	arg->finish = true;
+	for (int i = 0; i < (sizeof(thread) / sizeof(thread[0])); i++) {
+		int r = pthread_join(thread[i], &result);
+		if(r == -1){
+			printf("falut wait exit thread\n");
+			return;
+		}
+	}
+	printf("\n\n");
+	ClearQueue(q);
 	ClearTable(table);
+	free(arg);
 }
 
 
@@ -867,13 +899,13 @@ int main(){
 
 		Put(lsm,input, key_value,true,log);
 
-	/*	strcpy(Get_want[i],input);
-		Get_re[i] = key_value;
-		if(5 <= d && d < 8)
-		{
-		Delete(lsm,input);
-		}
-		d++;*/
+		/*	strcpy(Get_want[i],input);
+			Get_re[i] = key_value;
+			if(5 <= d && d < 8)
+			{
+			Delete(lsm,input);
+			}
+			d++;*/
 		if(i%5 == 0){
 			if(5 <= d && d < 8)
 			{
@@ -913,23 +945,23 @@ int main(){
 	PrintNode(lsm->buffer,log);
 	printf("\n");
 	PrintStats(lsm,log);
-/*
-	for(int w=0; w < REPEAT; w++){
-	GC(lsm,log);
+	/*
+	   for(int w=0; w < REPEAT; w++){
+	   GC(lsm,log);
 
-	for(int i = 0 ; i < index; i ++){
-		return_val = Get(lsm, Get_want[i], log);
-		char answer[10];
-		strcpy(answer,(return_val == Get_re[i])? "true" : "false");
-		printf("%d : value of key %s is %d, answer : %s\n", i,Get_want[i],return_val, answer);
-		if(strcmp(answer,"false") == 0){
-			printf("\n\n");
-			false_count++;
-		}
-		printf("\n");
-	}
-	}
-*/
+	   for(int i = 0 ; i < index; i ++){
+	   return_val = Get(lsm, Get_want[i], log);
+	   char answer[10];
+	   strcpy(answer,(return_val == Get_re[i])? "true" : "false");
+	   printf("%d : value of key %s is %d, answer : %s\n", i,Get_want[i],return_val, answer);
+	   if(strcmp(answer,"false") == 0){
+	   printf("\n\n");
+	   false_count++;
+	   }
+	   printf("\n");
+	   }
+	   }
+	 */
 
 	ClearLog(log);
 

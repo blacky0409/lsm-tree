@@ -18,6 +18,7 @@
 #define MAX_VALUE_SIZE 10
 #define MAX_PAGE 70000
 #define MAX_LOG_SIZE sizeof(SaveLog) * (2000)
+#define	MAX_THREAD 32
 
 typedef struct Node{
 	char key[STRING_SIZE];
@@ -86,10 +87,24 @@ typedef struct Save_Array{
 	int size;
 }SaveArray;
 
+typedef struct Element{
+	char key[STRING_SIZE];
+	int loc;
+}Element;
+
 typedef struct Queue{
-	int count;
-	int *array;
+	int front;
+	int rear;
+	int size;
+	Element **array;
+	pthread_mutex_t lock;
 } Queue;
+
+typedef struct TakeArg{
+	Queue *q;
+	ValueLog *log;
+	bool finish;
+}TakeArg;
 
 //heap.c
 Heap *CreateHeap(int size);
@@ -112,7 +127,7 @@ HashTable *CreateHashTable(int size);
 void AddToTable(HashTable *table, char * key);
 bool CheckTable(HashTable *table, char * key);
 void ClearTable(HashTable *table);
-
+void *get_log(void *argument);
 //lsm-tree.c
 LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr);
 void Merge(LevelNode *Current, int origin, int levelsize,
@@ -131,3 +146,11 @@ uint64_t ValueGet(ValueLog *log, int loc);
 void ClearLog(ValueLog *log);
 int ValueLog_sync(FILE *fp);
 void GC(LSMtree *lsm,ValueLog *log);
+
+//queue.c
+Queue *CreateQueue(int size);
+bool is_empty(Queue *queue);
+bool is_full(Queue *queue);
+Element * GetToQueue(Queue *queue);
+void AddToQueue(Queue *queue,char *key, int loc);
+void ClearQueue(Queue *queue);

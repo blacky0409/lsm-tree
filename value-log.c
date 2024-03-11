@@ -98,6 +98,8 @@ uint64_t ValueGet(ValueLog *log,int loc){
 		fp = log->fp1;
 	}
 
+	ValueLog_sync(fp);
+
 	if(fp == log->curhead && fp == log->curtail){
 		if(log->tail > loc || log->head < loc)
 			return value;

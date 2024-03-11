@@ -4,22 +4,28 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AddToQueue	queue.c	/^void AddToQueue(Queue *queue,char *key, int loc){$/;"	f
 AddToTable	hashtable.c	/^void AddToTable(HashTable *table, char * key){$/;"	f
 CheckTable	hashtable.c	/^bool CheckTable(HashTable *table, char * key){$/;"	f
 ClearHeap	heap.c	/^void ClearHeap(Heap *h){$/;"	f
 ClearLevel	level.c	/^void ClearLevel(Level *l){$/;"	f
 ClearLog	value-log.c	/^void ClearLog(ValueLog *log){$/;"	f
+ClearQueue	queue.c	/^void ClearQueue(Queue *queue){$/;"	f
 ClearTable	hashtable.c	/^void ClearTable(HashTable *table){$/;"	f
 CreateHashTable	hashtable.c	/^HashTable *CreateHashTable(int size){$/;"	f
 CreateHeap	heap.c	/^Heap *CreateHeap(int size){$/;"	f
 CreateLSM	lsm-tree.c	/^LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr){$/;"	f
 CreateLevel	level.c	/^Level *CreateLevel(int size, double fpr){$/;"	f
 CreateLog	value-log.c	/^ValueLog *CreateLog(int head, int tail){$/;"	f
+CreateQueue	queue.c	/^Queue *CreateQueue(int size){$/;"	f
 Delete	lsm-tree.c	/^void Delete(LSMtree *lsm, char * key){$/;"	f
 Delete_flag	lsm-tree.c	/^int Delete_flag(Node * sort, int size){$/;"	f
+Element	global.h	/^typedef struct Element{$/;"	s
+Element	global.h	/^}Element;$/;"	t	typeref:struct:Element
 GC	value-log.c	/^void GC(LSMtree *lsm,ValueLog *log){$/;"	f
 Get	lsm-tree.c	/^int Get(LSMtree *lsm, char * key, ValueLog *log){$/;"	f
 GetKeyPos	heap.c	/^int GetKeyPos(Heap *h, char * key){$/;"	f
+GetToQueue	queue.c	/^Element * GetToQueue(Queue *queue){$/;"	f
 Get_array	lsm-tree.c	/^SaveArray * Get_array(LSMtree *lsm, char * key){$/;"	f
 Get_loc	lsm-tree.c	/^Node * Get_loc(LSMtree *lsm, char * key){$/;"	f
 HashTable	global.h	/^typedef struct HashTable{$/;"	s
@@ -38,6 +44,9 @@ Level	global.h	/^typedef struct Level{$/;"	s
 Level	global.h	/^} Level;$/;"	t	typeref:struct:Level
 LevelNode	global.h	/^typedef struct LevelNode{$/;"	s
 LevelNode	global.h	/^} LevelNode;$/;"	t	typeref:struct:LevelNode
+MAX_LOG_SIZE	global.h	20;"	d
+MAX_PAGE	global.h	19;"	d
+MAX_THREAD	global.h	21;"	d
 MAX_VALUE_SIZE	global.h	18;"	d
 Merge	lsm-tree.c	/^void Merge(LevelNode *Current, int origin, int levelsize,$/;"	f
 Node	global.h	/^typedef struct Node{$/;"	s
@@ -47,7 +56,10 @@ PopRun	level.c	/^Run PopRun(Level *level){$/;"	f
 PrintNode	heap.c	/^void PrintNode(Heap *h, ValueLog *log){$/;"	f
 PrintStats	lsm-tree.c	/^void PrintStats(LSMtree *lsm, ValueLog *log){$/;"	f
 Put	lsm-tree.c	/^void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){$/;"	f
+Queue	global.h	/^typedef struct Queue{$/;"	s
+Queue	global.h	/^} Queue;$/;"	t	typeref:struct:Queue
 READ_LOG_SIZE	value-log.c	3;"	d	file:
+REPEAT	lsm-tree.c	4;"	d	file:
 Range	lsm-tree.c	/^void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){$/;"	f
 Run	global.h	/^typedef struct Run{$/;"	s
 Run	global.h	/^} Run;$/;"	t	typeref:struct:Run
@@ -57,11 +69,14 @@ SaveLog	global.h	/^} SaveLog;$/;"	t	typeref:struct:Save_Log
 Save_Array	global.h	/^typedef struct Save_Array{$/;"	s
 Save_Log	global.h	/^typedef struct Save_Log{$/;"	s
 T	global.h	/^	int T;$/;"	m	struct:LSMtree
+TakeArg	global.h	/^typedef struct TakeArg{$/;"	s
+TakeArg	global.h	/^}TakeArg;$/;"	t	typeref:struct:TakeArg
 ValueGet	value-log.c	/^uint64_t ValueGet(ValueLog *log,int loc){$/;"	f
 ValueLog	global.h	/^typedef struct ValueLog{$/;"	s
 ValueLog	global.h	/^} ValueLog;$/;"	t	typeref:struct:ValueLog
-ValueLog_sync	value-log.c	/^int ValueLog_sync(ValueLog *log) {$/;"	f
+ValueLog_sync	value-log.c	/^int ValueLog_sync(FILE *fp) {$/;"	f
 ValuePut	value-log.c	/^void ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value){$/;"	f
+array	global.h	/^	Element **array;$/;"	m	struct:Queue
 array	global.h	/^	Node * array;$/;"	m	struct:Save_Array
 array	global.h	/^	Node *array;$/;"	m	struct:Heap
 array	global.h	/^	Run *array;$/;"	m	struct:Level
@@ -72,25 +87,41 @@ count	global.h	/^	int count;$/;"	m	struct:HashTable
 count	global.h	/^	int count;$/;"	m	struct:Heap
 count	global.h	/^	int count;$/;"	m	struct:Level
 count	global.h	/^	int count;$/;"	m	struct:Run
+curhead	global.h	/^	FILE *curhead;$/;"	m	struct:ValueLog
+curtail	global.h	/^	FILE *curtail;$/;"	m	struct:ValueLog
 dead	lsm-tree.c	/^int dead = 0;$/;"	v
 end	global.h	/^	char end[STRING_SIZE];$/;"	m	struct:Run
 filename	global.h	/^	char filename[14];$/;"	m	struct:Save_Array
+finish	global.h	/^	bool finish;$/;"	m	struct:TakeArg
 flag	global.h	/^	bool flag;$/;"	m	struct:Node
-fp	global.h	/^	FILE *fp;$/;"	m	struct:ValueLog
+fp1	global.h	/^	FILE *fp1;$/;"	m	struct:ValueLog
+fp2	global.h	/^	FILE *fp2;$/;"	m	struct:ValueLog
 fpr1	global.h	/^	double fpr1;$/;"	m	struct:LSMtree
+front	global.h	/^	int front;$/;"	m	struct:Queue
+get_log	lsm-tree.c	/^void *get_log(void *argument){$/;"	f
 head	global.h	/^	int head;$/;"	m	struct:ValueLog
 index	global.h	/^	int index;$/;"	m	struct:Save_Array
+is_empty	queue.c	/^bool is_empty(Queue *queue){$/;"	f
+is_full	queue.c	/^bool is_full(Queue *queue){$/;"	f
+key	global.h	/^	char key[STRING_SIZE];$/;"	m	struct:Element
 key	global.h	/^	char key[STRING_SIZE];$/;"	m	struct:Node
 key	global.h	/^	char key[STRING_SIZE];$/;"	m	struct:Save_Log
 key_len	global.h	/^	int key_len;$/;"	m	struct:Save_Log
 level	global.h	/^	Level *level;$/;"	m	struct:LevelNode
+loc	global.h	/^	int loc;$/;"	m	struct:Element
 lock	global.h	/^	pthread_mutex_t lock;$/;"	m	struct:LSMtree
+lock	global.h	/^	pthread_mutex_t lock;$/;"	m	struct:Queue
+log	global.h	/^	ValueLog *log;$/;"	m	struct:TakeArg
 main	lsm-tree.c	/^int main(){$/;"	f
 next	global.h	/^	struct LevelNode *next;$/;"	m	struct:LevelNode	typeref:struct:LevelNode::LevelNode
 number	global.h	/^	int number;$/;"	m	struct:LevelNode
+q	global.h	/^	Queue *q;$/;"	m	struct:TakeArg
+rear	global.h	/^	int rear;$/;"	m	struct:Queue
 size	global.h	/^	int size;$/;"	m	struct:Heap
 size	global.h	/^	int size;$/;"	m	struct:Level
+size	global.h	/^	int size;$/;"	m	struct:Queue
 size	global.h	/^	int size;$/;"	m	struct:Run
+size	global.h	/^	int size;$/;"	m	struct:Save_Array
 start	global.h	/^	char start[STRING_SIZE];$/;"	m	struct:Run
 tail	global.h	/^	int tail;$/;"	m	struct:ValueLog
 targetfpr	global.h	/^	double targetfpr;$/;"	m	struct:Level
