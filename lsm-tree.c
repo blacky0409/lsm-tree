@@ -1,7 +1,7 @@
 #include "global.h"
 
 #define INT_MAX 2147483647
-#define REPEAT 12
+#define REPEAT 5
 
 int dead = 0;
 
@@ -543,6 +543,7 @@ SaveArray * Get_array(LSMtree *lsm, char * key){
 	int i;
 	SaveArray * save = (SaveArray *)malloc(sizeof(SaveArray));
 	save->index = -1;
+	save->number = -1;
 	strcpy(save->filename,"");
 	if(position != -1){
 		if(lsm->buffer->array[position].flag){
@@ -575,6 +576,7 @@ SaveArray * Get_array(LSMtree *lsm, char * key){
 							save->index = left;
 							strcpy(save->filename,filename);
 							save->size = exploringlevel->array[i].count;
+							save->number = current->number;
 							return save;
 						}else{
 							return NULL;
@@ -586,6 +588,7 @@ SaveArray * Get_array(LSMtree *lsm, char * key){
 							save->index=right;
 							strcpy(save->filename,filename);
 							save->size = exploringlevel->array[i].count;
+							save->number = current->number;
 							return save;
 						}else{
 							return NULL;
@@ -599,6 +602,7 @@ SaveArray * Get_array(LSMtree *lsm, char * key){
 								save->index = mid;
 								strcpy(save->filename,filename);
 								save->size = exploringlevel->array[i].count;
+								save->number = current->number;
 								return save;
 							}else{
 								return NULL;
@@ -879,7 +883,6 @@ int main(){
 	LSMtree *lsm = CreateLSM(4, 4, 0.0000001);
 	ValueLog *log = CreateLog(0,0);
 	srand((unsigned int) time(NULL));
-
 	char Get_want[1000][10];
 	int Get_re[1000];
 	int index = 0;
@@ -945,7 +948,7 @@ int main(){
 	PrintNode(lsm->buffer,log);
 	printf("\n");
 	PrintStats(lsm,log);
-	/*
+	
 	   for(int w=0; w < REPEAT; w++){
 	   GC(lsm,log);
 
@@ -961,7 +964,7 @@ int main(){
 	   printf("\n");
 	   }
 	   }
-	 */
+	 
 
 	ClearLog(log);
 

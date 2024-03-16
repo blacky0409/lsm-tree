@@ -64,14 +64,21 @@ typedef struct LSMtree{
 	double fpr1;
 	pthread_mutex_t lock;
 } LSMtree;
-
-typedef struct ValueLog{
+typedef struct FastMem{
 	FILE *fp1;
 	FILE *fp2;
 	int head;
 	int tail;
 	FILE *curhead;
 	FILE *curtail;
+}FastMem;
+typedef struct SlowMem{
+	FILE *fp;
+	int head;
+}SlowMem;
+typedef struct ValueLog{
+	FastMem *fast;
+	SlowMem *slow;
 } ValueLog;
 
 typedef struct Save_Log{
@@ -82,6 +89,7 @@ typedef struct Save_Log{
 
 typedef struct Save_Array{
 	Node * array;
+	int number;
 	int index;
 	char filename[14];
 	int size;
