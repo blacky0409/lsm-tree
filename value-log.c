@@ -2,7 +2,6 @@
 
 #define READ_LOG_SIZE 10
 #define LOC_SLOW "SlowMemory/"
-#define LOC_FAST "FastMemory/"
 #define TO_SLOW 5
 
 ValueLog *CreateLog(int head, int tail){

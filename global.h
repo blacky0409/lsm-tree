@@ -19,6 +19,8 @@
 #define MAX_PAGE 70000
 #define MAX_LOG_SIZE sizeof(SaveLog) * (2000)
 #define	MAX_THREAD 32
+#define LOC_FAST "FastMemory/"
+#define FILE_NAME 25
 
 typedef struct Node{
 	char key[STRING_SIZE];
@@ -91,7 +93,7 @@ typedef struct Save_Array{
 	Node * array;
 	int number;
 	int index;
-	char filename[14];
+	char filename[FILE_NAME];
 	int size;
 }SaveArray;
 

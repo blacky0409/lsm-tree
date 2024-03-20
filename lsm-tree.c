@@ -52,8 +52,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 		strcpy(end, sortedrun[runcount - 1].key);
 
 		runcount = Delete_flag(sortedrun, runcount);
-		char filename[14];
-		sprintf(filename, "data/L%dN%d", (origin+1), Current->next->level->count);
+		char filename[FILE_NAME];
+		sprintf(filename, LOC_FAST"data/L%dN%d", (origin+1), Current->next->level->count);
 		FILE *fp = fopen(filename, "wt");
 		if(fp == NULL){
 			fprintf(stderr, "Couldn't open %s: %s\n", filename, strerror(errno));	
@@ -123,8 +123,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 
 				runcount = Delete_flag(sortedrun, runcount);
 
-				char filename[14];
-				sprintf(filename, "data/L%dN%d", (origin+1), destlevel->count);
+				char filename[FILE_NAME];
+				sprintf(filename, LOC_FAST"data/L%dN%d", (origin+1), destlevel->count);
 				FILE *fp = fopen(filename, "wt");
 				fwrite(sortedrun, sizeof(Node), runcount, fp);
 				fclose(fp);
@@ -136,8 +136,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 					Node *newarray = (Node *) malloc((oldrun.count + runcount) * sizeof(Node));
 
 					Node *oldbump = (Node *) malloc(oldrun.count * sizeof(Node));
-					char name[14];
-					sprintf(name, "data/L%dN%d", Current->next->number, minpos);
+					char name[FILE_NAME];
+					sprintf(name, LOC_FAST"data/L%dN%d", Current->next->number, minpos);
 					FILE *fp = fopen(name, "rt");
 					fread(oldbump, sizeof(Node), oldrun.count, fp);
 					fclose(fp);
@@ -205,7 +205,7 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 
 					free(oldbump);
 
-					sprintf(name, "data/L%dN%d", Current->next->number, minpos);
+					sprintf(name, LOC_FAST"data/L%dN%d", Current->next->number, minpos);
 					fp = fopen(name, "wt");
 					fwrite(newarray, sizeof(Node), (c), fp);
 					fclose(fp);
@@ -219,8 +219,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 					Run pushtonext = PopRun(destlevel);
 					Node *topush = (Node *) malloc(pushtonext.count * sizeof(Node));
 
-					char name[15];
-					sprintf(name, "data/L%dN%d", Current->next->number, destlevel->count);
+					char name[FILE_NAME];
+					sprintf(name, LOC_FAST"data/L%dN%d", Current->next->number, destlevel->count);
 					FILE *fp = fopen(name, "rt");
 					fread(topush, sizeof(Node), pushtonext.count, fp);
 					fclose(fp);
@@ -234,7 +234,7 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 
 
 					Node *oldbump = (Node *) malloc(oldrun.count * sizeof(Node));
-					sprintf(name, "data/L%dN%d", Current->next->number, (destlevel->count - 1));
+					sprintf(name, LOC_FAST"data/L%dN%d", Current->next->number, (destlevel->count - 1));
 					fp = fopen(name, "rt");
 					fread(oldbump, sizeof(Node), oldrun.count, fp);
 					fclose(fp);
@@ -301,8 +301,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 					free(oldbump);
 
 					if ( c - oldrun.size > 0){
-						char newname[14];
-						sprintf(newname, "data/L%dN%d", Current->next->number, (destlevel->count - 1));
+						char newname[FILE_NAME];
+						sprintf(newname, LOC_FAST"data/L%dN%d", Current->next->number, (destlevel->count - 1));
 						fp = fopen(newname, "wt");
 						fwrite(newarray, sizeof(Node), oldrun.size, fp);
 						fclose(fp);
@@ -313,8 +313,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 
 						destlevel->array[destlevel->count - 1] = oldrun;
 
-						char filename[14];
-						sprintf(filename, "data/L%dN%d", (origin+1), destlevel->count);
+						char filename[FILE_NAME];
+						sprintf(filename, LOC_FAST"data/L%dN%d", (origin+1), destlevel->count);
 						FILE *fpw = fopen(filename, "wt");
 						fwrite(&newarray[oldrun.size], sizeof(Node), (c - oldrun.size), fpw);
 						fclose(fpw);
@@ -323,8 +323,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 								newarray[oldrun.size].key, newarray[c - 1].key);
 					}
 					else{
-						char newname[14];
-						sprintf(newname, "data/L%dN%d", Current->next->number, (destlevel->count - 1));
+						char newname[FILE_NAME];
+						sprintf(newname, LOC_FAST"data/L%dN%d", Current->next->number, (destlevel->count - 1));
 						fp = fopen(newname, "wt");
 						fwrite(newarray, sizeof(Node), c, fp);
 						fclose(fp);
@@ -351,8 +351,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 
 			oldcount = 0;
 			for(i = 0; i < j; i++){
-				char name[14];
-				sprintf(name, "data/L%dN%d", Current->next->number, overlap[i]);
+				char name[FILE_NAME];
+				sprintf(name, LOC_FAST"data/L%dN%d", Current->next->number, overlap[i]);
 				FILE *fp = fopen(name, "rt");
 				fread(&oldarray[oldcount], sizeof(Node), destlevel->array[overlap[i]].count, fp);
 				fclose(fp);
@@ -431,8 +431,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 				//중복된 값을 담고 있을 수 있으므로 담고 있기!
 				for(i = 0; (i < (numrun - 1)); i++){
 					Run oldrun = destlevel->array[overlap[i]];
-					char name[14];
-					sprintf(name, "data/L%dN%d", Current->next->number, overlap[i]);
+					char name[FILE_NAME];
+					sprintf(name, LOC_FAST"data/L%dN%d", Current->next->number, overlap[i]);
 					FILE *fp = fopen(name, "wt");
 					fwrite(&newarray[i * oldrun.size], sizeof(Node), oldrun.size, fp);
 					fclose(fp);
@@ -444,8 +444,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 					destlevel->array[overlap[i]] = oldrun;
 				}
 				Run oldrun = destlevel->array[overlap[numrun - 1]];
-				char name[14];
-				sprintf(name, "data/L%dN%d", Current->next->number, overlap[numrun - 1]);
+				char name[FILE_NAME];
+				sprintf(name, LOC_FAST"data/L%dN%d", Current->next->number, overlap[numrun - 1]);
 				FILE *fp = fopen(name, "wt");
 				fwrite(&newarray[(numrun - 1) * oldrun.size], sizeof(Node), (c - (numrun - 1) * oldrun.size), fp);
 				fclose(fp);
@@ -468,8 +468,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 			}else{
 				for(i = 0; i < j; i++){
 					Run oldrun = destlevel->array[overlap[i]];
-					char name[14];
-					sprintf(name, "data/L%dN%d", Current->next->number, overlap[i]);
+					char name[FILE_NAME];
+					sprintf(name, LOC_FAST"data/L%dN%d", Current->next->number, overlap[i]);
 					FILE *fp = fopen(name, "wt");
 					fwrite(&newarray[i * oldrun.size], sizeof(Node), oldrun.size, fp);
 					fclose(fp);
@@ -483,8 +483,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 				if(destlevel->count == destlevel->size){
 					Run pushtonext = PopRun(destlevel);
 					Node *topush = (Node *) malloc(pushtonext.count * sizeof(Node));
-					char name[14];
-					sprintf(name, "data/L%dN%d", Current->next->number, destlevel->count);
+					char name[FILE_NAME];
+					sprintf(name, LOC_FAST"data/L%dN%d", Current->next->number, destlevel->count);
 					FILE *fp = fopen(name, "rt");
 					fread(topush, sizeof(Node), pushtonext.count, fp);
 					fclose(fp);
@@ -492,8 +492,8 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 							pushtonext.count, (pushtonext.size * (levelsize + 1)), topush, (targetfpr * (levelsize + 1)));
 				}
 
-				char filename[14];
-				sprintf(filename, "data/L%dN%d", (origin+1), destlevel->count);
+				char filename[FILE_NAME];
+				sprintf(filename, LOC_FAST"data/L%dN%d", (origin+1), destlevel->count);
 				Run oldrun = destlevel->array[0];
 				FILE *fp = fopen(filename, "wt");
 				fwrite(&newarray[j * oldrun.size], sizeof(Node), (c - j*oldrun.size), fp);
@@ -561,8 +561,8 @@ SaveArray * Get_array(LSMtree *lsm, char * key){
 			for(i = 0; i < exploringlevel->count; i++){
 				if(strcmp(exploringlevel->array[i].start , key) <= 0 && strcmp(exploringlevel->array[i].end , key) >= 0){
 					Node *currentarray = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
-					char filename[14];
-					sprintf(filename, "data/L%dN%d", current->number, i);
+					char filename[FILE_NAME];
+					sprintf(filename, LOC_FAST"data/L%dN%d", current->number, i);
 					FILE *fp = fopen(filename, "rt");
 					fread(currentarray, sizeof(Node), exploringlevel->array[i].count, fp);
 					fclose(fp);
@@ -643,8 +643,8 @@ Node * Get_loc(LSMtree *lsm, char * key){
 			for(i = 0; i < exploringlevel->count; i++){
 				if(strcmp(exploringlevel->array[i].start , key) <= 0 && strcmp(exploringlevel->array[i].end , key) >= 0){
 					Node *currentarray = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
-					char filename[14];
-					sprintf(filename, "data/L%dN%d", current->number, i);
+					char filename[FILE_NAME];
+					sprintf(filename, LOC_FAST"data/L%dN%d", current->number, i);
 					FILE *fp = fopen(filename, "rt");
 					fread(currentarray, sizeof(Node), exploringlevel->array[i].count, fp);
 					fclose(fp);
@@ -707,8 +707,8 @@ void Delete(LSMtree *lsm, char * key){
 			for(i = 0; i < exploringlevel->count; i++){
 				if(strcmp(exploringlevel->array[i].start , key) <= 0 && strcmp(exploringlevel->array[i].end , key) >= 0){
 					Node *currentarray = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
-					char filename[14];
-					sprintf(filename, "data/L%dN%d", current->number, i);
+					char filename[FILE_NAME];
+					sprintf(filename, LOC_FAST"data/L%dN%d", current->number, i);
 					FILE *fp = fopen(filename, "rt");
 					fread(currentarray, sizeof(Node), exploringlevel->array[i].count, fp);
 					fclose(fp);
@@ -797,8 +797,8 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 		for(i = 0; i < currentlevelnode->level->count; i++){
 			if((strcmp(currentlevelnode->level->array[i].end , start) >= 0) || (strcmp(currentlevelnode->level->array[i].start , end) < 0)){
 				Node *currentarray = (Node *) malloc(currentlevelnode->level->array[i].count * sizeof(Node));
-				char filename[14];
-				sprintf(filename, "data/L%dN%d", levelnum, i);
+				char filename[FILE_NAME];
+				sprintf(filename, LOC_FAST"data/L%dN%d", levelnum, i);
 				FILE *fp = fopen(filename, "rt");
 				fread(currentarray, sizeof(Node), currentlevelnode->level->array[i].count, fp);
 				fclose(fp);
@@ -849,8 +849,8 @@ void PrintStats(LSMtree *lsm, ValueLog *log){
 		for(i = 0; i < currentlevelnode->level->count; i++){
 			currentcount += currentlevelnode->level->array[i].count;
 			Node *currentarray = (Node *) malloc(currentlevelnode->level->array[i].count * sizeof(Node));
-			char filename[14];
-			sprintf(filename, "data/L%dN%d", levelnum, i);
+			char filename[FILE_NAME];
+			sprintf(filename, LOC_FAST"data/L%dN%d", levelnum, i);
 			FILE *fp = fopen(filename, "rt");
 			fread(currentarray, sizeof(Node), currentlevelnode->level->array[i].count, fp);
 			fclose(fp);
