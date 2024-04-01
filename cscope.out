@@ -1,4 +1,4 @@
-cscope 15 $HOME/lsmtree               0000215541
+cscope 15 $HOME/lsmtree               0000224679
 	@global.h
 
 1 
@@ -26,412 +26,520 @@ cscope 15 $HOME/lsmtree               0000215541
 >
 
 7 
-	~<uni°d.h
->
-
-8 
 	~<√tdb.h
 >
 
-9 
+8 
 	~<√töë/ö.h
 >
 
-10 
+9 
 	~<sys/sockë.h
 >
 
-11 
+10 
 	~<sys/ty≥s.h
 >
 
-12 
+11 
 	~<time.h
 >
 
-13 
+12 
 	~<±hªad.h
 >
 
-14 
+13 
 	~<î∫o.h
 >
 
-15 
+14 
 	~<uni°d.h
 >
 
-17 
+15 
+	~<sys/mm™.h
+>
+
+16 
+	~<f˙é.h
+>
+
+18 
 	#STRING_SIZE
  10
 
 	)
 
-18 
+19 
 	#MAX_VALUE_SIZE
  10
 
 	)
 
-19 
-	#MAX_PAGE
- 70000
-
-	)
-
-20 
-	#MAX_LOG_SIZE
- (
-SaveLog
-Ë* (2000)
-
-	)
-
 21 
+	#MAX_PAGE
+ (4096)
+
+	)
+
+22 
+	#MAX_LOG_SIZE
+ (4096 * 2 )
+
+	)
+
+24 
+	#FAST_MAX_PAGE
+ (4096 * 2)
+
+	)
+
+25 
+	#MAPPING_LOG_SIZE
+ (4096)
+
+	)
+
+27 
+	#MAX_LOG_MAPPING
+ ((()(
+MAPPING_LOG_SIZE
+ / (
+SaveLog
+)Ë* (SaveLog))
+
+	)
+
+29 
+	#INDEX
+(
+X
+Ë()(X / 
+MAPPING_LOG_SIZE
+)
+
+	)
+
+30 
+	#OFFSET
+(
+X
+Ë((X % 
+MAPPING_LOG_SIZE
+Ë/ (
+SaveLog
+))
+
+	)
+
+33 
 	#MAX_THREAD
  32
 
 	)
 
-23 
+34 
+	#LOC_FAST
+ "Fa°Mem‹y/"
+
+	)
+
+35 
+	#FILE_NAME
+ 25
+
+	)
+
+37 
 	sNode
 {
 
-24 
+38 
 	mkey
 [
 STRING_SIZE
 ];
 
-25 
+39 
 	mvÆue
 ;
 
-26 
+40 
 boﬁ
  
 	mÊag
 ;
 
-27 } 
+41 } 
 	tNode
 ;
 
-29 
+43 
 	sHóp
 {
 
-30 
+44 
 Node
  *
 	m¨øy
 ;
 
-31 
+45 
 	mcou¡
 ;
 
-32 
+46 
 	msize
 ;
 
-33 } 
+47 } 
 	tHóp
 ;
 
-35 
+49 
 	sRun
 {
 
-36 
+50 
 	mcou¡
 ;
 
-37 
+51 
 	msize
 ;
 
-38 
+52 
 	m°¨t
 [
 STRING_SIZE
 ];
 
-39 
+53 
 	míd
 [
 STRING_SIZE
 ];
 
-40 } 
+54 } 
 	tRun
 ;
 
-42 
+56 
 	sLevñ
 {
 
-43 
+57 
 Run
  *
 	m¨øy
 ;
 
-44 
+58 
 	mcou¡
 ;
 
-45 
+59 
 	msize
 ;
 
-46 
+60 
 	mèrgëÂr
 ;
 
-47 } 
+61 } 
 	tLevñ
 ;
 
-49 
+63 
 	sLevñNode
 {
 
-50 
+64 
 Levñ
  *
 	mÀvñ
 ;
 
-51 
+65 
 	mnumbî
 ;
 
-52 
+66 
 LevñNode
  *
 	m√xt
 ;
 
-53 } 
+67 } 
 	tLevñNode
 ;
 
-55 
+69 
 	sHashTabÀ
 {
 
-56 
+70 
 	mcou¡
 ;
 
-57 **
+71 **
 	m¨øy
 ;
 
-58 } 
+72 } 
 	tHashTabÀ
 ;
 
-60 
+74 
 	sLSMåì
 {
 
-61 
+75 
 Hóp
  *
 	mbuf„r
 ;
 
-62 
+76 
 	mT
 ;
 
-63 
+77 
 LevñNode
  *
 	mL0
 ;
 
-64 
+78 
 	mÂr1
 ;
 
-65 
+79 
 ±hªad_muãx_t
  
 	mlock
 ;
 
-66 } 
+80 } 
 	tLSMåì
 ;
 
-68 
-	sVÆueLog
-{
-
-69 
-FILE
- *
-	mÂ1
-;
-
-70 
-FILE
- *
-	mÂ2
-;
-
-71 
-	mhód
-;
-
-72 
-	mèû
-;
-
-73 
-FILE
- *
-	mcurhód
-;
-
-74 
-FILE
- *
-	mcuπaû
-;
-
-75 } 
-	tVÆueLog
-;
-
-77 
+81 
 	sSave_Log
 {
 
-78 
+82 
 	mkey
 [
 STRING_SIZE
 ];
 
-79 
+83 
 	mkey_Àn
 ;
 
-80 
+84 
 	mvÆue
 ;
 
-81 } 
+85 } 
 	tSaveLog
 ;
 
-83 
+87 
+	sFa°Mem
+{
+
+88 
+	mÂ
+;
+
+89 
+	mhód
+;
+
+90 
+	mèû
+;
+
+91 
+	mcurhód
+;
+
+92 
+	mcur°¨t
+;
+
+93 
+SaveLog
+ * 
+	mm≠
+;
+
+94 }
+	tFa°Mem
+;
+
+96 
+	sSlowMem
+{
+
+97 
+	mÂ
+;
+
+98 
+	mhód
+;
+
+99 
+	mcurhód
+;
+
+100 
+	mcursize
+;
+
+101 
+SaveLog
+ * 
+	mm≠
+;
+
+102 }
+	tSlowMem
+;
+
+104 
+	sVÆueLog
+{
+
+105 
+Fa°Mem
+ *
+	mÁ°
+;
+
+106 
+SlowMem
+ *
+	m¶ow
+;
+
+107 } 
+	tVÆueLog
+;
+
+109 
 	sSave_Aºay
 {
 
-84 
+110 
 Node
  * 
 	m¨øy
 ;
 
-85 
+111 
+	mnumbî
+;
+
+112 
 	mödex
 ;
 
-86 
+113 
 	mfûíame
-[14];
+[
+FILE_NAME
+];
 
-87 
+114 
 	msize
 ;
 
-88 }
+115 }
 	tSaveAºay
 ;
 
-90 
+117 
 	sEÀmít
 {
 
-91 
+118 
 	mkey
 [
 STRING_SIZE
 ];
 
-92 
+119 
 	mloc
 ;
 
-93 }
+120 }
 	tEÀmít
 ;
 
-95 
+122 
 	sQueue
 {
 
-96 
+123 
 	m‰⁄t
 ;
 
-97 
+124 
 	mª¨
 ;
 
-98 
+125 
 	msize
 ;
 
-99 
+126 
 EÀmít
  **
 	m¨øy
 ;
 
-100 
+127 
 ±hªad_muãx_t
  
 	mlock
 ;
 
-101 } 
+128 } 
 	tQueue
 ;
 
-103 
+130 
 	sTakeArg
 {
 
-104 
+131 
 Queue
  *
 	mq
 ;
 
-105 
+132 
 VÆueLog
  *
 	mlog
 ;
 
-106 
+133 
 boﬁ
  
 	mföish
 ;
 
-107 }
+134 }
 	tTakeArg
 ;
 
-110 
+137 
 Hóp
  *
 Cª©eHóp
@@ -439,7 +547,7 @@ Cª©eHóp
 size
 );
 
-111 
+138 
 GëKeyPos
 (
 Hóp
@@ -449,7 +557,7 @@ h
 key
 );
 
-112 
+139 
 HópifyBŸtomT›
 (
 Hóp
@@ -459,7 +567,7 @@ h
 ödex
 );
 
-113 
+140 
 HópifyT›BŸtom
 (
 Hóp
@@ -469,7 +577,7 @@ h
 ∑ª¡
 );
 
-114 
+141 
 In£πKey
 (
 Hóp
@@ -485,7 +593,7 @@ boﬁ
 Êag
 );
 
-115 
+142 
 Node
  
 P›Mö
@@ -495,7 +603,7 @@ Hóp
 h
 );
 
-116 
+143 
 PrötNode
 (
 Hóp
@@ -507,7 +615,7 @@ VÆueLog
 log
 );
 
-117 
+144 
 CÀ¨Hóp
 (
 Hóp
@@ -515,7 +623,7 @@ Hóp
 h
 );
 
-120 
+147 
 Levñ
  *
 Cª©eLevñ
@@ -525,7 +633,7 @@ size
 Âr
 );
 
-121 
+148 
 In£πRun
 (
 Levñ
@@ -541,7 +649,7 @@ size
 íd
 );
 
-122 
+149 
 Run
  
 P›Run
@@ -551,7 +659,7 @@ Levñ
 Àvñ
 );
 
-123 
+150 
 CÀ¨Levñ
 (
 Levñ
@@ -559,7 +667,7 @@ Levñ
 l
 );
 
-126 
+153 
 HashTabÀ
  *
 Cª©eHashTabÀ
@@ -567,7 +675,7 @@ Cª©eHashTabÀ
 size
 );
 
-127 
+154 
 AddToTabÀ
 (
 HashTabÀ
@@ -577,7 +685,7 @@ HashTabÀ
 key
 );
 
-128 
+155 
 boﬁ
  
 CheckTabÀ
@@ -589,7 +697,7 @@ HashTabÀ
 key
 );
 
-129 
+156 
 CÀ¨TabÀ
 (
 HashTabÀ
@@ -597,13 +705,13 @@ HashTabÀ
 èbÀ
 );
 
-130 *
+157 *
 gë_log
 (*
 ¨gumít
 );
 
-132 
+159 
 LSMåì
  *
 Cª©eLSM
@@ -615,7 +723,7 @@ sizî©io
 Âr
 );
 
-133 
+160 
 Mîge
 (
 LevñNode
@@ -627,7 +735,7 @@ Cuºít
 Àvñsize
 ,
 
-134 
+161 
 runcou¡
 , 
 runsize
@@ -639,7 +747,7 @@ s‹ãdrun
 èrgëÂr
 );
 
-135 
+162 
 Put
 (
 LSMåì
@@ -659,7 +767,7 @@ VÆueLog
 log
 );
 
-136 
+163 
 Node
  * 
 Gë_loc
@@ -671,7 +779,7 @@ lsm
 key
 );
 
-137 
+164 
 R™ge
 (
 LSMåì
@@ -687,7 +795,7 @@ VÆueLog
 log
 );
 
-138 
+165 
 PrötSèts
 (
 LSMåì
@@ -699,7 +807,7 @@ VÆueLog
 log
 );
 
-139 
+166 
 Gë
 (
 LSMåì
@@ -713,7 +821,7 @@ VÆueLog
 log
 );
 
-140 
+167 
 SaveAºay
  * 
 Gë_¨øy
@@ -725,7 +833,7 @@ lsm
 key
 );
 
-143 
+170 
 VÆueLog
  *
 Cª©eLog
@@ -735,7 +843,7 @@ hód
 èû
 );
 
-144 
+171 
 VÆuePut
 (
 VÆueLog
@@ -753,7 +861,7 @@ key_Àn
 vÆue
 );
 
-145 
+172 
 uöt64_t
  
 VÆueGë
@@ -765,7 +873,7 @@ log
 loc
 );
 
-146 
+173 
 CÀ¨Log
 (
 VÆueLog
@@ -773,15 +881,7 @@ VÆueLog
 log
 );
 
-147 
-VÆueLog_sync
-(
-FILE
- *
-Â
-);
-
-148 
+174 
 GC
 (
 LSMåì
@@ -793,7 +893,7 @@ VÆueLog
 log
 );
 
-151 
+177 
 Queue
  *
 Cª©eQueue
@@ -801,7 +901,7 @@ Cª©eQueue
 size
 );
 
-152 
+178 
 boﬁ
  
 is_em±y
@@ -811,7 +911,7 @@ Queue
 queue
 );
 
-153 
+179 
 boﬁ
  
 is_fuŒ
@@ -821,7 +921,7 @@ Queue
 queue
 );
 
-154 
+180 
 EÀmít
  * 
 GëToQueue
@@ -831,7 +931,7 @@ Queue
 queue
 );
 
-155 
+181 
 AddToQueue
 (
 Queue
@@ -843,7 +943,7 @@ key
 loc
 );
 
-156 
+182 
 CÀ¨Queue
 (
 Queue
@@ -1843,7 +1943,7 @@ l
 
 4 
 	#REPEAT
- 12
+ 5
 
 	)
 
@@ -2143,13 +2243,17 @@ s‹ãdrun
 
 55 
 fûíame
-[14];
+[
+FILE_NAME
+];
 
 56 
 	`•rötf
 (
 fûíame
-, "d©a/L%dN%d", (
+, 
+LOC_FAST
+"d©a/L%dN%d", (
 ‹igö
 +1), 
 Cuºít
@@ -2557,13 +2661,17 @@ s‹ãdrun
 
 126 
 fûíame
-[14];
+[
+FILE_NAME
+];
 
 127 
 	`•rötf
 (
 fûíame
-, "d©a/L%dN%d", (
+, 
+LOC_FAST
+"d©a/L%dN%d", (
 ‹igö
 +1), 
 de°Àvñ
@@ -2657,13 +2765,17 @@ cou¡
 
 139 
 «me
-[14];
+[
+FILE_NAME
+];
 
 140 
 	`•rötf
 (
 «me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -2967,7 +3079,9 @@ b
 	`•rötf
 (
 «me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -3077,13 +3191,17 @@ cou¡
 
 222 
 «me
-[15];
+[
+FILE_NAME
+];
 
 223 
 	`•rötf
 (
 «me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -3193,7 +3311,9 @@ cou¡
 	`•rötf
 (
 «me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -3503,13 +3623,17 @@ size
 
 304 
 √w«me
-[14];
+[
+FILE_NAME
+];
 
 305 
 	`•rötf
 (
 √w«me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -3595,13 +3719,17 @@ cou¡
 
 316 
 fûíame
-[14];
+[
+FILE_NAME
+];
 
 317 
 	`•rötf
 (
 fûíame
-, "d©a/L%dN%d", (
+, 
+LOC_FAST
+"d©a/L%dN%d", (
 ‹igö
 +1), 
 de°Àvñ
@@ -3667,13 +3795,17 @@ c
 
 326 
 √w«me
-[14];
+[
+FILE_NAME
+];
 
 327 
 	`•rötf
 (
 √w«me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -3807,13 +3939,17 @@ j
 
 354 
 «me
-[14];
+[
+FILE_NAME
+];
 
 355 
 	`•rötf
 (
 «me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -4217,13 +4353,17 @@ i
 
 434 
 «me
-[14];
+[
+FILE_NAME
+];
 
 435 
 	`•rötf
 (
 «me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -4335,13 +4475,17 @@ numrun
 
 447 
 «me
-[14];
+[
+FILE_NAME
+];
 
 448 
 	`•rötf
 (
 «me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -4523,13 +4667,17 @@ i
 
 471 
 «me
-[14];
+[
+FILE_NAME
+];
 
 472 
 	`•rötf
 (
 «me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -4657,13 +4805,17 @@ cou¡
 
 486 
 «me
-[14];
+[
+FILE_NAME
+];
 
 487 
 	`•rötf
 (
 «me
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Cuºít
 ->
 √xt
@@ -4733,13 +4885,17 @@ t›ush
 
 495 
 fûíame
-[14];
+[
+FILE_NAME
+];
 
 496 
 	`•rötf
 (
 fûíame
-, "d©a/L%dN%d", (
+, 
+LOC_FAST
+"d©a/L%dN%d", (
 ‹igö
 +1), 
 de°Àvñ
@@ -5096,6 +5252,12 @@ SaveAºay
  = -1;
 
 546 
+ßve
+->
+numbî
+ = -1;
+
+547 
 	`°r˝y
 (
 ßve
@@ -5103,11 +5265,11 @@ SaveAºay
 fûíame
 ,"");
 
-547 if(
+548 if(
 posôi⁄
  != -1){
 
-548 if(
+549 if(
 lsm
 ->
 buf„r
@@ -5119,7 +5281,7 @@ posôi⁄
 Êag
 ){
 
-549 
+550 
 ßve
 ->
 ¨øy
@@ -5129,7 +5291,7 @@ Node
 	`mÆloc
 (4*(Node));
 
-550 
+551 
 	`mem˝y
 (
 ßve
@@ -5143,7 +5305,7 @@ buf„r
 Node
 ));
 
-551 
+552 
 ßve
 ->
 ödex
@@ -5151,17 +5313,17 @@ Node
 posôi⁄
 ;
 
-552 
+553 
 ßve
 ->
 size
 =4;
 
-553  
+554  
 ßve
 ;
 
-556 
+557 
 LevñNode
  *
 cuºít
@@ -5173,7 +5335,7 @@ L0
 √xt
 ;
 
-557 
+558 
 boﬁ
  
 föd
@@ -5181,13 +5343,13 @@ föd
 Ál£
 ;
 
-558 
+559 
 cuºít
  !
 NULL
 ){
 
-559 
+560 
 Levñ
  *
 ex∂‹ögÀvñ
@@ -5197,7 +5359,7 @@ cuºít
 Àvñ
 ;
 
-560 
+561 
 i
  = 0; i < 
 ex∂‹ögÀvñ
@@ -5205,7 +5367,7 @@ ex∂‹ögÀvñ
 cou¡
 ; i++){
 
-561 if(
+562 if(
 	`°rcmp
 (
 ex∂‹ögÀvñ
@@ -5221,7 +5383,7 @@ key
 íd
  , key) >= 0){
 
-562 
+563 
 Node
  *
 cuºíèºay
@@ -5237,15 +5399,19 @@ i
 cou¡
  * (Node));
 
-563 
+564 
 fûíame
-[14];
+[
+FILE_NAME
+];
 
-564 
+565 
 	`•rötf
 (
 fûíame
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 cuºít
 ->
 numbî
@@ -5253,7 +5419,7 @@ numbî
 i
 );
 
-565 
+566 
 FILE
  *
 Â
@@ -5263,7 +5429,7 @@ FILE
 fûíame
 , "rt");
 
-566 
+567 
 	`‰ód
 (
 cuºíèºay
@@ -5281,17 +5447,17 @@ cou¡
 Â
 );
 
-567 
+568 
 	`f˛o£
 (
 Â
 );
 
-568 
+569 
 À·
  = 0;
 
-569 
+570 
 right
  = 
 ex∂‹ögÀvñ
@@ -5303,7 +5469,7 @@ i
 cou¡
  - 1;
 
-570 
+571 
 mid
  = (
 À·
@@ -5311,7 +5477,7 @@ mid
 right
 ) / 2;
 
-571 if(
+572 if(
 	`°rcmp
 (
 key
@@ -5321,7 +5487,7 @@ cuºíèºay
 À·
 ].key) == 0){
 
-572 if(
+573 if(
 cuºíèºay
 [
 À·
@@ -5329,7 +5495,7 @@ cuºíèºay
 Êag
 ){
 
-573 
+574 
 ßve
 ->
 ¨øy
@@ -5345,7 +5511,7 @@ i
 cou¡
  * (Node));
 
-574 
+575 
 	`mem˝y
 (
 ßve
@@ -5363,7 +5529,7 @@ cou¡
 Node
 ));
 
-575 
+576 
 ßve
 ->
 ödex
@@ -5371,7 +5537,7 @@ Node
 À·
 ;
 
-576 
+577 
 	`°r˝y
 (
 ßve
@@ -5379,7 +5545,7 @@ Node
 fûíame
 ,filename);
 
-577 
+578 
 ßve
 ->
 size
@@ -5393,15 +5559,23 @@ i
 cou¡
 ;
 
-578  
+579 
+ßve
+->
+numbî
+ = 
+cuºít
+->number;
+
+580  
 ßve
 ;
 
-580  
+582  
 NULL
 ;
 
-582 }if(
+584 }if(
 	`°rcmp
 –
 key
@@ -5411,7 +5585,7 @@ cuºíèºay
 right
 ].key) == 0){
 
-583 if(
+585 if(
 cuºíèºay
 [
 right
@@ -5419,7 +5593,7 @@ right
 Êag
 ){
 
-584 
+586 
 ßve
 ->
 ¨øy
@@ -5435,7 +5609,7 @@ i
 cou¡
  * (Node));
 
-585 
+587 
 	`mem˝y
 (
 ßve
@@ -5453,7 +5627,7 @@ cou¡
 Node
 ));
 
-586 
+588 
 ßve
 ->
 ödex
@@ -5461,7 +5635,7 @@ Node
 right
 ;
 
-587 
+589 
 	`°r˝y
 (
 ßve
@@ -5469,7 +5643,7 @@ right
 fûíame
 ,filename);
 
-588 
+590 
 ßve
 ->
 size
@@ -5483,21 +5657,29 @@ i
 cou¡
 ;
 
-589  
+591 
+ßve
+->
+numbî
+ = 
+cuºít
+->number;
+
+592  
 ßve
 ;
 
-591  
+594  
 NULL
 ;
 
-594 
+597 
 À·
  !
 mid
 ){
 
-595 if(
+598 if(
 	`°rcmp
 –
 key
@@ -5507,7 +5689,7 @@ cuºíèºay
 mid
 ].key) == 0){
 
-596 if(
+599 if(
 cuºíèºay
 [
 mid
@@ -5515,7 +5697,7 @@ mid
 Êag
 ){
 
-597 
+600 
 ßve
 ->
 ¨øy
@@ -5531,7 +5713,7 @@ i
 cou¡
  * (Node));
 
-598 
+601 
 	`mem˝y
 (
 ßve
@@ -5549,7 +5731,7 @@ cou¡
 Node
 ));
 
-599 
+602 
 ßve
 ->
 ödex
@@ -5557,7 +5739,7 @@ Node
 mid
 ;
 
-600 
+603 
 	`°r˝y
 (
 ßve
@@ -5565,7 +5747,7 @@ mid
 fûíame
 ,filename);
 
-601 
+604 
 ßve
 ->
 size
@@ -5579,15 +5761,23 @@ i
 cou¡
 ;
 
-602  
+605 
+ßve
+->
+numbî
+ = 
+cuºít
+->number;
+
+606  
 ßve
 ;
 
-604  
+608  
 NULL
 ;
 
-606 }if(
+610 }if(
 	`°rcmp
  ( 
 key
@@ -5597,27 +5787,13 @@ cuºíèºay
 mid
 ].key) > 0){
 
-607 
-À·
- = 
-mid
-;
-
-608 
-mid
- = (
-À·
- + 
-right
-) / 2;
-
-610 
-right
- = 
-mid
-;
-
 611 
+À·
+ = 
+mid
+;
+
+612 
 mid
  = (
 À·
@@ -5626,30 +5802,44 @@ right
 ) / 2;
 
 614 
+right
+ = 
+mid
+;
+
+615 
+mid
+ = (
+À·
+ + 
+right
+) / 2;
+
+618 
 	`‰ì
 (
 cuºíèºay
 );
 
-618 if(
+622 if(
 föd
 ){
 
-621 
+625 
 cuºít
  = cuºít->
 √xt
 ;
 
-624  
+628  
 NULL
 ;
 
-625 
+629 
 	}
 }
 
-627 
+631 
 Node
  * 
 	$Gë_loc
@@ -5661,7 +5851,7 @@ lsm
 key
 ){
 
-628 
+632 
 posôi⁄
  = 
 	`GëKeyPos
@@ -5673,15 +5863,15 @@ buf„r
 key
 );
 
-629 
+633 
 i
 ;
 
-630 if(
+634 if(
 posôi⁄
  != -1){
 
-631 if(
+635 if(
 lsm
 ->
 buf„r
@@ -5693,7 +5883,7 @@ posôi⁄
 Êag
 ){
 
-632  &
+636  &
 lsm
 ->
 buf„r
@@ -5703,7 +5893,7 @@ buf„r
 posôi⁄
 ];
 
-635 
+639 
 LevñNode
  *
 cuºít
@@ -5715,7 +5905,7 @@ L0
 √xt
 ;
 
-636 
+640 
 boﬁ
  
 föd
@@ -5723,13 +5913,13 @@ föd
 Ál£
 ;
 
-637 
+641 
 cuºít
  !
 NULL
 ){
 
-638 
+642 
 Levñ
  *
 ex∂‹ögÀvñ
@@ -5739,7 +5929,7 @@ cuºít
 Àvñ
 ;
 
-639 
+643 
 i
  = 0; i < 
 ex∂‹ögÀvñ
@@ -5747,7 +5937,7 @@ ex∂‹ögÀvñ
 cou¡
 ; i++){
 
-640 if(
+644 if(
 	`°rcmp
 (
 ex∂‹ögÀvñ
@@ -5763,7 +5953,7 @@ key
 íd
  , key) >= 0){
 
-641 
+645 
 Node
  *
 cuºíèºay
@@ -5779,15 +5969,19 @@ i
 cou¡
  * (Node));
 
-642 
+646 
 fûíame
-[14];
+[
+FILE_NAME
+];
 
-643 
+647 
 	`•rötf
 (
 fûíame
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 cuºít
 ->
 numbî
@@ -5795,7 +5989,7 @@ numbî
 i
 );
 
-644 
+648 
 FILE
  *
 Â
@@ -5805,7 +5999,7 @@ FILE
 fûíame
 , "rt");
 
-645 
+649 
 	`‰ód
 (
 cuºíèºay
@@ -5823,17 +6017,17 @@ cou¡
 Â
 );
 
-646 
+650 
 	`f˛o£
 (
 Â
 );
 
-647 
+651 
 À·
  = 0;
 
-648 
+652 
 right
  = 
 ex∂‹ögÀvñ
@@ -5845,7 +6039,7 @@ i
 cou¡
  - 1;
 
-649 
+653 
 mid
  = (
 À·
@@ -5853,7 +6047,7 @@ mid
 right
 ) / 2;
 
-650 if(
+654 if(
 	`°rcmp
 (
 key
@@ -5863,7 +6057,7 @@ cuºíèºay
 À·
 ].key) == 0){
 
-651 if(
+655 if(
 cuºíèºay
 [
 À·
@@ -5871,17 +6065,17 @@ cuºíèºay
 Êag
 ){
 
-652  &
+656  &
 cuºíèºay
 [
 À·
 ];
 
-654  
+658  
 NULL
 ;
 
-656 }if(
+660 }if(
 	`°rcmp
 –
 key
@@ -5891,7 +6085,7 @@ cuºíèºay
 right
 ].key) == 0){
 
-657 if(
+661 if(
 cuºíèºay
 [
 right
@@ -5899,23 +6093,23 @@ right
 Êag
 ){
 
-658  &
+662  &
 cuºíèºay
 [
 right
 ];
 
-660  
+664  
 NULL
 ;
 
-663 
+667 
 À·
  !
 mid
 ){
 
-664 if(
+668 if(
 	`°rcmp
 –
 key
@@ -5925,7 +6119,7 @@ cuºíèºay
 mid
 ].key) == 0){
 
-665 if(
+669 if(
 cuºíèºay
 [
 mid
@@ -5933,17 +6127,17 @@ mid
 Êag
 ){
 
-666  &
+670  &
 cuºíèºay
 [
 mid
 ];
 
-668  
+672  
 NULL
 ;
 
-670 }if(
+674 }if(
 	`°rcmp
  ( 
 key
@@ -5953,27 +6147,13 @@ cuºíèºay
 mid
 ].key) > 0){
 
-671 
-À·
- = 
-mid
-;
-
-672 
-mid
- = (
-À·
- + 
-right
-) / 2;
-
-674 
-right
- = 
-mid
-;
-
 675 
+À·
+ = 
+mid
+;
+
+676 
 mid
  = (
 À·
@@ -5982,30 +6162,44 @@ right
 ) / 2;
 
 678 
+right
+ = 
+mid
+;
+
+679 
+mid
+ = (
+À·
+ + 
+right
+) / 2;
+
+682 
 	`‰ì
 (
 cuºíèºay
 );
 
-682 if(
+686 if(
 föd
 ){
 
-685 
+689 
 cuºít
  = cuºít->
 √xt
 ;
 
-688  
+692  
 NULL
 ;
 
-689 
+693 
 	}
 }
 
-691 
+695 
 	$Dñëe
 (
 LSMåì
@@ -6015,7 +6209,7 @@ lsm
 key
 ){
 
-692 
+696 
 posôi⁄
  = 
 	`GëKeyPos
@@ -6027,15 +6221,15 @@ buf„r
 key
 );
 
-693 
+697 
 i
 ;
 
-694 if(
+698 if(
 posôi⁄
  != -1){
 
-695 if(
+699 if(
 lsm
 ->
 buf„r
@@ -6047,7 +6241,7 @@ posôi⁄
 Êag
 ){
 
-696 
+700 
 lsm
 ->
 buf„r
@@ -6061,7 +6255,7 @@ posôi⁄
 Ál£
 ;
 
-700 
+704 
 LevñNode
  *
 cuºít
@@ -6073,13 +6267,13 @@ L0
 √xt
 ;
 
-701 
+705 
 cuºít
  !
 NULL
 ){
 
-702 
+706 
 Levñ
  *
 ex∂‹ögÀvñ
@@ -6089,7 +6283,7 @@ cuºít
 Àvñ
 ;
 
-703 
+707 
 i
  = 0; i < 
 ex∂‹ögÀvñ
@@ -6097,7 +6291,7 @@ ex∂‹ögÀvñ
 cou¡
 ; i++){
 
-704 if(
+708 if(
 	`°rcmp
 (
 ex∂‹ögÀvñ
@@ -6113,7 +6307,7 @@ key
 íd
  , key) >= 0){
 
-705 
+709 
 Node
  *
 cuºíèºay
@@ -6129,15 +6323,19 @@ i
 cou¡
  * (Node));
 
-706 
+710 
 fûíame
-[14];
+[
+FILE_NAME
+];
 
-707 
+711 
 	`•rötf
 (
 fûíame
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 cuºít
 ->
 numbî
@@ -6145,7 +6343,7 @@ numbî
 i
 );
 
-708 
+712 
 FILE
  *
 Â
@@ -6155,7 +6353,7 @@ FILE
 fûíame
 , "rt");
 
-709 
+713 
 	`‰ód
 (
 cuºíèºay
@@ -6173,17 +6371,17 @@ cou¡
 Â
 );
 
-710 
+714 
 	`f˛o£
 (
 Â
 );
 
-711 
+715 
 À·
  = 0;
 
-712 
+716 
 right
  = 
 ex∂‹ögÀvñ
@@ -6195,7 +6393,7 @@ i
 cou¡
  - 1;
 
-713 
+717 
 mid
  = (
 À·
@@ -6203,7 +6401,7 @@ mid
 right
 ) / 2;
 
-714 if(
+718 if(
 	`°rcmp
 (
 key
@@ -6213,38 +6411,10 @@ cuºíèºay
 À·
 ].key) == 0){
 
-715 if(
-cuºíèºay
-[
-À·
-].
-Êag
-){
-
-716 
-cuºíèºay
-[
-À·
-].
-Êag
- = 
-Ál£
-;
-
-718 }if(
-	`°rcmp
-–
-key
- , 
-cuºíèºay
-[
-right
-].key) == 0){
-
 719 if(
 cuºíèºay
 [
-right
+À·
 ].
 Êag
 ){
@@ -6252,6 +6422,34 @@ right
 720 
 cuºíèºay
 [
+À·
+].
+Êag
+ = 
+Ál£
+;
+
+722 }if(
+	`°rcmp
+–
+key
+ , 
+cuºíèºay
+[
+right
+].key) == 0){
+
+723 if(
+cuºíèºay
+[
+right
+].
+Êag
+){
+
+724 
+cuºíèºay
+[
 right
 ].
 Êag
@@ -6259,13 +6457,13 @@ right
 Ál£
 ;
 
-723 
+727 
 À·
  !
 mid
 ){
 
-724 if(
+728 if(
 	`°rcmp
 –
 key
@@ -6275,7 +6473,7 @@ cuºíèºay
 mid
 ].key) == 0){
 
-725 if(
+729 if(
 cuºíèºay
 [
 mid
@@ -6283,7 +6481,7 @@ mid
 Êag
 ){
 
-726 
+730 
 cuºíèºay
 [
 mid
@@ -6293,7 +6491,7 @@ mid
 Ál£
 ;
 
-728 }if(
+732 }if(
 	`°rcmp
  ( 
 key
@@ -6303,27 +6501,13 @@ cuºíèºay
 mid
 ].key) > 0){
 
-729 
-À·
- = 
-mid
-;
-
-730 
-mid
- = (
-À·
- + 
-right
-) / 2;
-
-732 
-right
- = 
-mid
-;
-
 733 
+À·
+ = 
+mid
+;
+
+734 
 mid
  = (
 À·
@@ -6332,28 +6516,42 @@ right
 ) / 2;
 
 736 
+right
+ = 
+mid
+;
+
+737 
+mid
+ = (
+À·
+ + 
+right
+) / 2;
+
+740 
 	`‰ì
 (
 cuºíèºay
 );
 
-740 
+744 
 cuºít
  = cuºít->
 √xt
 ;
 
-744 
+748 
 	}
 }
 
-745 *
+749 *
 	$gë_log
 (*
 ¨gumít
 ){
 
-746 
+750 
 TakeArg
  * 
 ¨g
@@ -6361,7 +6559,7 @@ TakeArg
 ¨gumít
 ;
 
-747 !
+751 !
 	`is_em±y
 (
 ¨g
@@ -6371,7 +6569,7 @@ q
 föish
 ){
 
-748 
+752 
 EÀmít
  *
 ñemít
@@ -6383,13 +6581,13 @@ EÀmít
 q
 );
 
-749 if(
+753 if(
 ñemít
  !
 NULL
 )
 
-750 
+754 
 	`¥ötf
 ("%s:%ld ",
 ñemít
@@ -6405,15 +6603,15 @@ log
 loc
 ));
 
-752  
+756  
 NULL
 ;
 
-753 
+757 
 	}
 }
 
-755 
+759 
 	$R™ge
 (
 LSMåì
@@ -6429,23 +6627,23 @@ VÆueLog
 log
 ){
 
-756 
+760 
 	`¥ötf
 ("startÑange\n");
 
-757 
+761 
 i
 ;
 
-758 
+762 
 j
 ;
 
-759 
+763 
 föd
  = 0;
 
-760 
+764 
 HashTabÀ
  *
 èbÀ
@@ -6453,7 +6651,7 @@ HashTabÀ
 	`Cª©eHashTabÀ
 (128);
 
-761 
+765 
 Queue
  *
 q
@@ -6461,7 +6659,7 @@ q
 	`Cª©eQueue
 (128);
 
-762 
+766 
 ±hªad_t
  
 thªad
@@ -6469,11 +6667,11 @@ thªad
 MAX_THREAD
 ];
 
-763 *
+767 *
 ªsu…
 ;
 
-765 
+769 
 TakeArg
  *
 ¨g
@@ -6481,19 +6679,19 @@ TakeArg
 	`mÆloc
 ((TakeArg));
 
-766 
+770 
 ¨g
 ->
 q
  = q;
 
-767 
+771 
 ¨g
 ->
 log
  =Üog;
 
-768 
+772 
 ¨g
 ->
 föish
@@ -6501,13 +6699,13 @@ föish
 Ál£
 ;
 
-770 
+774 
 i
  = 0 ; i < ((
 thªad
 ) / (thread[0])); i++){
 
-771 
+775 
 r
  = 
 	`±hªad_¸óã
@@ -6523,15 +6721,15 @@ gë_log
 ¨g
 );
 
-772 if(
+776 if(
 r
  == -1){
 
-773 
+777 
 	`¥ötf
 ("falut createÅhread\n");
 
-778 
+782 
 	`¥ötf
 ("øngêquîyÑesu… f‹ [%s, %s] i†", 
 °¨t
@@ -6539,7 +6737,7 @@ r
 íd
 );
 
-779 
+783 
 i
  = 0; i < 
 lsm
@@ -6549,7 +6747,7 @@ buf„r
 cou¡
 ; i++){
 
-780 if((
+784 if((
 	`°rcmp
 (
 lsm
@@ -6567,7 +6765,7 @@ key
 íd
 )) < 0){
 
-781 if(!
+785 if(!
 	`CheckTabÀ
 (
 èbÀ
@@ -6583,11 +6781,11 @@ i
 key
 )){
 
-782 
+786 
 föd
  += 1;
 
-783 
+787 
 	`AddToTabÀ
 (
 èbÀ
@@ -6603,7 +6801,7 @@ i
 key
 );
 
-784 if(
+788 if(
 lsm
 ->
 buf„r
@@ -6615,7 +6813,7 @@ i
 Êag
 ){
 
-785 
+789 
 	`AddToQueue
 (
 q
@@ -6633,7 +6831,7 @@ key
 vÆue
 );
 
-790 
+794 
 LevñNode
  *
 cuºíéevñnode
@@ -6645,13 +6843,13 @@ L0
 √xt
 ;
 
-791 
+795 
 cuºíéevñnode
  !
 NULL
 ){
 
-792 
+796 
 Àvñnum
  = 
 cuºíéevñnode
@@ -6659,7 +6857,7 @@ cuºíéevñnode
 numbî
 ;
 
-793 
+797 
 i
  = 0; i < 
 cuºíéevñnode
@@ -6669,7 +6867,7 @@ cuºíéevñnode
 cou¡
 ; i++){
 
-794 if((
+798 if((
 	`°rcmp
 (
 cuºíéevñnode
@@ -6685,7 +6883,7 @@ i
 °¨t
 ) >= 0) || (strcmp(currentlevelnode->level->array[i].start ,Énd) < 0)){
 
-795 
+799 
 Node
  *
 cuºíèºay
@@ -6703,21 +6901,25 @@ i
 cou¡
  * (Node));
 
-796 
+800 
 fûíame
-[14];
+[
+FILE_NAME
+];
 
-797 
+801 
 	`•rötf
 (
 fûíame
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Àvñnum
 , 
 i
 );
 
-798 
+802 
 FILE
  *
 Â
@@ -6727,7 +6929,7 @@ FILE
 fûíame
 , "rt");
 
-799 
+803 
 	`‰ód
 (
 cuºíèºay
@@ -6747,13 +6949,13 @@ cou¡
 Â
 );
 
-800 
+804 
 	`f˛o£
 (
 Â
 );
 
-801 
+805 
 j
  = 0; j < 
 cuºíéevñnode
@@ -6767,7 +6969,7 @@ i
 cou¡
 ; j++){
 
-802 if(
+806 if(
 	`°rcmp
 (
 cuºíèºay
@@ -6779,7 +6981,7 @@ key
 íd
 ) >= 0){
 
-804 }if(
+808 }if(
 	`°rcmp
 (
 cuºíèºay
@@ -6791,7 +6993,7 @@ key
 °¨t
 ) >= 0){
 
-805 if(!
+809 if(!
 	`CheckTabÀ
 (
 èbÀ
@@ -6803,11 +7005,11 @@ j
 key
 )){
 
-806 
+810 
 föd
  += 1;
 
-807 
+811 
 	`AddToTabÀ
 (
 èbÀ
@@ -6819,7 +7021,7 @@ j
 key
 );
 
-808 if(
+812 if(
 cuºíèºay
 [
 j
@@ -6827,7 +7029,7 @@ j
 Êag
 ){
 
-809 
+813 
 	`AddToQueue
 (
 q
@@ -6841,19 +7043,19 @@ key
 vÆue
 );
 
-814 
+818 
 	`‰ì
 (
 cuºíèºay
 );
 
-817 
+821 
 cuºíéevñnode
  = cuºíéevñnode->
 √xt
 ;
 
-819 
+823 
 ¨g
 ->
 föish
@@ -6861,13 +7063,13 @@ föish
 åue
 ;
 
-820 
+824 
 i
  = 0; i < ((
 thªad
 ) / (thread[0])); i++) {
 
-821 
+825 
 r
  = 
 	`±hªad_joö
@@ -6879,37 +7081,41 @@ i
 ªsu…
 );
 
-822 if(
+826 if(
 r
  == -1){
 
-823 
+827 
 	`¥ötf
 ("falut waitÉxitÅhread\n");
 
-827 
+831 
+	`¥ötf
+("\n\n");
+
+832 
 	`CÀ¨Queue
 (
 q
 );
 
-828 
+833 
 	`CÀ¨TabÀ
 (
 èbÀ
 );
 
-829 
+834 
 	`‰ì
 (
 ¨g
 );
 
-830 
+835 
 	}
 }
 
-833 
+838 
 	$PrötSèts
 (
 LSMåì
@@ -6921,19 +7127,19 @@ VÆueLog
 log
 ){
 
-834 
+839 
 i
 ;
 
-835 
+840 
 j
 ;
 
-836 
+841 
 tŸÆ
  = 0;
 
-838 
+843 
 LevñNode
  *
 Cuºít
@@ -6943,7 +7149,7 @@ lsm
 L0
 ;
 
-839 
+844 
 LevñNode
  *
 cuºíéevñnode
@@ -6953,13 +7159,13 @@ Cuºít
 √xt
 ;
 
-841 
+846 
 cuºíéevñnode
  !
 NULL
 ){
 
-842 
+847 
 Àvñnum
  = 
 cuºíéevñnode
@@ -6967,11 +7173,11 @@ cuºíéevñnode
 numbî
 ;
 
-843 
+848 
 cuºítcou¡
  = 0;
 
-844 
+849 
 i
  = 0; i < 
 cuºíéevñnode
@@ -6981,7 +7187,7 @@ cuºíéevñnode
 cou¡
 ; i++){
 
-845 
+850 
 cuºítcou¡
  +
 cuºíéevñnode
@@ -6995,7 +7201,7 @@ i
 cou¡
 ;
 
-846 
+851 
 Node
  *
 cuºíèºay
@@ -7013,21 +7219,25 @@ i
 cou¡
  * (Node));
 
-847 
+852 
 fûíame
-[14];
+[
+FILE_NAME
+];
 
-848 
+853 
 	`•rötf
 (
 fûíame
-, "d©a/L%dN%d", 
+, 
+LOC_FAST
+"d©a/L%dN%d", 
 Àvñnum
 , 
 i
 );
 
-849 
+854 
 FILE
  *
 Â
@@ -7037,7 +7247,7 @@ FILE
 fûíame
 , "rt");
 
-850 
+855 
 	`‰ód
 (
 cuºíèºay
@@ -7057,13 +7267,13 @@ cou¡
 Â
 );
 
-851 
+856 
 	`f˛o£
 (
 Â
 );
 
-852 
+857 
 j
  = 0; j < 
 cuºíéevñnode
@@ -7077,7 +7287,7 @@ i
 cou¡
 ; j++){
 
-853 
+858 
 	`¥ötf
 ("%s:%ld:L%d ", 
 cuºíèºay
@@ -7095,7 +7305,7 @@ vÆue
 Àvñnum
 );
 
-854 if(!
+859 if(!
 cuºíèºay
 [
 j
@@ -7103,21 +7313,21 @@ j
 Êag
 ){
 
-855 
+860 
 tŸÆ
  -= 1;
 
-858 
+863 
 	`¥ötf
 ("aÑun hasÉnded. \n");
 
-859 
+864 
 	`‰ì
 (
 cuºíèºay
 );
 
-861 
+866 
 	`¥ötf
 ("Thîê¨ê%dÖaú†⁄ Levñ %d. \n\n", 
 cuºítcou¡
@@ -7125,29 +7335,29 @@ cuºítcou¡
 Àvñnum
 );
 
-862 
+867 
 tŸÆ
  +
 cuºítcou¡
 ;
 
-863 
+868 
 cuºíéevñnode
  = cuºíéevñnode->
 √xt
 ;
 
-865 
+870 
 	`¥ötf
 ("Thîê¨ê%dÖaú†⁄ÅhêLSM-åì i¿tŸÆ. \n", 
 tŸÆ
 );
 
-866 
+871 
 	}
 }
 
-868 
+873 
 	$Gë
 (
 LSMåì
@@ -7161,7 +7371,7 @@ VÆueLog
 log
 ){
 
-869 
+874 
 Node
  * 
 de°
@@ -7173,17 +7383,17 @@ lsm
 key
 );
 
-870 if(
+875 if(
 de°
  =
 NULL
 ){
 
-871 
+876 
 	`¥ötf
 ("Don't find key\n");
 
-874 
+879 
 	`¥ötf
 ("vÆuê%d\n",
 de°
@@ -7191,7 +7401,7 @@ de°
 vÆue
 );
 
-875  (
+880  (
 	`VÆueGë
 (
 log
@@ -7201,15 +7411,15 @@ de°
 vÆue
 ));
 
-876 
+881 
 	}
 }
 
-877 
+882 
 	$maö
 (){
 
-878 
+883 
 LSMåì
  *
 lsm
@@ -7217,7 +7427,7 @@ lsm
 	`Cª©eLSM
 (4, 4, 0.0000001);
 
-879 
+884 
 VÆueLog
  *
 log
@@ -7225,7 +7435,7 @@ log
 	`Cª©eLog
 (0,0);
 
-880 
+885 
 	`§™d
 ((Ë
 	`time
@@ -7233,39 +7443,39 @@ log
 NULL
 ));
 
-882 
+886 
 Gë_w™t
 [1000][10];
 
-883 
+887 
 Gë_ª
 [1000];
 
-884 
+888 
 ödex
  = 0;
 
-885 
+889 
 öput
 [10];
 
-886 
+890 
 d
  = 0;
 
-887 
+891 
 i
 =0; i < 1000 ; i++){
 
-890 
+894 
 w
  = 0;
 
-891 
+895 
 w
  = 0 ; w < 9; w++){
 
-892 
+896 
 öput
 [
 w
@@ -7273,19 +7483,19 @@ w
 	`ønd
 () % 26;
 
-895 
+899 
 öput
 [
 w
 ] = 0;
 
-897 
+901 
 key_vÆue
  = 
 	`ønd
 ()%1000 + 1;
 
-899 
+903 
 	`Put
 (
 lsm
@@ -7299,15 +7509,15 @@ key_vÆue
 log
 );
 
-908 if(
+912 if(
 i
 %5 == 0){
 
-909 if(5 <
+913 if(5 <
 d
  && d < 8)
 
-911 
+915 
 	`Dñëe
 (
 lsm
@@ -7315,7 +7525,7 @@ lsm
 öput
 );
 
-913 
+917 
 	`°r˝y
 (
 Gë_w™t
@@ -7325,7 +7535,7 @@ Gë_w™t
 öput
 );
 
-914 
+918 
 Gë_ª
 [
 ödex
@@ -7333,33 +7543,33 @@ Gë_ª
 key_vÆue
 ;
 
-915 
+919 
 ödex
 ++;
 
-916 
+920 
 d
 ++;
 
-921 
+925 
 	`¥ötf
 ("\n\n");
 
-923 
+927 
 ªtu∫_vÆ
 ;
 
-924 
+928 
 Ál£_cou¡
  = 0;
 
-926 
+930 
 i
  = 0 ; i < 
 ödex
 ; i ++){
 
-927 
+931 
 ªtu∫_vÆ
  = 
 	`Gë
@@ -7373,11 +7583,11 @@ i
 log
 );
 
-928 
+932 
 ™swî
 [10];
 
-929 
+933 
 	`°r˝y
 (
 ™swî
@@ -7389,7 +7599,7 @@ Gë_ª
 i
 ])? "true" : "false");
 
-930 
+934 
 	`¥ötf
 ("%d : vÆuêo‡key %†i†%d,ánswî : %s\n", 
 i
@@ -7401,33 +7611,33 @@ Gë_w™t
 ™swî
 );
 
-931 if(
+935 if(
 	`°rcmp
 (
 ™swî
 ,"false") == 0){
 
-932 
+936 
 	`¥ötf
 ("\n\n");
 
-933 
+937 
 Ál£_cou¡
 ++;
 
-935 
+939 
 	`¥ötf
 ("\n");
 
-938 
+942 
 °¨t
 [10] = "aaaaaaaaa\0";
 
-939 
+943 
 íd
 [10] = "ccccccccc\0";
 
-940 
+944 
 	`R™ge
 (
 lsm
@@ -7439,11 +7649,11 @@ lsm
 log
 );
 
-942 
+946 
 	`¥ötf
 ("\n\n");
 
-944 
+948 
 	`PrötNode
 (
 lsm
@@ -7453,11 +7663,11 @@ buf„r
 log
 );
 
-945 
+949 
 	`¥ötf
 ("\n");
 
-946 
+950 
 	`PrötSèts
 (
 lsm
@@ -7465,13 +7675,93 @@ lsm
 log
 );
 
-965 
+952 
+w
+=0; w < 
+REPEAT
+; w++){
+
+953 
+	`GC
+(
+lsm
+,
+log
+);
+
+955 
+i
+ = 0 ; i < 
+ödex
+; i ++){
+
+956 
+ªtu∫_vÆ
+ = 
+	`Gë
+(
+lsm
+, 
+Gë_w™t
+[
+i
+], 
+log
+);
+
+957 
+™swî
+[10];
+
+958 
+	`°r˝y
+(
+™swî
+,(
+ªtu∫_vÆ
+ =
+Gë_ª
+[
+i
+])? "true" : "false");
+
+959 
+	`¥ötf
+("%d : vÆuêo‡key %†i†%d,ánswî : %s\n", 
+i
+,
+Gë_w™t
+[i],
+ªtu∫_vÆ
+, 
+™swî
+);
+
+960 if(
+	`°rcmp
+(
+™swî
+,"false") == 0){
+
+961 
+	`¥ötf
+("\n\n");
+
+962 
+Ál£_cou¡
+++;
+
+964 
+	`¥ötf
+("\n");
+
+969 
 	`CÀ¨Log
 (
 log
 );
 
-970 
+974 
 	`¥ötf
 ("Ál£ cou¡ : %d = %d, dód : %d\n",
 Ál£_cou¡
@@ -7481,7 +7771,7 @@ REPEAT
 dód
 );
 
-972 
+976 
 	}
 }
 
@@ -7844,12 +8134,18 @@ lock
 "
 
 3 
-	#READ_LOG_SIZE
- 10
+	#LOC_SLOW
+ "SlowMem‹y/"
 
 	)
 
-5 
+4 
+	#TO_SLOW
+ 5
+
+	)
+
+6 
 VÆueLog
  *
 	$Cª©eLog
@@ -7859,63 +8155,67 @@ hód
 èû
 ){
 
-7 
-fûíame
-[25] = "data/valuelog/log";
-
-8 
-FILE
- *
-Â
+7 
+Á°Â
  = 
-	`f›í
+	`›í
 (
-fûíame
-, "w+");
+LOC_FAST
+"log", 
+O_RDWR
+ | 
+O_CREAT
+ | 
+O_TRUNC
+ | 
+O_APPEND
+);
 
-9 if(
-Â
- =
-NULL
-){
+8 if(
+Á°Â
+ < 0){
+
+9 
+	`˛o£
+(
+Á°Â
+);
 
 10 
 	`¥ötf
-("ÂÉº‹ : %s\n",
-	`°ªº‹
-(
-î∫o
-));
+("fp openÉrror\n");
 
-12 
-fûíame2
-[25] = "data/valuelog/log2";
-
-13 
-FILE
- *
-Â2
+13 
+¶owÂ
  = 
-	`f›í
+	`›í
 (
-fûíame2
-,"w+");
+LOC_SLOW
+"log",
+O_RDWR
+ | 
+O_CREAT
+ | 
+O_TRUNC
+ | 
+O_APPEND
+);
 
 14 if(
-Â
- =
-NULL
-){
+¶owÂ
+ < 0){
 
 15 
-	`¥ötf
-("Â2Éº‹ : %s\n",
-	`°ªº‹
+	`˛o£
 (
-î∫o
-));
+¶owÂ
+);
 
-17 
+16 
+	`¥ötf
+("fp2 openÉrror\n");
+
+18 
 VÆueLog
  * 
 log
@@ -7923,57 +8223,473 @@ log
 	`mÆloc
 ((ValueLog));
 
-18 
-log
-->
-Â1
- = 
-Â
-;
-
 19 
-log
-->
-Â2
- = fp2;
+Fa°Mem
+ *
+Á°
+ = (Fa°Mem *)
+	`mÆloc
+((FastMem));
 
 20 
-log
-->
-hód
- = head;
-
-21 
-log
-->
-èû
- =Åail;
-
-22 
-log
-->
-curhód
- = 
-Â
-;
+SlowMem
+ *
+¶ow
+ = (SlowMem *)
+	`mÆloc
+((SlowMem));
 
 23 
 log
 ->
-cuπaû
- = 
+Á°
+ = fast;
+
+24 
+log
+->
+Á°
+->
 Â
+ = 
+Á°Â
 ;
 
-25  
+25 
+log
+->
+Á°
+->
+hód
+ = head;
+
+26 
+log
+->
+Á°
+->
+èû
+ =Åail;
+
+27 
+log
+->
+Á°
+->
+cur°¨t
+ = 
+hód
+;
+
+29 
+	`·runˇã
+(
+Á°Â
+,
+FAST_MAX_PAGE
+);
+
+30 
+SaveLog
+ *
+m≠
+ = (SaveLog *)
+	`mm≠
+(0,
+MAPPING_LOG_SIZE
+,
+PROT_WRITE
+|
+PROT_READ
+,
+MAP_SHARED
+,
+log
+->
+Á°
+->
+Â
+,0);
+
+32 if(
+m≠
+ =
+MAP_FAILED
+){
+
+33 
+	`¥ötf
+("error mapping file\n");
+
+34  
+NULL
+;
+
+37 
+log
+->
+Á°
+->
+m≠
+ = map;
+
+40 
+log
+->
+¶ow
+ = slow;
+
+41 
+log
+->
+¶ow
+->
+Â
+=
+¶owÂ
+;
+
+42 
+log
+->
+¶ow
+->
+hód
+=head;
+
+43 
+log
+->
+¶ow
+->
+curhód
+ = 
+hód
+;
+
+44 
+log
+->
+¶ow
+->
+cursize
+ =1;
+
+46 
+	`·runˇã
+(
+¶owÂ
+,
+MAX_PAGE
+);
+
+47 
+SaveLog
+ *
+m≠2
+ = 
+	`mm≠
+(
+NULL
+,
+MAPPING_LOG_SIZE
+,
+PROT_WRITE
+|
+PROT_READ
+,
+MAP_SHARED
+,
+log
+->
+¶ow
+->
+Â
+,log->¶ow->
+hód
+);
+
+49 if(
+m≠
+ =
+NULL
+){
+
+50 
+	`¥ötf
+("error mapping file\n");
+
+51  
+NULL
+;
+
+53 
+log
+->
+¶ow
+->
+m≠
+ = 
+m≠2
+;
+
+55  
 log
 ;
 
-26 
+56 
 	}
 }
 
-28 
+57 
+	$SlowPut
+(
+VÆueLog
+ *
+log
+, *
+loc
+, c⁄° *
+key
+, 
+uöt64_t
+ 
+key_Àn
+, uöt64_à
+vÆue
+){
+
+59 
+SaveLog
+ *
+ßve
+ = (SaveLog *)
+	`mÆloc
+((SaveLog));
+
+61 
+ßve
+->
+key_Àn
+ = key_len;
+
+62 
+	`°∫˝y
+(
+ßve
+->
+key
+,key,
+key_Àn
+);
+
+63 
+ßve
+->
+vÆue
+ = value;
+
+65 
+off£t
+ = 
+log
+->
+¶ow
+->
+hód
+ % 
+MAPPING_LOG_SIZE
+;
+
+66 
+curhód
+ = 
+log
+->
+¶ow
+->
+hód
+ - 
+MAPPING_LOG_SIZE
+;
+
+68 if(
+curhód
+ !
+log
+->
+¶ow
+->curhead){
+
+69 
+log
+->
+¶ow
+->
+cursize
+++;
+
+70 
+	`·runˇã
+(
+log
+->
+¶ow
+->
+Â
+,
+MAX_PAGE
+ *Üog->¶ow->
+cursize
+);
+
+72 if(
+	`munm≠
+(
+log
+->
+¶ow
+->
+m≠
+,
+MAPPING_LOG_SIZE
+) == -1){
+
+73 
+	`¥ötf
+("coludÇot unmap\n");
+
+75 
+	`¥ötf
+("hód i†%d,Åaû i†%d\n",
+log
+->
+Á°
+->
+hód
+,log->Á°->
+èû
+);
+
+77 
+SaveLog
+ *
+m≠
+ = 
+	`mm≠
+(0,
+MAPPING_LOG_SIZE
+,
+PROT_WRITE
+,
+MAP_SHARED
+,
+log
+->
+¶ow
+->
+Â
+,
+curhód
+);
+
+79 if(
+m≠
+ =
+NULL
+){
+
+80 
+	`¥ötf
+("error mapping file\n");
+
+84 
+log
+->
+¶ow
+->
+m≠
+ = map;
+
+86 
+log
+->
+¶ow
+->
+curhód
+ = curhead;
+
+88 
+	`mem˝y
+(
+log
+->
+¶ow
+->
+m≠
++
+off£t
+, 
+ßve
+, (
+SaveLog
+));
+
+90 if(
+	`msync
+(
+log
+->
+¶ow
+->
+m≠
+,
+MAPPING_LOG_SIZE
+,
+MS_SYNC
+) == -1){
+
+91 
+	`¥ötf
+("couldÇot syncÅhe fileÅo disk\n");
+
+94 *
+loc
+ = 
+log
+->
+¶ow
+->
+hód
+;
+
+96 *
+loc
+ +(
+MAX_LOG_SIZE
+ + 1);
+
+99 
+log
+->
+¶ow
+->
+hód
+ +(
+SaveLog
+);
+
+101 
+	`‰ì
+(
+ßve
+);
+
+102 
+	}
+}
+
+104 
 	$VÆuePut
 (
 VÆueLog
@@ -7991,53 +8707,25 @@ key_Àn
 vÆue
 ){
 
-30 if(
+105 if((
 log
 ->
-curhód
- !log->
-cuπaû
+Á°
+->
+hód
+ + (
+SaveLog
+)Ë% 
+MAX_LOG_SIZE
+ =log->Á°->
+èû
 ){
 
-31 if(
-log
-->
-hód
- > 
-MAX_LOG_SIZE
- - (
-SaveLog
-)){
-
-32 
+106 
 	`¥ötf
-("Log file is full\n");
+("Fast Log file is full\n");
 
-33 
-	`exô
-(-1);
-
-36 if((
-log
-->
-èû
- >Üog->
-hód
- &&Üog->
-cuπaû
- =log->
-curhód
-)){
-
-37 
-	`¥ötf
-("Log file is full2\n");
-
-38 
-	`exô
-(-1);
-
-40 
+109 
 SaveLog
  *
 ßve
@@ -8045,13 +8733,13 @@ SaveLog
 	`mÆloc
 ((SaveLog));
 
-42 
+111 
 ßve
 ->
 key_Àn
  = key_len;
 
-43 
+112 
 	`°∫˝y
 (
 ßve
@@ -8061,223 +8749,231 @@ key
 key_Àn
 );
 
-44 
+113 
 ßve
 ->
 vÆue
  = value;
 
-46 
-	`f£ek
+115 if(
+log
+->
+Á°
+->
+hód
+ !log->Á°->
+cur°¨t
+){
+
+116 if(
+	`munm≠
 (
 log
 ->
-curhód
-, (Ëlog->
-hód
-, 
-SEEK_SET
+Á°
+->
+m≠
+,
+MAPPING_LOG_SIZE
+) == -1){
+
+117 
+	`¥ötf
+("coludÇot unmap\n");
+
+121 
+SaveLog
+ *
+m≠
+ = 
+	`mm≠
+(
+NULL
+,
+MAPPING_LOG_SIZE
+,
+PROT_WRITE
+|
+PROT_READ
+,
+MAP_SHARED
+,
+log
+->
+Á°
+->
+Â
+,log->Á°->
+cur°¨t
 );
 
-48 
-	`fwrôe
+123 if(
+m≠
+ =
+MAP_FAILED
+){
+
+124 
+	`¥ötf
+("error mapping file\n");
+
+125 
+	`exô
+(-1);
+
+129 
+log
+->
+Á°
+->
+m≠
+ = map;
+
+130 
+log
+->
+Á°
+->
+hód
+ =Üog->Á°->
+cur°¨t
+;
+
+133 
+	`¥ötf
+("%p\n",
+log
+->
+Á°
+->
+m≠
+ + 
+	`OFFSET
+÷og->Á°->
+hód
+));
+
+134 
+	`mem˝y
 (
+log
+->
+Á°
+->
+m≠
+ + 
+	`OFFSET
+÷og->Á°->
+hód
+), 
 ßve
 , (
 SaveLog
-),1, 
-log
-->
-curhód
-);
+));
 
-50 
-	`VÆueLog_sync
+135 
+	`¥ötf
+("done \n");
+
+137 if(
+	`msync
 (
 log
 ->
-curhód
-);
+Á°
+->
+m≠
+,
+MAPPING_LOG_SIZE
+,
+MS_SYNC
+) == -1){
 
-52 *
+138 
+	`¥ötf
+("couldÇot syncÅhe fileÅo disk\n");
+
+141 *
 loc
  = 
 log
 ->
+Á°
+->
 hód
 ;
 
-53 if(
+143 
 log
 ->
-curhód
- =log->
-Â2
-)
-
-54 *
-loc
- +(
-MAX_LOG_SIZE
- + 1);
-
-57 
-log
+Á°
 ->
 hód
  +(
 SaveLog
 );
 
-59 if(
-log
-->
-hód
- >
-MAX_LOG_SIZE
-){
-
-60 
-log
-->
-hód
- = 0;
-
-61 if(
-log
-->
-curhód
- =log->
-cuπaû
-){
-
-62 if(
-log
-->
-curhód
- =log->
-Â1
-){
-
-63 
-	`f˛o£
-(
-log
-->
-Â2
+145 
+	`¥ötf
+("m≠ : %ld\n",
+MAX_LOG_MAPPING
 );
 
-64 
-fûíame2
-[25] = "data/valuelog/log2";
-
-65 
-FILE
- *
-Â2
- = 
-	`f›í
-(
-fûíame2
-,"w+");
-
-66 if(
-Â2
- =
-NULL
-){
-
-67 
-	`¥ötf
-("Â2Éº‹ : %s\n",
-	`°ªº‹
-(
-î∫o
-));
-
-69 
+146 if(
 log
 ->
-Â2
- = fp2;
+Á°
+->
+hód
+ % 
+MAX_LOG_MAPPING
+ == 0)
 
-70 
+147 
 log
 ->
-curhód
- =Üog->
-Â2
-;
-
-72 if(
-log
+Á°
 ->
-curhód
- =log->
-Â2
-){
-
-73 
-	`f˛o£
-(
-log
-->
-Â1
+hód
+ +(
+MAPPING_LOG_SIZE
+ - 
+MAX_LOG_MAPPING
 );
 
-74 
-fûíame
-[25] = "data/valuelog/log";
-
-75 
-FILE
- *
-Â1
- = 
-	`f›í
-(
-fûíame
-,"w+");
-
-76 if(
-Â1
- =
-NULL
-){
-
-77 
-	`¥ötf
-("Â1Éº‹ : %s\n",
-	`°ªº‹
-(
-î∫o
-));
-
-79 
+149 
 log
 ->
-Â1
- = fp1;
-
-80 
-log
+Á°
 ->
-curhód
- =Üog->
-Â1
+hód
+ =Üog->Á°->hód % 
+FAST_MAX_PAGE
 ;
 
-85 
+151 
+log
+->
+Á°
+->
+cur°¨t
+ =Üog->Á°->
+hód
+ - (log->Á°->hód % 
+MAPPING_LOG_SIZE
+);
+
+153 
 	`‰ì
 (
 ßve
 );
 
-86 
+155 
 	}
 }
 
-88 
+157 
 uöt64_t
  
 	$VÆueGë
@@ -8289,109 +8985,133 @@ log
 loc
 ){
 
-90 
+159 
 uöt64_t
  
 vÆue
  = -1;
 
-91 
-FILE
- * 
+160 
 Â
+ = -1;
+
+161 
+boﬁ
+ 
+¶ow
+ = 
+Ál£
 ;
 
-93 if(
-loc
- >
-MAX_LOG_SIZE
- + 1){
+162 
+hód
+;
 
-94 
+164 
+SaveLog
+ * 
+m≠ed
+;
+
+167 if(
+loc
+ >(
+MAX_LOG_SIZE
+) + 1){
+
+168 
 loc
  -(
 MAX_LOG_SIZE
  + 1);
 
-95 
+169 
 Â
  = 
 log
 ->
-Â2
-;
+¶ow
+->fp;
 
-98 
-Â
+170 
+¶ow
  = 
-log
-->
-Â1
+åue
 ;
 
-101 
-	`VÆueLog_sync
+171 
+hód
+ = 
+	`INDEX
 (
-Â
+log
+->
+¶ow
+->
+curhód
 );
 
-103 if(
-Â
- =
+172 
+m≠ed
+ = 
 log
 ->
-curhód
- && f∞=log->
-cuπaû
+¶ow
+->
+m≠
+;
+
+175 
+Â
+ = 
+log
+->
+Á°
+->fp;
+
+176 
+hód
+ = 
+	`INDEX
+(
+log
+->
+Á°
+->
+cur°¨t
+);
+
+177 
+m≠ed
+ = 
+log
+->
+Á°
+->
+m≠
+;
+
+180 if(!
+¶ow
 ){
 
-104 if(
-log
-->
-èû
- > 
+181 if(
 loc
- ||Üog->
-hód
- <Üoc)
-
-105  
-vÆue
-;
-
-107 if(
-Â
- =
+ >
 log
 ->
-curhód
-){
-
-108 if(
-log
+Á°
 ->
 hód
- <
-loc
-)
-
-109  
-vÆue
-;
-
-112 if(
-log
-->
+ ||Üog->Á°->
 èû
- > 
-loc
-)
+ >Üoc){
 
-113  
+182  
 vÆue
 ;
 
-116 
+186 
 SaveLog
  *
 ßve
@@ -8399,95 +9119,145 @@ SaveLog
 	`mÆloc
 ((SaveLog));
 
-118 
-	`f£ek
+188 
+curhód
+ = 
+	`INDEX
 (
-Â
-, (Ë
 loc
-, 
-SEEK_SET
 );
 
-120 
-	`‰ód
+190 if(
+curhód
+ !
+hód
+){
+
+191 if(!
+¶ow
+)
+
+192 
+log
+->
+Á°
+->
+cur°¨t
+ = 
+curhód
+;
+
+194 
+log
+->
+¶ow
+->
+curhód
+ = curhead;
+
+196 if(
+	`munm≠
+(
+m≠ed
+,
+MAPPING_LOG_SIZE
+) == -1){
+
+197 
+	`¥ötf
+("coludÇot unmap\n");
+
+200 
+SaveLog
+ *
+m≠
+ = 
+	`mm≠
+(0,
+MAPPING_LOG_SIZE
+ , 
+PROT_READ
+ | 
+PROT_WRITE
+, 
+MAP_SHARED
+, 
+Â
+,
+curhód
+);
+
+202 if(
+m≠
+ =
+MAP_FAILED
+){
+
+203  
+vÆue
+;
+
+205 if(!
+¶ow
+)
+
+206 
+log
+->
+Á°
+->
+m≠
+ = map;
+
+208 
+log
+->
+Á°
+->
+m≠
+ = map;
+
+209 
+m≠ed
+ = 
+m≠
+;
+
+212 
+	`mem˝y
 (
 ßve
-,(
+,
+m≠ed
+ + 
+	`OFFSET
+(
+loc
+),(
 SaveLog
-),1,
-Â
-);
+));
 
-122 
+214 
 vÆue
  = 
 ßve
 ->value;
 
-124 
+216 
 	`‰ì
 (
 ßve
 );
 
-126  
+218  
 vÆue
 ;
 
-127 
+219 
 	}
 }
 
-128 
-	$VÆueLog_sync
-(
-FILE
- *
-Â
-) {
-
-129 
-ªs
- = 
-	`fÊush
-(
-Â
-);
-
-130 i‡(
-ªs
- =
-EOF
-) {
-
-131 
-	`≥º‹
-("fflush");
-
-135 
-ªs
- = 
-	`fsync
-(
-	`fûío
-(
-Â
-));
-
-136 i‡(
-ªs
- == -1) {
-
-137 
-	`≥º‹
-("fsync");
-
-141 
-	}
-}
-
-143 
+221 
 	$GC
 (
 LSMåì
@@ -8499,179 +9269,161 @@ VÆueLog
 log
 ){
 
-144 
+222 
 íd
  = 
 log
+->
+Á°
 ->
 hód
 ;
 
-145 
-FILE
- * 
-ídfûe
+223 
+size
+ = 0;
+
+225 
+SaveLog
+ *
+m≠
  = 
 log
 ->
+Á°
+->map;
+
+227 
 curhód
 ;
 
-146 
-size
+228 
+off£t
  = 0;
 
-147 
-boﬁ
- 
-föish
- = 
-Ál£
-;
-
-148 
-åue
+229 
+log
+->
+Á°
+->
+èû
+ !
+íd
 ){
 
-149 if(
-log
-->
-cuπaû
- =
-ídfûe
- && (Üog->
-èû
- + (
-SaveLog
-Ë>
-íd
-))
-
-150 
-föish
- = 
-åue
-;
-
-151 
+230 
 SaveLog
  * 
 ßve
-;
-
-152 
-ßve
- = (
-SaveLog
- *)
+ = (SaveLog *)
 	`mÆloc
-((SaveLogË* 
-READ_LOG_SIZE
-);
+((SaveLog));
 
-153 
-SaveLog
- * 
-ßve_kìp
- = 
-ßve
-;
-
-154 
-	`f£ek
-(
+232 
+off£t
+ = (
 log
 ->
-cuπaû
-,log->
+Á°
+->
 èû
-,
-SEEK_SET
+ % 
+MAPPING_LOG_SIZE
 );
 
-155 
-	`‰ód
+233 
+curhód
+ = 
+log
+->
+Á°
+->
+èû
+ - 
+off£t
+;
+
+235 if(
+log
+->
+Á°
+->
+curhód
+ != curhead){
+
+236 if(
+	`munm≠
+(
+m≠
+,
+MAPPING_LOG_SIZE
+) == -1){
+
+237 
+	`¥ötf
+("coludÇot unmap\n");
+
+239 
+m≠
+ = 
+	`mm≠
+(0,
+MAPPING_LOG_SIZE
+,
+PROT_READ
+ | 
+PROT_WRITE
+, 
+MAP_SHARED
+, 
+log
+->
+Á°
+->
+Â
+,
+curhód
+);
+
+241 
+log
+->
+Á°
+->
+curhód
+ = curhead;
+
+245 
+	`mem˝y
 (
 ßve
+,
+m≠
+ + 
+off£t
 ,(
 SaveLog
-),
-READ_LOG_SIZE
-,
-log
-->
-cuπaû
-);
+));
 
-156 
-size
- = 0;
-
-157 ; 
-size
- < 
-READ_LOG_SIZE
- && !
-föish
-; size++){
-
-158 if(
-log
-->
-èû
- + (
-SaveLog
-Ë>
-MAX_LOG_SIZE
-)
-
-159 
-föish
- = 
-åue
-;
-
-160 if(
-log
-->
-cuπaû
- =
-ídfûe
- &&Üog->
-èû
- + (
-SaveLog
-Ë>
-íd
-)
-
-161 
-föish
- = 
-åue
-;
-
-163 
+247 
 °r_key
 [
 STRING_SIZE
 ];
 
-164 
+248 
 	`°∫˝y
 (
 °r_key
 ,
 ßve
-[
-size
-].
+->
 key
-,ßve[size].
+,ßve->
 key_Àn
 );
 
-165 
+249 
 SaveAºay
  * 
 de°
@@ -8683,17 +9435,25 @@ lsm
 °r_key
 );
 
-166 if(
+250 if(
 de°
  !
 NULL
 ){
 
-167 
+251 
 loc
  = 0;
 
-168 
+252 if(
+de°
+->
+numbî
+ < 
+TO_SLOW
+)
+
+253 
 	`VÆuePut
 (
 log
@@ -8711,7 +9471,25 @@ key_Àn
 vÆue
 );
 
-169 
+255 
+	`SlowPut
+(
+log
+,&
+loc
+,
+°r_key
+,
+ßve
+[
+size
+].
+key_Àn
+,ßve[size].
+vÆue
+);
+
+257 
 de°
 ->
 ¨øy
@@ -8723,7 +9501,7 @@ vÆue
 loc
 ;
 
-171 if(
+259 if(
 	`°rcmp
 (
 de°
@@ -8731,119 +9509,115 @@ de°
 fûíame
 ,"")!=0){
 
-172 
-FILE
- *
+260 
 Â
  = 
-	`f›í
+	`›í
 (
 de°
 ->
 fûíame
-, "wt");
+, 
+O_RDWR
+ | 
+O_CREAT
+ | 
+O_TRUNC
+);
 
-173 if(
+261 if(
 Â
- =
-NULL
-)
+ < 0)
 
-174 
+262 
 	`¥ötf
 ("fpÉrror\n");
 
-175 
-	`fwrôe
+264 
+m≠
+ = 
+	`mm≠
+(0,(
+Node
+Ë* 
+de°
+->
+size
+,
+PROT_WRITE
+,
+MAP_SHARED
+,
+Â
+,0);
+
+266 
+	`mem˝y
 (
+m≠
+,
 de°
 ->
 ¨øy
 , (
 Node
-), de°->
+Ë* de°->
 size
-, 
-Â
 );
 
-176 
-	`f˛o£
+268 
+	`munm≠
+(
+m≠
+,(
+Node
+Ë* 
+de°
+->
+size
+);
+
+269 
+	`˛o£
 (
 Â
 );
 
-180 
+274 
 	`¥ötf
 ("Can't find key\n");
 
-181 
+275 
 de°
  = 
 NULL
 ;
 
-182 
+276 
 log
+->
+Á°
 ->
 èû
  +(
 SaveLog
 );
 
-184 if(
+277 
 log
 ->
+Á°
+->
 èû
- >
+ %
 MAX_LOG_SIZE
-){
-
-185 
-log
-->
-èû
- = 0;
-
-186 if(
-log
-->
-cuπaû
- =log->
-Â1
-)
-
-187 
-log
-->
-cuπaû
- =Üog->
-Â2
 ;
 
-189 
-log
-->
-cuπaû
- =Üog->
-Â1
-;
-
-191 
-	`‰ì
-(
-ßve_kìp
-);
-
-192 if(
-föish
-)
-
-195 
+279 
 	}
 }
 
-196 
+280 
 	$CÀ¨Log
 (
 VÆueLog
@@ -8851,29 +9625,33 @@ VÆueLog
 log
 ){
 
-197 
-	`f˛o£
+281 
+	`˛o£
 (
 log
 ->
-Â1
+Á°
+->
+Â
 );
 
-198 
-	`f˛o£
+282 
+	`˛o£
 (
 log
 ->
-Â2
+¶ow
+->
+Â
 );
 
-199 
+283 
 	`‰ì
 (
 log
 );
 
-200 
+284 
 	}
 }
 
@@ -8938,6 +9716,942 @@ __USE_GNU
 >
 
 52 
+__END_DECLS
+
+
+	@/usr/include/fcntl.h
+
+22 #i‚def 
+_FCNTL_H
+
+
+23 
+	#_FCNTL_H
+ 1
+
+	)
+
+25 
+	~<„©uªs.h
+>
+
+28 
+	g__BEGIN_DECLS
+
+
+31 
+	~<bôs/ty≥s.h
+>
+
+35 
+	~<bôs/f˙é.h
+>
+
+39 #ifde‡
+__O_TMPFILE
+
+
+40 
+	#__OPEN_NEEDS_MODE
+(
+oÊag
+) \
+
+41 (((
+oÊag
+Ë& 
+O_CREAT
+Ë!0 || ((oÊagË& 
+__O_TMPFILE
+Ë=__O_TMPFILE)
+
+	)
+
+43 
+	#__OPEN_NEEDS_MODE
+(
+oÊag
+Ë(((oÊagË& 
+O_CREAT
+Ë!0)
+
+	)
+
+49 #i‚de‡
+__mode_t_deföed
+
+
+50 
+__mode_t
+ 
+	tmode_t
+;
+
+51 
+	#__mode_t_deföed
+
+
+	)
+
+54 #i‚de‡
+__off_t_deföed
+
+
+55 #i‚de‡
+__USE_FILE_OFFSET64
+
+
+56 
+__off_t
+ 
+	toff_t
+;
+
+58 
+__off64_t
+ 
+	toff_t
+;
+
+60 
+	#__off_t_deföed
+
+
+	)
+
+63 #i‡
+deföed
+ 
+__USE_LARGEFILE64
+ && !deföed 
+__off64_t_deföed
+
+
+64 
+__off64_t
+ 
+	toff64_t
+;
+
+65 
+	#__off64_t_deföed
+
+
+	)
+
+68 #i‚de‡
+__pid_t_deföed
+
+
+69 
+__pid_t
+ 
+	tpid_t
+;
+
+70 
+	#__pid_t_deföed
+
+
+	)
+
+74 #ifde‡
+__USE_XOPEN2K8
+
+
+75 
+	~<bôs/ty≥s/°ru˘_time•ec.h
+>
+
+77 #i‡
+deföed
+ 
+__USE_XOPEN
+ || deföed 
+__USE_XOPEN2K8
+
+
+78 
+	~<bôs/°©.h
+>
+
+80 
+	#S_IFMT
+ 
+__S_IFMT
+
+
+	)
+
+81 
+	#S_IFDIR
+ 
+__S_IFDIR
+
+
+	)
+
+82 
+	#S_IFCHR
+ 
+__S_IFCHR
+
+
+	)
+
+83 
+	#S_IFBLK
+ 
+__S_IFBLK
+
+
+	)
+
+84 
+	#S_IFREG
+ 
+__S_IFREG
+
+
+	)
+
+85 #ifde‡
+__S_IFIFO
+
+
+86 
+	#S_IFIFO
+ 
+__S_IFIFO
+
+
+	)
+
+88 #ifde‡
+__S_IFLNK
+
+
+89 
+	#S_IFLNK
+ 
+__S_IFLNK
+
+
+	)
+
+91 #i‡(
+deföed
+ 
+__USE_UNIX98
+ || deföed 
+__USE_XOPEN2K8
+Ë&& deföed 
+__S_IFSOCK
+
+
+92 
+	#S_IFSOCK
+ 
+__S_IFSOCK
+
+
+	)
+
+97 
+	#S_ISUID
+ 
+__S_ISUID
+
+
+	)
+
+98 
+	#S_ISGID
+ 
+__S_ISGID
+
+
+	)
+
+100 #i‡
+deföed
+ 
+__USE_MISC
+ || deföed 
+__USE_XOPEN
+
+
+102 
+	#S_ISVTX
+ 
+__S_ISVTX
+
+
+	)
+
+105 
+	#S_IRUSR
+ 
+__S_IREAD
+
+
+	)
+
+106 
+	#S_IWUSR
+ 
+__S_IWRITE
+
+
+	)
+
+107 
+	#S_IXUSR
+ 
+__S_IEXEC
+
+
+	)
+
+109 
+	#S_IRWXU
+ (
+__S_IREAD
+|
+__S_IWRITE
+|
+__S_IEXEC
+)
+
+	)
+
+111 
+	#S_IRGRP
+ (
+S_IRUSR
+ >> 3Ë
+
+	)
+
+112 
+	#S_IWGRP
+ (
+S_IWUSR
+ >> 3Ë
+
+	)
+
+113 
+	#S_IXGRP
+ (
+S_IXUSR
+ >> 3Ë
+
+	)
+
+115 
+	#S_IRWXG
+ (
+S_IRWXU
+ >> 3)
+
+	)
+
+117 
+	#S_IROTH
+ (
+S_IRGRP
+ >> 3Ë
+
+	)
+
+118 
+	#S_IWOTH
+ (
+S_IWGRP
+ >> 3Ë
+
+	)
+
+119 
+	#S_IXOTH
+ (
+S_IXGRP
+ >> 3Ë
+
+	)
+
+121 
+	#S_IRWXO
+ (
+S_IRWXG
+ >> 3)
+
+	)
+
+124 #ifdef 
+__USE_MISC
+
+
+125 #i‚de‡
+R_OK
+
+
+128 
+	#R_OK
+ 4
+
+	)
+
+129 
+	#W_OK
+ 2
+
+	)
+
+130 
+	#X_OK
+ 1
+
+	)
+
+131 
+	#F_OK
+ 0
+
+	)
+
+136 #i‡
+deföed
+ 
+__USE_XOPEN
+ || deföed 
+__USE_XOPEN2K8
+
+
+137 
+	#SEEK_SET
+ 0
+
+	)
+
+138 
+	#SEEK_CUR
+ 1
+
+	)
+
+139 
+	#SEEK_END
+ 2
+
+	)
+
+147 #i‚de‡
+__USE_FILE_OFFSET64
+
+
+148 
+f˙é
+ (
+__fd
+, 
+__cmd
+, ...);
+
+150 #ifde‡
+__REDIRECT
+
+
+151 
+__REDIRECT
+ (
+f˙é
+, (
+__fd
+, 
+__cmd
+, ...), 
+f˙é64
+);
+
+153 
+	#f˙é
+ 
+f˙é64
+
+
+	)
+
+156 #ifde‡
+__USE_LARGEFILE64
+
+
+157 
+f˙é64
+ (
+__fd
+, 
+__cmd
+, ...);
+
+167 #i‚de‡
+__USE_FILE_OFFSET64
+
+
+168 
+	$›í
+ (c⁄° *
+__fûe
+, 
+__oÊag
+, ...Ë
+	`__n⁄nuŒ
+ ((1));
+
+170 #ifde‡
+__REDIRECT
+
+
+171 
+	`__REDIRECT
+ (
+›í
+, (c⁄° *
+__fûe
+, 
+__oÊag
+, ...), 
+›í64
+)
+
+172 
+	`__n⁄nuŒ
+ ((1));
+
+174 
+	#›í
+ 
+›í64
+
+
+	)
+
+177 #ifde‡
+__USE_LARGEFILE64
+
+
+178 
+	$›í64
+ (c⁄° *
+__fûe
+, 
+__oÊag
+, ...Ë
+	`__n⁄nuŒ
+ ((1));
+
+181 #ifde‡
+__USE_ATFILE
+
+
+191 #i‚de‡
+__USE_FILE_OFFSET64
+
+
+192 
+	$›í©
+ (
+__fd
+, c⁄° *
+__fûe
+, 
+__oÊag
+, ...)
+
+193 
+	`__n⁄nuŒ
+ ((2));
+
+195 #ifde‡
+__REDIRECT
+
+
+196 
+	`__REDIRECT
+ (
+›í©
+, (
+__fd
+, c⁄° *
+__fûe
+, 
+__oÊag
+,
+
+197 ...), 
+›í©64
+Ë
+	`__n⁄nuŒ
+ ((2));
+
+199 
+	#›í©
+ 
+›í©64
+
+
+	)
+
+202 #ifde‡
+__USE_LARGEFILE64
+
+
+203 
+	$›í©64
+ (
+__fd
+, c⁄° *
+__fûe
+, 
+__oÊag
+, ...)
+
+204 
+	`__n⁄nuŒ
+ ((2));
+
+213 #i‚de‡
+__USE_FILE_OFFSET64
+
+
+214 
+	$¸ót
+ (c⁄° *
+__fûe
+, 
+mode_t
+ 
+__mode
+Ë
+	`__n⁄nuŒ
+ ((1));
+
+216 #ifde‡
+__REDIRECT
+
+
+217 
+	`__REDIRECT
+ (
+¸ót
+, (c⁄° *
+__fûe
+, 
+mode_t
+ 
+__mode
+),
+
+218 
+¸ót64
+Ë
+	`__n⁄nuŒ
+ ((1));
+
+220 
+	#¸ót
+ 
+¸ót64
+
+
+	)
+
+223 #ifde‡
+__USE_LARGEFILE64
+
+
+224 
+	$¸ót64
+ (c⁄° *
+__fûe
+, 
+mode_t
+ 
+__mode
+Ë
+	`__n⁄nuŒ
+ ((1));
+
+227 #i‡!
+deföed
+ 
+F_LOCK
+ && (deföed 
+__USE_MISC
+ || (deföed 
+__USE_XOPEN_EXTENDED
+ \
+
+228 && !
+deföed
+ 
+__USE_POSIX
+))
+
+237 
+	#F_ULOCK
+ 0
+
+	)
+
+238 
+	#F_LOCK
+ 1
+
+	)
+
+239 
+	#F_TLOCK
+ 2
+
+	)
+
+240 
+	#F_TEST
+ 3
+
+	)
+
+242 #i‚de‡
+__USE_FILE_OFFSET64
+
+
+243 
+	`lockf
+ (
+__fd
+, 
+__cmd
+, 
+off_t
+ 
+__Àn
+);
+
+245 #ifde‡
+__REDIRECT
+
+
+246 
+	`__REDIRECT
+ (
+lockf
+, (
+__fd
+, 
+__cmd
+, 
+__off64_t
+ 
+__Àn
+), 
+lockf64
+);
+
+248 
+	#lockf
+ 
+lockf64
+
+
+	)
+
+251 #ifde‡
+__USE_LARGEFILE64
+
+
+252 
+	`lockf64
+ (
+__fd
+, 
+__cmd
+, 
+off64_t
+ 
+__Àn
+);
+
+256 #ifde‡
+__USE_XOPEN2K
+
+
+259 #i‚de‡
+__USE_FILE_OFFSET64
+
+
+260 
+	$posix_Ádvi£
+ (
+__fd
+, 
+off_t
+ 
+__off£t
+, off_à
+__Àn
+,
+
+261 
+__advi£
+Ë
+__THROW
+;
+
+263 #ifde‡
+__REDIRECT_NTH
+
+
+264 
+	`__REDIRECT_NTH
+ (
+posix_Ádvi£
+, (
+__fd
+, 
+__off64_t
+ 
+__off£t
+,
+
+265 
+__off64_t
+ 
+__Àn
+, 
+__advi£
+),
+
+266 
+posix_Ádvi£64
+);
+
+268 
+	#posix_Ádvi£
+ 
+posix_Ádvi£64
+
+
+	)
+
+271 #ifde‡
+__USE_LARGEFILE64
+
+
+272 
+	$posix_Ádvi£64
+ (
+__fd
+, 
+off64_t
+ 
+__off£t
+, off64_à
+__Àn
+,
+
+273 
+__advi£
+Ë
+__THROW
+;
+
+281 #i‚de‡
+__USE_FILE_OFFSET64
+
+
+282 
+	`posix_ÁŒoˇã
+ (
+__fd
+, 
+off_t
+ 
+__off£t
+, off_à
+__Àn
+);
+
+284 #ifde‡
+__REDIRECT
+
+
+285 
+	`__REDIRECT
+ (
+posix_ÁŒoˇã
+, (
+__fd
+, 
+__off64_t
+ 
+__off£t
+,
+
+286 
+__off64_t
+ 
+__Àn
+),
+
+287 
+posix_ÁŒoˇã64
+);
+
+289 
+	#posix_ÁŒoˇã
+ 
+posix_ÁŒoˇã64
+
+
+	)
+
+292 #ifde‡
+__USE_LARGEFILE64
+
+
+293 
+	`posix_ÁŒoˇã64
+ (
+__fd
+, 
+off64_t
+ 
+__off£t
+, off64_à
+__Àn
+);
+
+299 #i‡
+__USE_FORTIFY_LEVEL
+ > 0 && 
+deföed
+ 
+__f‹tify_fun˘i⁄
+ \
+
+300 && 
+deföed
+ 
+__va_¨g_∑ck_Àn
+
+
+301 
+	~<bôs/f˙é2.h
+>
+
+304 
 __END_DECLS
 
 
@@ -38460,8 +40174,8 @@ __GCC_IEC_559_COMPLEX
 .
 1
 /usr/include
-25
-471
+26
+492
 global.h
 hashtable.c
 heap.c
@@ -38470,6 +40184,7 @@ lsm-tree.c
 queue.c
 value-log.c
 /usr/include/errno.h
+/usr/include/fcntl.h
 /usr/include/math.h
 /usr/include/netdb.h
 /usr/include/netinet/in.h

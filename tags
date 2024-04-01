@@ -22,6 +22,10 @@ Delete	lsm-tree.c	/^void Delete(LSMtree *lsm, char * key){$/;"	f
 Delete_flag	lsm-tree.c	/^int Delete_flag(Node * sort, int size){$/;"	f
 Element	global.h	/^typedef struct Element{$/;"	s
 Element	global.h	/^}Element;$/;"	t	typeref:struct:Element
+FAST_MAX_PAGE	global.h	24;"	d
+FILE_NAME	global.h	35;"	d
+FastMem	global.h	/^typedef struct FastMem{$/;"	s
+FastMem	global.h	/^}FastMem;$/;"	t	typeref:struct:FastMem
 GC	value-log.c	/^void GC(LSMtree *lsm,ValueLog *log){$/;"	f
 Get	lsm-tree.c	/^int Get(LSMtree *lsm, char * key, ValueLog *log){$/;"	f
 GetKeyPos	heap.c	/^int GetKeyPos(Heap *h, char * key){$/;"	f
@@ -34,23 +38,29 @@ Heap	global.h	/^typedef struct Heap{$/;"	s
 Heap	global.h	/^} Heap;$/;"	t	typeref:struct:Heap
 HeapifyBottomTop	heap.c	/^void HeapifyBottomTop(Heap *h, int index){$/;"	f
 HeapifyTopBottom	heap.c	/^void HeapifyTopBottom(Heap *h, int parent){$/;"	f
+INDEX	global.h	29;"	d
 INT_MAX	lsm-tree.c	3;"	d	file:
 InsertKey	heap.c	/^void InsertKey(Heap *h, char * key, int value, bool flag){$/;"	f
 InsertRun	level.c	/^void InsertRun(Level *level, int count, int size, char * start, char * end){$/;"	f
 L0	global.h	/^	LevelNode *L0;$/;"	m	struct:LSMtree
+LOC_FAST	global.h	34;"	d
+LOC_SLOW	value-log.c	3;"	d	file:
 LSMtree	global.h	/^typedef struct LSMtree{$/;"	s
 LSMtree	global.h	/^} LSMtree;$/;"	t	typeref:struct:LSMtree
 Level	global.h	/^typedef struct Level{$/;"	s
 Level	global.h	/^} Level;$/;"	t	typeref:struct:Level
 LevelNode	global.h	/^typedef struct LevelNode{$/;"	s
 LevelNode	global.h	/^} LevelNode;$/;"	t	typeref:struct:LevelNode
-MAX_LOG_SIZE	global.h	20;"	d
-MAX_PAGE	global.h	19;"	d
-MAX_THREAD	global.h	21;"	d
-MAX_VALUE_SIZE	global.h	18;"	d
+MAPPING_LOG_SIZE	global.h	25;"	d
+MAX_LOG_MAPPING	global.h	27;"	d
+MAX_LOG_SIZE	global.h	22;"	d
+MAX_PAGE	global.h	21;"	d
+MAX_THREAD	global.h	33;"	d
+MAX_VALUE_SIZE	global.h	19;"	d
 Merge	lsm-tree.c	/^void Merge(LevelNode *Current, int origin, int levelsize,$/;"	f
 Node	global.h	/^typedef struct Node{$/;"	s
 Node	global.h	/^} Node;$/;"	t	typeref:struct:Node
+OFFSET	global.h	30;"	d
 PopMin	heap.c	/^Node PopMin(Heap *h){$/;"	f
 PopRun	level.c	/^Run PopRun(Level *level){$/;"	f
 PrintNode	heap.c	/^void PrintNode(Heap *h, ValueLog *log){$/;"	f
@@ -58,24 +68,26 @@ PrintStats	lsm-tree.c	/^void PrintStats(LSMtree *lsm, ValueLog *log){$/;"	f
 Put	lsm-tree.c	/^void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){$/;"	f
 Queue	global.h	/^typedef struct Queue{$/;"	s
 Queue	global.h	/^} Queue;$/;"	t	typeref:struct:Queue
-READ_LOG_SIZE	value-log.c	3;"	d	file:
 REPEAT	lsm-tree.c	4;"	d	file:
 Range	lsm-tree.c	/^void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){$/;"	f
 Run	global.h	/^typedef struct Run{$/;"	s
 Run	global.h	/^} Run;$/;"	t	typeref:struct:Run
-STRING_SIZE	global.h	17;"	d
+STRING_SIZE	global.h	18;"	d
 SaveArray	global.h	/^}SaveArray;$/;"	t	typeref:struct:Save_Array
 SaveLog	global.h	/^} SaveLog;$/;"	t	typeref:struct:Save_Log
 Save_Array	global.h	/^typedef struct Save_Array{$/;"	s
 Save_Log	global.h	/^typedef struct Save_Log{$/;"	s
+SlowMem	global.h	/^typedef struct SlowMem{$/;"	s
+SlowMem	global.h	/^}SlowMem;$/;"	t	typeref:struct:SlowMem
+SlowPut	value-log.c	/^void SlowPut(ValueLog *log, int *loc, const char *key, uint64_t key_len, uint64_t value){$/;"	f
 T	global.h	/^	int T;$/;"	m	struct:LSMtree
+TO_SLOW	value-log.c	4;"	d	file:
 TakeArg	global.h	/^typedef struct TakeArg{$/;"	s
 TakeArg	global.h	/^}TakeArg;$/;"	t	typeref:struct:TakeArg
 ValueGet	value-log.c	/^uint64_t ValueGet(ValueLog *log,int loc){$/;"	f
 ValueLog	global.h	/^typedef struct ValueLog{$/;"	s
 ValueLog	global.h	/^} ValueLog;$/;"	t	typeref:struct:ValueLog
-ValueLog_sync	value-log.c	/^int ValueLog_sync(FILE *fp) {$/;"	f
-ValuePut	value-log.c	/^void ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value){$/;"	f
+ValuePut	value-log.c	/^int ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value){$/;"	f
 array	global.h	/^	Element **array;$/;"	m	struct:Queue
 array	global.h	/^	Node * array;$/;"	m	struct:Save_Array
 array	global.h	/^	Node *array;$/;"	m	struct:Heap
@@ -87,19 +99,23 @@ count	global.h	/^	int count;$/;"	m	struct:HashTable
 count	global.h	/^	int count;$/;"	m	struct:Heap
 count	global.h	/^	int count;$/;"	m	struct:Level
 count	global.h	/^	int count;$/;"	m	struct:Run
-curhead	global.h	/^	FILE *curhead;$/;"	m	struct:ValueLog
-curtail	global.h	/^	FILE *curtail;$/;"	m	struct:ValueLog
+curhead	global.h	/^	int curhead;$/;"	m	struct:FastMem
+curhead	global.h	/^	int curhead;$/;"	m	struct:SlowMem
+cursize	global.h	/^	int cursize;$/;"	m	struct:SlowMem
+curstart	global.h	/^	int curstart; \/\/current mapping start index$/;"	m	struct:FastMem
 dead	lsm-tree.c	/^int dead = 0;$/;"	v
 end	global.h	/^	char end[STRING_SIZE];$/;"	m	struct:Run
-filename	global.h	/^	char filename[14];$/;"	m	struct:Save_Array
+fast	global.h	/^	FastMem *fast;$/;"	m	struct:ValueLog
+filename	global.h	/^	char filename[FILE_NAME];$/;"	m	struct:Save_Array
 finish	global.h	/^	bool finish;$/;"	m	struct:TakeArg
 flag	global.h	/^	bool flag;$/;"	m	struct:Node
-fp1	global.h	/^	FILE *fp1;$/;"	m	struct:ValueLog
-fp2	global.h	/^	FILE *fp2;$/;"	m	struct:ValueLog
+fp	global.h	/^	int fp;$/;"	m	struct:FastMem
+fp	global.h	/^	int fp;$/;"	m	struct:SlowMem
 fpr1	global.h	/^	double fpr1;$/;"	m	struct:LSMtree
 front	global.h	/^	int front;$/;"	m	struct:Queue
 get_log	lsm-tree.c	/^void *get_log(void *argument){$/;"	f
-head	global.h	/^	int head;$/;"	m	struct:ValueLog
+head	global.h	/^	int head;$/;"	m	struct:FastMem
+head	global.h	/^	int head;$/;"	m	struct:SlowMem
 index	global.h	/^	int index;$/;"	m	struct:Save_Array
 is_empty	queue.c	/^bool is_empty(Queue *queue){$/;"	f
 is_full	queue.c	/^bool is_full(Queue *queue){$/;"	f
@@ -113,8 +129,11 @@ lock	global.h	/^	pthread_mutex_t lock;$/;"	m	struct:LSMtree
 lock	global.h	/^	pthread_mutex_t lock;$/;"	m	struct:Queue
 log	global.h	/^	ValueLog *log;$/;"	m	struct:TakeArg
 main	lsm-tree.c	/^int main(){$/;"	f
+map	global.h	/^	SaveLog * map;$/;"	m	struct:FastMem
+map	global.h	/^	SaveLog * map;$/;"	m	struct:SlowMem
 next	global.h	/^	struct LevelNode *next;$/;"	m	struct:LevelNode	typeref:struct:LevelNode::LevelNode
 number	global.h	/^	int number;$/;"	m	struct:LevelNode
+number	global.h	/^	int number;$/;"	m	struct:Save_Array
 q	global.h	/^	Queue *q;$/;"	m	struct:TakeArg
 rear	global.h	/^	int rear;$/;"	m	struct:Queue
 size	global.h	/^	int size;$/;"	m	struct:Heap
@@ -122,8 +141,9 @@ size	global.h	/^	int size;$/;"	m	struct:Level
 size	global.h	/^	int size;$/;"	m	struct:Queue
 size	global.h	/^	int size;$/;"	m	struct:Run
 size	global.h	/^	int size;$/;"	m	struct:Save_Array
+slow	global.h	/^	SlowMem *slow;$/;"	m	struct:ValueLog
 start	global.h	/^	char start[STRING_SIZE];$/;"	m	struct:Run
-tail	global.h	/^	int tail;$/;"	m	struct:ValueLog
+tail	global.h	/^	int tail;$/;"	m	struct:FastMem
 targetfpr	global.h	/^	double targetfpr;$/;"	m	struct:Level
 value	global.h	/^	int value;$/;"	m	struct:Node
 value	global.h	/^	int value;$/;"	m	struct:Save_Log

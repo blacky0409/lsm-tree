@@ -547,10 +547,11 @@ SaveArray * Get_array(LSMtree *lsm, char * key){
 	strcpy(save->filename,"");
 	if(position != -1){
 		if(lsm->buffer->array[position].flag){
-			save->array = (Node *) malloc(4*sizeof(Node));
-			memcpy(save->array,lsm->buffer->array, 4 * sizeof(Node));
+			save->array = (Node *) malloc(lsm->buffer->size*sizeof(Node));
+			memcpy(save->array,lsm->buffer->array, lsm->buffer->size * sizeof(Node));
 			save->index=position;
-			save->size=4;
+			save->size=lsm->buffer->size;
+			save->number=0;
 			return save;
 		}
 	}else{
@@ -750,8 +751,10 @@ void *get_log(void *argument){
 	TakeArg * arg = (TakeArg *)argument;
 	while(!is_empty(arg->q)||!arg->finish){
 		Element *element = GetToQueue(arg->q);
+		pthread_mutex_lock(&arg->log->lock);
 		if(element != NULL)
 			printf("%s:%ld ",element->key,ValueGet(arg->log,element->loc));
+		pthread_mutex_unlock(&arg->log->lock);
 	}
 	return NULL;
 }
@@ -765,7 +768,6 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 	Queue *q = CreateQueue(128);
 	pthread_t thread[MAX_THREAD];
 	void *result;
-
 	TakeArg *arg = (TakeArg *)malloc(sizeof(TakeArg));
 	arg->q = q;
 	arg->log = log;
@@ -889,7 +891,6 @@ int main(){
 	char input[10];
 	int d = 0;
 	for(int i=0; i < 1000 ; i++){
-
 		//Make random key
 		int w = 0;
 		for(w = 0 ; w < 9; w++){
@@ -901,6 +902,7 @@ int main(){
 		int key_value = rand()%1000 + 1;
 
 		Put(lsm,input, key_value,true,log);
+		printf("%s : %d\n",input,key_value);
 
 		/*	strcpy(Get_want[i],input);
 			Get_re[i] = key_value;
@@ -914,12 +916,18 @@ int main(){
 			{
 				Delete(lsm,input);
 			}
-			strcpy(Get_want[index],input);
+			d++;
+		/*	strcpy(Get_want[index],input);
 			Get_re[index] = key_value;
 			index++;
-			d++;
+			d++;*/
 		}
-
+		strcpy(Get_want[index],input);
+		Get_re[index] = key_value;
+		index++;
+		if(i!=0 && i%200 == 0){
+			GC(lsm,log);
+		}
 	}
 
 	printf("\n\n");
@@ -942,32 +950,32 @@ int main(){
 	char start[10] = "aaaaaaaaa\0";
 	char end[10] = "ccccccccc\0";
 	Range(lsm, start, end,log);
-
+/*
 	printf("\n\n");
 
 	PrintNode(lsm->buffer,log);
 	printf("\n");
 	PrintStats(lsm,log);
-	
-	   for(int w=0; w < REPEAT; w++){
-	   GC(lsm,log);
 
-	   for(int i = 0 ; i < index; i ++){
-	   return_val = Get(lsm, Get_want[i], log);
-	   char answer[10];
-	   strcpy(answer,(return_val == Get_re[i])? "true" : "false");
-	   printf("%d : value of key %s is %d, answer : %s\n", i,Get_want[i],return_val, answer);
-	   if(strcmp(answer,"false") == 0){
-	   printf("\n\n");
-	   false_count++;
-	   }
-	   printf("\n");
-	   }
-	   }
-	 
+	for(int w=0; w < REPEAT; w++){
+		GC(lsm,log);
+
+		for(int i = 0 ; i < index; i ++){
+			return_val = Get(lsm, Get_want[i], log);
+			char answer[10];
+			strcpy(answer,(return_val == Get_re[i])? "true" : "false");
+			printf("%d : value of key %s is %d, answer : %s\n", i,Get_want[i],return_val, answer);
+			if(strcmp(answer,"false") == 0){
+				printf("\n\n");
+				false_count++;
+			}
+			printf("\n");
+		}
+	}
+
+*/
 
 	ClearLog(log);
-
 
 
 

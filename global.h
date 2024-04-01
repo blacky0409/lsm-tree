@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdint.h>
 #include <math.h>
-#include <unistd.h>
 #include <netdb.h> 
 #include <netinet/in.h> 
 #include <sys/socket.h> 
@@ -13,11 +12,24 @@
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/mman.h>
+#include <fcntl.h>
 
 #define STRING_SIZE 10
 #define MAX_VALUE_SIZE 10
-#define MAX_PAGE 70000
-#define MAX_LOG_SIZE sizeof(SaveLog) * (2000)
+
+#define MAX_PAGE (4096)
+#define MAX_LOG_SIZE (4096 * 2 )
+
+#define FAST_MAX_PAGE MAX_LOG_SIZE
+#define MAPPING_LOG_SIZE (4096)
+
+#define MAX_LOG_MAPPING ((int)(MAPPING_LOG_SIZE / sizeof(SaveLog))  * sizeof(SaveLog))
+
+#define INDEX(X) (int)(X / MAPPING_LOG_SIZE)
+#define OFFSET(X) ((X % MAPPING_LOG_SIZE) / sizeof(SaveLog))
+
+
 #define	MAX_THREAD 32
 #define LOC_FAST "FastMemory/"
 #define FILE_NAME 25
@@ -66,28 +78,33 @@ typedef struct LSMtree{
 	double fpr1;
 	pthread_mutex_t lock;
 } LSMtree;
-typedef struct FastMem{
-	FILE *fp1;
-	FILE *fp2;
-	int head;
-	int tail;
-	FILE *curhead;
-	FILE *curtail;
-}FastMem;
-typedef struct SlowMem{
-	FILE *fp;
-	int head;
-}SlowMem;
-typedef struct ValueLog{
-	FastMem *fast;
-	SlowMem *slow;
-} ValueLog;
-
 typedef struct Save_Log{
 	char key[STRING_SIZE];
 	int key_len;
 	int value;
 } SaveLog;
+
+typedef struct FastMem{
+	int fp;
+	int head;
+	int tail;
+	int curstart; //current mapping start index
+	SaveLog * map;
+}FastMem;
+
+typedef struct SlowMem{
+	int fp;
+	int head;
+	int curhead; //same to curstart in FastMem
+	int cursize;
+	SaveLog * map;
+}SlowMem;
+
+typedef struct ValueLog{
+	FastMem *fast;
+	SlowMem *slow;
+	pthread_mutex_t lock;
+} ValueLog;
 
 typedef struct Save_Array{
 	Node * array;
@@ -151,10 +168,9 @@ SaveArray * Get_array(LSMtree *lsm, char * key);
 
 //value-log.c
 ValueLog *CreateLog(int head, int tail);
-void ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value);
+int ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value);
 uint64_t ValueGet(ValueLog *log, int loc);
 void ClearLog(ValueLog *log);
-int ValueLog_sync(FILE *fp);
 void GC(LSMtree *lsm,ValueLog *log);
 
 //queue.c
