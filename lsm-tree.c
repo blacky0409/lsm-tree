@@ -1,7 +1,6 @@
 #include "global.h"
 
 #define INT_MAX 2147483647
-#define REPEAT 5
 
 int dead = 0;
 
@@ -18,7 +17,8 @@ LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr){
 	lsm->L0->number = 0;
 	lsm->L0->next = NULL;
 	lsm->fpr1 = fpr; //delete
-	pthread_mutex_init(&(lsm->lock), NULL);
+	pthread_rwlock_init(&lsm->buffer_lock, NULL);
+	pthread_rwlock_init(&lsm->file_lock, NULL);
 	return lsm;
 }
 
@@ -516,30 +516,34 @@ void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){
 
 	int loc;
 	ValuePut(log,&loc, key, strlen(key) + 1 , value);
-
-	int position = GetKeyPos(lsm->buffer, key);
+	int position = GetKeyPos(lsm, key);
 	if(position >= 0){
+		pthread_rwlock_wrlock(&lsm->buffer_lock);
 		lsm->buffer->array[position].value = loc;
 		lsm->buffer->array[position].flag = flag;
+		pthread_rwlock_unlock(&lsm->buffer_lock);
 	}else{
 		if(lsm->buffer->count < lsm->buffer->size){
-			InsertKey(lsm->buffer, key, loc, flag);
+			InsertKey(lsm, key, loc, flag);
 		}else if(lsm->buffer->count == lsm->buffer->size){
 			int i;
 			Node *sortedrun = (Node *) malloc(lsm->buffer->size * sizeof(Node));
 			for(i = 0; i < lsm->buffer->size; i++){
-				sortedrun[i] = PopMin(lsm->buffer);
+				sortedrun[i] = PopMin(lsm);
 			}
+
+			pthread_rwlock_wrlock(&lsm->file_lock);
 			Merge(lsm->L0, 0, (lsm->T - 1), 
 					lsm->buffer->size, lsm->buffer->size, sortedrun, lsm->fpr1);
-			InsertKey(lsm->buffer, key, loc, flag);
+			pthread_rwlock_unlock(&lsm->file_lock);
+
+			InsertKey(lsm, key, loc, flag);
 		}
 	}
-
 }
 
 SaveArray * Get_array(LSMtree *lsm, char * key){
-	int position = GetKeyPos(lsm->buffer, key);
+	int position = GetKeyPos(lsm, key);
 	int i;
 	SaveArray * save = (SaveArray *)malloc(sizeof(SaveArray));
 	save->index = -1;
@@ -547,11 +551,13 @@ SaveArray * Get_array(LSMtree *lsm, char * key){
 	strcpy(save->filename,"");
 	if(position != -1){
 		if(lsm->buffer->array[position].flag){
+			pthread_rwlock_rdlock(&lsm->buffer_lock);
 			save->array = (Node *) malloc(lsm->buffer->size*sizeof(Node));
 			memcpy(save->array,lsm->buffer->array, lsm->buffer->size * sizeof(Node));
 			save->index=position;
 			save->size=lsm->buffer->size;
 			save->number=0;
+			pthread_rwlock_unlock(&lsm->buffer_lock);
 			return save;
 		}
 	}else{
@@ -564,9 +570,11 @@ SaveArray * Get_array(LSMtree *lsm, char * key){
 					Node *currentarray = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
 					char filename[FILE_NAME];
 					sprintf(filename, LOC_FAST"data/L%dN%d", current->number, i);
+					pthread_rwlock_rdlock(&lsm->file_lock);
 					FILE *fp = fopen(filename, "rt");
 					fread(currentarray, sizeof(Node), exploringlevel->array[i].count, fp);
 					fclose(fp);
+					pthread_rwlock_unlock(&lsm->file_lock);
 					int left = 0;
 					int right = exploringlevel->array[i].count - 1;
 					int mid = (left + right) / 2;
@@ -630,11 +638,14 @@ SaveArray * Get_array(LSMtree *lsm, char * key){
 }
 
 Node * Get_loc(LSMtree *lsm, char * key){
-	int position = GetKeyPos(lsm->buffer, key);
+	int position = GetKeyPos(lsm, key);
 	int i;
 	if(position != -1){
 		if(lsm->buffer->array[position].flag){
-			return &lsm->buffer->array[position];
+			pthread_rwlock_rdlock(&lsm->buffer_lock);
+			Node * v = &lsm->buffer->array[position];
+			pthread_rwlock_unlock(&lsm->buffer_lock);
+			return v;
 		}
 	}else{
 		LevelNode *current = lsm->L0->next;
@@ -646,9 +657,11 @@ Node * Get_loc(LSMtree *lsm, char * key){
 					Node *currentarray = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
 					char filename[FILE_NAME];
 					sprintf(filename, LOC_FAST"data/L%dN%d", current->number, i);
+					pthread_rwlock_rdlock(&lsm->file_lock);
 					FILE *fp = fopen(filename, "rt");
 					fread(currentarray, sizeof(Node), exploringlevel->array[i].count, fp);
 					fclose(fp);
+					pthread_rwlock_unlock(&lsm->file_lock);
 					int left = 0;
 					int right = exploringlevel->array[i].count - 1;
 					int mid = (left + right) / 2;
@@ -694,11 +707,13 @@ Node * Get_loc(LSMtree *lsm, char * key){
 }
 
 void Delete(LSMtree *lsm, char * key){
-	int position = GetKeyPos(lsm->buffer, key);
+	int position = GetKeyPos(lsm, key);
 	int i;
 	if(position != -1){
 		if(lsm->buffer->array[position].flag){
+			pthread_rwlock_wrlock(&lsm->buffer_lock);
 			lsm->buffer->array[position].flag = false;
+			pthread_rwlock_unlock(&lsm->buffer_lock);
 			return;
 		}
 	}else{
@@ -709,10 +724,10 @@ void Delete(LSMtree *lsm, char * key){
 				if(strcmp(exploringlevel->array[i].start , key) <= 0 && strcmp(exploringlevel->array[i].end , key) >= 0){
 					Node *currentarray = (Node *) malloc(exploringlevel->array[i].count * sizeof(Node));
 					char filename[FILE_NAME];
+					pthread_rwlock_wrlock(&lsm->file_lock);
 					sprintf(filename, LOC_FAST"data/L%dN%d", current->number, i);
 					FILE *fp = fopen(filename, "rt");
 					fread(currentarray, sizeof(Node), exploringlevel->array[i].count, fp);
-					fclose(fp);
 					int left = 0;
 					int right = exploringlevel->array[i].count - 1;
 					int mid = (left + right) / 2;
@@ -738,6 +753,9 @@ void Delete(LSMtree *lsm, char * key){
 							mid = (left + right) / 2;
 						}
 					}
+					fwrite(currentarray, sizeof(Node), exploringlevel->array[i].count, fp);
+					fclose(fp);
+					pthread_rwlock_unlock(&lsm->file_lock);
 					free(currentarray);						
 
 				}
@@ -749,12 +767,13 @@ void Delete(LSMtree *lsm, char * key){
 }
 void *get_log(void *argument){
 	TakeArg * arg = (TakeArg *)argument;
-	while(!is_empty(arg->q)||!arg->finish){
+	while(!arg->finish){
 		Element *element = GetToQueue(arg->q);
-		pthread_mutex_lock(&arg->log->lock);
-		if(element != NULL)
+		if(element == NULL)
+			continue;
+		else{
 			printf("%s:%ld ",element->key,ValueGet(arg->log,element->loc));
-		pthread_mutex_unlock(&arg->log->lock);
+		}
 	}
 	return NULL;
 }
@@ -763,9 +782,8 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 	printf("start range\n");
 	int i;
 	int j;
-	int find = 0;
 	HashTable *table = CreateHashTable(128);
-	Queue *q = CreateQueue(128);
+	Queue *q = CreateQueue(1024);
 	pthread_t thread[MAX_THREAD];
 	void *result;
 	TakeArg *arg = (TakeArg *)malloc(sizeof(TakeArg));
@@ -785,7 +803,6 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 	for(i = 0; i < lsm->buffer->count; i++){
 		if((strcmp(lsm->buffer->array[i].key , start) >= 0) && (strcmp(lsm->buffer->array[i].key , end)) < 0){
 			if(!CheckTable(table, lsm->buffer->array[i].key)){
-				find += 1;
 				AddToTable(table, lsm->buffer->array[i].key);
 				if(lsm->buffer->array[i].flag){
 					AddToQueue(q,lsm->buffer->array[i].key,lsm->buffer->array[i].value);
@@ -797,19 +814,20 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 	while(currentlevelnode != NULL){
 		int levelnum = currentlevelnode->number;
 		for(i = 0; i < currentlevelnode->level->count; i++){
-			if((strcmp(currentlevelnode->level->array[i].end , start) >= 0) || (strcmp(currentlevelnode->level->array[i].start , end) < 0)){
+			if((strcmp(currentlevelnode->level->array[i].end , start) >= 0) || (strcmp(currentlevelnode->level->array[i].start , end) <= 0)){
 				Node *currentarray = (Node *) malloc(currentlevelnode->level->array[i].count * sizeof(Node));
 				char filename[FILE_NAME];
+				pthread_rwlock_rdlock(&lsm->file_lock);
 				sprintf(filename, LOC_FAST"data/L%dN%d", levelnum, i);
 				FILE *fp = fopen(filename, "rt");
 				fread(currentarray, sizeof(Node), currentlevelnode->level->array[i].count, fp);
 				fclose(fp);
+				pthread_rwlock_unlock(&lsm->file_lock);
 				for(j = 0; j < currentlevelnode->level->array[i].count; j++){
 					if(strcmp(currentarray[j].key , end) >= 0){
-						break;
+						continue;
 					}else if(strcmp(currentarray[j].key , start) >= 0){
 						if(!CheckTable(table, currentarray[j].key)){
-							find += 1;
 							AddToTable(table, currentarray[j].key);
 							if(currentarray[j].flag){
 								AddToQueue(q,currentarray[j].key,currentarray[j].value);
@@ -852,9 +870,11 @@ void PrintStats(LSMtree *lsm, ValueLog *log){
 			currentcount += currentlevelnode->level->array[i].count;
 			Node *currentarray = (Node *) malloc(currentlevelnode->level->array[i].count * sizeof(Node));
 			char filename[FILE_NAME];
+			pthread_rwlock_rdlock(&lsm->file_lock);
 			sprintf(filename, LOC_FAST"data/L%dN%d", levelnum, i);
 			FILE *fp = fopen(filename, "rt");
 			fread(currentarray, sizeof(Node), currentlevelnode->level->array[i].count, fp);
+			pthread_rwlock_unlock(&lsm->file_lock);
 			fclose(fp);
 			for(j = 0; j < currentlevelnode->level->array[i].count; j++){
 				printf("%s:%ld:L%d  ", currentarray[j].key, ValueGet(log,currentarray[j].value), levelnum);
@@ -880,106 +900,5 @@ int Get(LSMtree *lsm, char * key, ValueLog *log){
 	}
 	printf("value %d\n",dest->value);
 	return (ValueGet(log,dest->value));
-}
-int main(){
-	LSMtree *lsm = CreateLSM(4, 4, 0.0000001);
-	ValueLog *log = CreateLog(0,0);
-	srand((unsigned int) time(NULL));
-	char Get_want[1000][10];
-	int Get_re[1000];
-	int index = 0;
-	char input[10];
-	int d = 0;
-	for(int i=0; i < 1000 ; i++){
-		//Make random key
-		int w = 0;
-		for(w = 0 ; w < 9; w++){
-			input[w] = 'a' + rand() % 26;
-		}
-
-		input[w] = 0;
-		//Make random value
-		int key_value = rand()%1000 + 1;
-
-		Put(lsm,input, key_value,true,log);
-		printf("%s : %d\n",input,key_value);
-
-		/*	strcpy(Get_want[i],input);
-			Get_re[i] = key_value;
-			if(5 <= d && d < 8)
-			{
-			Delete(lsm,input);
-			}
-			d++;*/
-		if(i%5 == 0){
-			if(5 <= d && d < 8)
-			{
-				Delete(lsm,input);
-			}
-			d++;
-		/*	strcpy(Get_want[index],input);
-			Get_re[index] = key_value;
-			index++;
-			d++;*/
-		}
-		strcpy(Get_want[index],input);
-		Get_re[index] = key_value;
-		index++;
-		if(i!=0 && i%200 == 0){
-			GC(lsm,log);
-		}
-	}
-
-	printf("\n\n");
-
-	int return_val;
-	int false_count = 0;
-
-	for(int i = 0 ; i < index; i ++){
-		return_val = Get(lsm, Get_want[i], log);
-		char answer[10];
-		strcpy(answer,(return_val == Get_re[i])? "true" : "false");
-		printf("%d : value of key %s is %d, answer : %s\n", i,Get_want[i],return_val, answer);
-		if(strcmp(answer,"false") == 0){
-			printf("\n\n");
-			false_count++;
-		}
-		printf("\n");
-	}
-
-	char start[10] = "aaaaaaaaa\0";
-	char end[10] = "ccccccccc\0";
-	Range(lsm, start, end,log);
-/*
-	printf("\n\n");
-
-	PrintNode(lsm->buffer,log);
-	printf("\n");
-	PrintStats(lsm,log);
-
-	for(int w=0; w < REPEAT; w++){
-		GC(lsm,log);
-
-		for(int i = 0 ; i < index; i ++){
-			return_val = Get(lsm, Get_want[i], log);
-			char answer[10];
-			strcpy(answer,(return_val == Get_re[i])? "true" : "false");
-			printf("%d : value of key %s is %d, answer : %s\n", i,Get_want[i],return_val, answer);
-			if(strcmp(answer,"false") == 0){
-				printf("\n\n");
-				false_count++;
-			}
-			printf("\n");
-		}
-	}
-
-*/
-
-	ClearLog(log);
-
-
-
-	printf("false count : %d = %d, dead : %d\n",false_count,3 * REPEAT + 3,dead);
-	return 0;
 }
 

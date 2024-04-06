@@ -76,7 +76,8 @@ typedef struct LSMtree{
 	int T;
 	LevelNode *L0;
 	double fpr1;
-	pthread_mutex_t lock;
+	pthread_rwlock_t buffer_lock;
+	pthread_rwlock_t file_lock;
 } LSMtree;
 typedef struct Save_Log{
 	char key[STRING_SIZE];
@@ -103,7 +104,8 @@ typedef struct SlowMem{
 typedef struct ValueLog{
 	FastMem *fast;
 	SlowMem *slow;
-	pthread_mutex_t lock;
+	pthread_rwlock_t fastlock;
+	pthread_rwlock_t slowlock;
 } ValueLog;
 
 typedef struct Save_Array{
@@ -135,12 +137,12 @@ typedef struct TakeArg{
 
 //heap.c
 Heap *CreateHeap(int size);
-int GetKeyPos(Heap *h, char * key);
+int GetKeyPos(LSMtree *lsm, char * key);
 void HeapifyBottomTop(Heap *h, int index);
 void HeapifyTopBottom(Heap *h, int parent);
-void InsertKey(Heap *h, char * key, int value, bool flag);
-Node PopMin(Heap *h);
-void PrintNode(Heap *h,ValueLog *log);
+void InsertKey(LSMtree *lsm, char * key, int value, bool flag);
+Node PopMin(LSMtree * lsm);
+void PrintNode(LSMtree *lsm,ValueLog *log);
 void ClearHeap(Heap *h);
 
 //level.c
@@ -165,6 +167,7 @@ void Range(LSMtree *lsm, char * start, char * end, ValueLog *log);
 void PrintStats(LSMtree *lsm,ValueLog *log);
 int Get(LSMtree *lsm, char * key, ValueLog *log);
 SaveArray * Get_array(LSMtree *lsm, char * key);
+void Delete(LSMtree *lsm, char * key);
 
 //value-log.c
 ValueLog *CreateLog(int head, int tail);

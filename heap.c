@@ -19,18 +19,25 @@ Heap *CreateHeap(int size){
 	return h;
 }
 
-int GetKeyPos(Heap *h, char * key){
+int GetKeyPos(LSMtree *lsm, char * key){
+	pthread_rwlock_rdlock(&lsm->buffer_lock);
+	Heap *h = lsm->buffer;
+	int re = -1;
 	if(h->count == 0){
-		return -1;
+		goto GetKeyPosEnd;
 	}else{
 		int i;
 		for(i = 0; i < h->count; i++){
 			if(strcmp(h->array[i].key , key)==0){
-				return i;
+				re = i;
+				goto GetKeyPosEnd;
 			}
 		}
-		return -1;
+		goto GetKeyPosEnd;
 	}
+GetKeyPosEnd:
+	pthread_rwlock_unlock(&lsm->buffer_lock);
+	return re;
 }
 
 void HeapifyBottomTop(Heap *h, int index){
@@ -71,24 +78,31 @@ void HeapifyTopBottom(Heap *h, int parent){
 	}
 }
 
-void InsertKey(Heap *h, char * key, int value, bool flag){
+void InsertKey(LSMtree *lsm, char * key, int value, bool flag){
+	pthread_rwlock_wrlock(&lsm->buffer_lock);
+	Heap * h = lsm->buffer;
 	strcpy(h->array[h->count].key,key);
 	h->array[h->count].value = value;
 	h->array[h->count].flag = flag;
 	HeapifyBottomTop(h, h->count);
 	h->count += 1;
+	pthread_rwlock_unlock(&lsm->buffer_lock);
 }
 
-Node PopMin(Heap *h){
+Node PopMin(LSMtree *lsm){
+	Heap *h = lsm->buffer;
+	pthread_rwlock_wrlock(&lsm->buffer_lock);
 	Node pair;
 	pair = h->array[0];
 	h->array[0] = h->array[h->count - 1];
 	h->count -= 1;
 	HeapifyTopBottom(h, 0);
+	pthread_rwlock_unlock(&lsm->buffer_lock);
 	return pair;
 }
 
-void PrintNode(Heap *h, ValueLog *log){
+void PrintNode(LSMtree * lsm, ValueLog *log){
+	Heap *h = lsm->buffer;
 	int i;
 	for(i=0; i<h->count; i++){
 		printf("%s:%ld:L0 ", h->array[i].key, ValueGet(log,h->array[i].value));

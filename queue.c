@@ -10,7 +10,7 @@ Queue *CreateQueue(int size){
 	queue->rear = 0;
 	queue->size = size;
 	queue->array = (Element **) malloc(size * sizeof(Element *));
-	pthread_mutex_init(&(queue->lock),NULL);
+	pthread_mutex_init(&queue->lock,NULL);
 	
 	if(queue->array == NULL){
 		printf("There is not enough memory for an array in the hash table.");
@@ -20,28 +20,31 @@ Queue *CreateQueue(int size){
 }
 
 bool is_empty(Queue *queue){
-	if(queue->front == queue->rear) 
+	if(queue->front == queue->rear){ 
 		return true;
-	else
+	}
+	else{
 		return false;
+	}
 }
-
 bool is_full(Queue *queue){
-	if(((queue->rear + 1) % queue->size) == queue->front)
+	if(((queue->rear + 1) % queue->size) == queue->front){
 		return true;
-	else
+	}
+	else{
 		return false;
+	}
 }
 
 Element * GetToQueue(Queue *queue){
 	pthread_mutex_lock(&queue->lock);
 	if(is_empty(queue)){
-//		printf("queue is empty\n");
 		pthread_mutex_unlock(&queue->lock);
+//		printf("queue is empty\n");
 		return NULL;
 	}
-	queue->front = (queue->front + 1) % (queue->size);
 	Element * re = queue->array[queue->front];
+	queue->front = (queue->front + 1) % (queue->size);
 	pthread_mutex_unlock(&queue->lock);
 	return re;
 }
@@ -56,8 +59,8 @@ void AddToQueue(Queue *queue,char *key, int loc){
 	Element *ele = (Element *)malloc(sizeof(Element));
 	ele->loc = loc;
 	strcpy(ele->key,key);
-	queue->rear = (queue->rear + 1) % (queue->size);
 	queue->array[queue->rear] = ele;
+	queue->rear = (queue->rear + 1) % (queue->size);
 	pthread_mutex_unlock(&queue->lock);
 	return;
 }
@@ -65,6 +68,6 @@ void AddToQueue(Queue *queue,char *key, int loc){
 void ClearQueue(Queue *queue){
 	free(queue->array);
 	free(queue);
-	pthread_mutex_destroy(&(queue->lock));
+	pthread_mutex_destroy(&queue->lock);
 }
 

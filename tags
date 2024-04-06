@@ -28,7 +28,7 @@ FastMem	global.h	/^typedef struct FastMem{$/;"	s
 FastMem	global.h	/^}FastMem;$/;"	t	typeref:struct:FastMem
 GC	value-log.c	/^void GC(LSMtree *lsm,ValueLog *log){$/;"	f
 Get	lsm-tree.c	/^int Get(LSMtree *lsm, char * key, ValueLog *log){$/;"	f
-GetKeyPos	heap.c	/^int GetKeyPos(Heap *h, char * key){$/;"	f
+GetKeyPos	heap.c	/^int GetKeyPos(LSMtree *lsm, char * key){$/;"	f
 GetToQueue	queue.c	/^Element * GetToQueue(Queue *queue){$/;"	f
 Get_array	lsm-tree.c	/^SaveArray * Get_array(LSMtree *lsm, char * key){$/;"	f
 Get_loc	lsm-tree.c	/^Node * Get_loc(LSMtree *lsm, char * key){$/;"	f
@@ -40,7 +40,8 @@ HeapifyBottomTop	heap.c	/^void HeapifyBottomTop(Heap *h, int index){$/;"	f
 HeapifyTopBottom	heap.c	/^void HeapifyTopBottom(Heap *h, int parent){$/;"	f
 INDEX	global.h	29;"	d
 INT_MAX	lsm-tree.c	3;"	d	file:
-InsertKey	heap.c	/^void InsertKey(Heap *h, char * key, int value, bool flag){$/;"	f
+INT_MAX	test.c	4;"	d	file:
+InsertKey	heap.c	/^void InsertKey(LSMtree *lsm, char * key, int value, bool flag){$/;"	f
 InsertRun	level.c	/^void InsertRun(Level *level, int count, int size, char * start, char * end){$/;"	f
 L0	global.h	/^	LevelNode *L0;$/;"	m	struct:LSMtree
 LOC_FAST	global.h	34;"	d
@@ -68,7 +69,7 @@ PrintStats	lsm-tree.c	/^void PrintStats(LSMtree *lsm, ValueLog *log){$/;"	f
 Put	lsm-tree.c	/^void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){$/;"	f
 Queue	global.h	/^typedef struct Queue{$/;"	s
 Queue	global.h	/^} Queue;$/;"	t	typeref:struct:Queue
-REPEAT	lsm-tree.c	4;"	d	file:
+REPEAT	test.c	3;"	d	file:
 Range	lsm-tree.c	/^void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){$/;"	f
 Run	global.h	/^typedef struct Run{$/;"	s
 Run	global.h	/^} Run;$/;"	t	typeref:struct:Run
@@ -94,18 +95,20 @@ array	global.h	/^	Node *array;$/;"	m	struct:Heap
 array	global.h	/^	Run *array;$/;"	m	struct:Level
 array	global.h	/^	char **array;$/;"	m	struct:HashTable
 buffer	global.h	/^	Heap *buffer;$/;"	m	struct:LSMtree
+buffer_lock	global.h	/^	pthread_rwlock_t buffer_lock;$/;"	m	struct:LSMtree
 cmpfunc	lsm-tree.c	/^int cmpfunc(const void *a, const void *b){$/;"	f
 count	global.h	/^	int count;$/;"	m	struct:HashTable
 count	global.h	/^	int count;$/;"	m	struct:Heap
 count	global.h	/^	int count;$/;"	m	struct:Level
 count	global.h	/^	int count;$/;"	m	struct:Run
-curhead	global.h	/^	int curhead;$/;"	m	struct:FastMem
-curhead	global.h	/^	int curhead;$/;"	m	struct:SlowMem
+curhead	global.h	/^	int curhead; \/\/same to curstart in FastMem$/;"	m	struct:SlowMem
 cursize	global.h	/^	int cursize;$/;"	m	struct:SlowMem
 curstart	global.h	/^	int curstart; \/\/current mapping start index$/;"	m	struct:FastMem
 dead	lsm-tree.c	/^int dead = 0;$/;"	v
 end	global.h	/^	char end[STRING_SIZE];$/;"	m	struct:Run
 fast	global.h	/^	FastMem *fast;$/;"	m	struct:ValueLog
+fastlock	global.h	/^	pthread_mutex_t fastlock;$/;"	m	struct:ValueLog
+file_loc	global.h	/^	pthread_rwlock_t file_loc;$/;"	m	struct:LSMtree
 filename	global.h	/^	char filename[FILE_NAME];$/;"	m	struct:Save_Array
 finish	global.h	/^	bool finish;$/;"	m	struct:TakeArg
 flag	global.h	/^	bool flag;$/;"	m	struct:Node
@@ -125,10 +128,9 @@ key	global.h	/^	char key[STRING_SIZE];$/;"	m	struct:Save_Log
 key_len	global.h	/^	int key_len;$/;"	m	struct:Save_Log
 level	global.h	/^	Level *level;$/;"	m	struct:LevelNode
 loc	global.h	/^	int loc;$/;"	m	struct:Element
-lock	global.h	/^	pthread_mutex_t lock;$/;"	m	struct:LSMtree
 lock	global.h	/^	pthread_mutex_t lock;$/;"	m	struct:Queue
 log	global.h	/^	ValueLog *log;$/;"	m	struct:TakeArg
-main	lsm-tree.c	/^int main(){$/;"	f
+main	test.c	/^int main(){$/;"	f
 map	global.h	/^	SaveLog * map;$/;"	m	struct:FastMem
 map	global.h	/^	SaveLog * map;$/;"	m	struct:SlowMem
 next	global.h	/^	struct LevelNode *next;$/;"	m	struct:LevelNode	typeref:struct:LevelNode::LevelNode
@@ -142,6 +144,7 @@ size	global.h	/^	int size;$/;"	m	struct:Queue
 size	global.h	/^	int size;$/;"	m	struct:Run
 size	global.h	/^	int size;$/;"	m	struct:Save_Array
 slow	global.h	/^	SlowMem *slow;$/;"	m	struct:ValueLog
+slowlock	global.h	/^	pthread_mutex_t slowlock;$/;"	m	struct:ValueLog
 start	global.h	/^	char start[STRING_SIZE];$/;"	m	struct:Run
 tail	global.h	/^	int tail;$/;"	m	struct:FastMem
 targetfpr	global.h	/^	double targetfpr;$/;"	m	struct:Level
