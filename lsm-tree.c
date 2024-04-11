@@ -516,7 +516,6 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){
 
 	pthread_rwlock_rdlock(&lsm->GC_lock);
-	printf("hi\n");
 	int loc;
 	ValuePut(lsm,log,&loc, key, strlen(key) + 1 , value);
 	int position = GetKeyPos(lsm, key);

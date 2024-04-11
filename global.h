@@ -16,6 +16,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
 #define STRING_SIZE 10
 #define MAX_VALUE_SIZE 10
@@ -25,7 +26,7 @@
 
 #define FAST_MAX_PAGE MAX_LOG_SIZE 
 #define MAPPING_LOG_SIZE (4096) //usually fix
-#define UTILIZATION (FAST_MAX_PAGE * 8 / 10)
+#define UTILIZATION (FAST_MAX_PAGE * 6 / 10)
 
 #define MAX_LOG_MAPPING ((int)(MAPPING_LOG_SIZE / sizeof(SaveLog))  * sizeof(SaveLog))
 

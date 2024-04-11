@@ -30,7 +30,7 @@ void *thread_function(void *argument){
 	int index = 0;
 	char input[10];
 
-	for(int i=0; i < 50 ; i++){
+	for(int i=0; i < 100 ; i++){
 		//Make random key
 		int w = 0;
 		for(w = 0 ; w < 9; w++){
@@ -42,6 +42,7 @@ void *thread_function(void *argument){
 		int key_value = rand()%1000 + 1;
 
 		sleep(1);
+		printf("%d 번째\n",i);
 		Put(lsm,input, key_value,true,log);
 
 		strcpy(Get_want[index],input);
@@ -63,7 +64,7 @@ void *thread_function(void *argument){
 		}
 	}
 
-	printf("false count : %d\n",false_count);
+	printf("test false count : %d\n",false_count);
 	int *ret = (int *)malloc(sizeof(int));
 
 	*ret = false_count;
