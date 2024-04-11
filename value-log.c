@@ -1,7 +1,7 @@
 #include "global.h"
 
 #define LOC_SLOW "SlowMemory/"
-#define TO_SLOW 2
+#define TO_SLOW 1
 
 ValueLog *CreateLog(int head, int tail){
 	int fastfp = open(LOC_FAST"log", O_RDWR | O_CREAT | O_TRUNC | O_APPEND);
@@ -25,6 +25,7 @@ ValueLog *CreateLog(int head, int tail){
 	log->fast->head = head;
 	log->fast->tail = tail;
 	log->fast->curstart = head;
+	log->fast->utili = 0;
 
 	ftruncate(fastfp,FAST_MAX_PAGE);
 	SaveLog *map = (SaveLog *)mmap(0,MAPPING_LOG_SIZE,PROT_WRITE|PROT_READ,MAP_SHARED,log->fast->fp,0);
@@ -58,7 +59,7 @@ ValueLog *CreateLog(int head, int tail){
 	return log;
 }
 void SlowPut(ValueLog *log, int *loc, const char *key, uint64_t key_len, uint64_t value){
-
+	
 	SaveLog *save = (SaveLog *)malloc(sizeof(SaveLog));
 
 	save->key_len = key_len;
@@ -104,7 +105,7 @@ void SlowPut(ValueLog *log, int *loc, const char *key, uint64_t key_len, uint64_
 	free(save);	
 }
 
-int ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value){
+int ValuePut(LSMtree *lsm,ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value){
 	
 	pthread_rwlock_wrlock(&(log->fastlock));
 	int nextloc = log->fast->head + sizeof(SaveLog);
@@ -149,6 +150,7 @@ int ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64
 		printf("could not sync the file to disk\n");
 	}
 
+	log->fast->utili += sizeof(SaveLog);
 	*loc = log->fast->head;
 	
 	log->fast->head = nextloc;
@@ -159,6 +161,7 @@ int ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64
 }
 
 uint64_t ValueGet(ValueLog *log,int loc){
+	
 	if(loc == -1){
 		return -1;
 	}
@@ -175,11 +178,13 @@ uint64_t ValueGet(ValueLog *log,int loc){
 		slow = true;
 		head = INDEX(log->slow->curhead);
 		maped = log->slow->map;
+		printf("slow\n");
 	}
 	else{
 		fp = log->fast->fp;
 		head = INDEX(log->fast->curstart);
 		maped = log->fast->map;
+		printf("fast\n");
 	}
 	if(!slow){
 		if(log->fast->head > log->fast->tail && (log->fast->head <= loc || log->fast->tail > loc)){
@@ -201,14 +206,16 @@ uint64_t ValueGet(ValueLog *log,int loc){
 	SaveLog *save = (SaveLog *)malloc(sizeof(SaveLog));
 
 	int curhead = INDEX(loc);
-
+	
+	if(!slow)
+		pthread_rwlock_wrlock(&(log->fastlock));
+	else		
+		pthread_rwlock_wrlock(&(log->slowlock));
 	if(curhead != head){
 		if(!slow){
-			pthread_rwlock_wrlock(&(log->fastlock));
 			log->fast->curstart = curhead * MAPPING_LOG_SIZE;
 		}
 		else{
-			pthread_rwlock_wrlock(&(log->slowlock));
 			log->slow->curhead = curhead * MAPPING_LOG_SIZE;
 		}
 
@@ -219,24 +226,20 @@ uint64_t ValueGet(ValueLog *log,int loc){
 		SaveLog *map = mmap(0,MAPPING_LOG_SIZE , PROT_READ | PROT_WRITE, MAP_SHARED, fp,curhead * MAPPING_LOG_SIZE);
 
 		if(map == MAP_FAILED){
-			pthread_rwlock_unlock(&(log->fastlock));
+			if(!slow)
+				pthread_rwlock_unlock(&(log->fastlock));
+			else
+				pthread_rwlock_unlock(&(log->slowlock));
 			return value;
 		}
 		if(!slow){
-			pthread_rwlock_unlock(&(log->fastlock));
 			log->fast->map = map;
 		}	
 		else{
 			log->slow->map = map;
-			pthread_rwlock_unlock(&(log->slowlock));
 		}
 		maped = map;
 	}
-	if(!slow)
-		pthread_rwlock_rdlock(&(log->fastlock));
-	else
-		pthread_rwlock_rdlock(&(log->slowlock));
-		
 	memcpy(save,maped + OFFSET(loc),sizeof(SaveLog));
 
 	value = save->value;
@@ -255,11 +258,12 @@ void GC(LSMtree *lsm,ValueLog *log){
 	int size = 0;
 
 
+	pthread_rwlock_wrlock(&lsm->GC_lock);
+	printf("ready\n");
 	while(log->fast->tail != end){
 		SaveLog * save = (SaveLog *)malloc(sizeof(SaveLog));
 
 		if(INDEX(log->fast->curstart) != INDEX(log->fast->tail)){
-			pthread_rwlock_wrlock(&(log->fastlock));
 			if(munmap(log->fast->map,MAPPING_LOG_SIZE) == -1){
 				printf("colud not unmap\n");
 			}
@@ -267,51 +271,46 @@ void GC(LSMtree *lsm,ValueLog *log){
 			log->fast->curstart = INDEX(log->fast->tail) * MAPPING_LOG_SIZE;
 
 			log->fast->map = mmap(0,MAPPING_LOG_SIZE,PROT_READ | PROT_WRITE, MAP_SHARED, log->fast->fp,log->fast->curstart);
-			pthread_rwlock_unlock(&(log->fastlock));
 		}
 
-		pthread_rwlock_rdlock(&(log->fastlock));
 		memcpy(save,log->fast->map + OFFSET(log->fast->tail),sizeof(SaveLog));
 		char str_key[STRING_SIZE];
 		strncpy(str_key,save->key,save->key_len);
 		SaveArray * dest = Get_array(lsm,str_key);
-		pthread_rwlock_unlock(&(log->fastlock));
 		
 		if(dest != NULL){
 			int loc = 0;
-			if(dest->number <= TO_SLOW)
-				ValuePut(log,&loc,str_key,save[size].key_len,save[size].value);
-			else
+			if(dest->number <= TO_SLOW){
+				ValuePut(lsm,log,&loc,str_key,save[size].key_len,save[size].value);
+			}
+			else{
 				SlowPut(log,&loc,str_key,save[size].key_len,save[size].value);
-
+			}
+			log->fast->utili -= sizeof(SaveLog);
 			dest->array[dest->index].value = loc;
 
 			if(strcmp(dest->filename,"")!=0){
-				pthread_rwlock_wrlock(&(lsm->file_lock));
 				FILE *fp = fopen(dest->filename, "wt");
 				if(fp == NULL)
 					printf("fp error\n");
 				fwrite(dest->array, sizeof(Node), dest->size, fp);
 				fclose(fp);
-				pthread_rwlock_unlock(&(lsm->file_lock));
 			}
 			else{
-				pthread_rwlock_wrlock(&(lsm->buffer_lock));
 				memcpy(lsm->buffer->array,dest->array, dest->size * sizeof(Node));
-				pthread_rwlock_unlock(&(lsm->buffer_lock));
 			}
 		}
 		else
 			printf("Can't find key\n");
 		dest = NULL;
-		pthread_rwlock_wrlock(&(log->fastlock));
 		log->fast->tail += sizeof(SaveLog);
 		if(log->fast->tail != 0 && ((log->fast->tail - (INDEX(log->fast->tail) * MAPPING_LOG_SIZE)) % MAX_LOG_MAPPING == 0))
 			log->fast->tail += (MAPPING_LOG_SIZE - MAX_LOG_MAPPING);
 		
 		log->fast->tail = log->fast->tail % FAST_MAX_PAGE;
-		pthread_rwlock_unlock(&(log->fastlock));
 	}
+	printf("done\n");
+	pthread_rwlock_unlock(&lsm->GC_lock);
 }
 void ClearLog(ValueLog *log){
 	close(log->fast->fp);

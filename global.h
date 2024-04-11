@@ -14,15 +14,18 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <signal.h>
+#include <sys/wait.h>
 
 #define STRING_SIZE 10
 #define MAX_VALUE_SIZE 10
 
-#define MAX_PAGE (4096)
-#define MAX_LOG_SIZE (4096 * 2 )
+#define MAX_PAGE (4096) //usually fix
+#define MAX_LOG_SIZE ( 4096 * 4 )
 
-#define FAST_MAX_PAGE MAX_LOG_SIZE
-#define MAPPING_LOG_SIZE (4096)
+#define FAST_MAX_PAGE MAX_LOG_SIZE 
+#define MAPPING_LOG_SIZE (4096) //usually fix
+#define UTILIZATION (FAST_MAX_PAGE * 8 / 10)
 
 #define MAX_LOG_MAPPING ((int)(MAPPING_LOG_SIZE / sizeof(SaveLog))  * sizeof(SaveLog))
 
@@ -78,6 +81,7 @@ typedef struct LSMtree{
 	double fpr1;
 	pthread_rwlock_t buffer_lock;
 	pthread_rwlock_t file_lock;
+	pthread_rwlock_t GC_lock;
 } LSMtree;
 typedef struct Save_Log{
 	char key[STRING_SIZE];
@@ -90,6 +94,7 @@ typedef struct FastMem{
 	int head;
 	int tail;
 	int curstart; //current mapping start index
+	int utili;
 	SaveLog * map;
 }FastMem;
 
@@ -171,7 +176,7 @@ void Delete(LSMtree *lsm, char * key);
 
 //value-log.c
 ValueLog *CreateLog(int head, int tail);
-int ValuePut(ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value);
+int ValuePut(LSMtree *lsm,ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value);
 uint64_t ValueGet(ValueLog *log, int loc);
 void ClearLog(ValueLog *log);
 void GC(LSMtree *lsm,ValueLog *log);

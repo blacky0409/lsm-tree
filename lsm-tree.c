@@ -19,6 +19,7 @@ LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr){
 	lsm->fpr1 = fpr; //delete
 	pthread_rwlock_init(&lsm->buffer_lock, NULL);
 	pthread_rwlock_init(&lsm->file_lock, NULL);
+	pthread_rwlock_init(&lsm->GC_lock, NULL);
 	return lsm;
 }
 
@@ -514,8 +515,10 @@ void Merge(LevelNode *Current, int origin, int levelsize,
 
 void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){
 
+	pthread_rwlock_rdlock(&lsm->GC_lock);
+	printf("hi\n");
 	int loc;
-	ValuePut(log,&loc, key, strlen(key) + 1 , value);
+	ValuePut(lsm,log,&loc, key, strlen(key) + 1 , value);
 	int position = GetKeyPos(lsm, key);
 	if(position >= 0){
 		pthread_rwlock_wrlock(&lsm->buffer_lock);
@@ -540,6 +543,7 @@ void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){
 			InsertKey(lsm, key, loc, flag);
 		}
 	}
+	pthread_rwlock_unlock(&lsm->GC_lock);
 }
 
 SaveArray * Get_array(LSMtree *lsm, char * key){
@@ -638,6 +642,7 @@ SaveArray * Get_array(LSMtree *lsm, char * key){
 }
 
 Node * Get_loc(LSMtree *lsm, char * key){
+	pthread_rwlock_rdlock(&lsm->GC_lock);
 	int position = GetKeyPos(lsm, key);
 	int i;
 	if(position != -1){
@@ -645,6 +650,7 @@ Node * Get_loc(LSMtree *lsm, char * key){
 			pthread_rwlock_rdlock(&lsm->buffer_lock);
 			Node * v = &lsm->buffer->array[position];
 			pthread_rwlock_unlock(&lsm->buffer_lock);
+			pthread_rwlock_unlock(&lsm->GC_lock);
 			return v;
 		}
 	}else{
@@ -667,22 +673,28 @@ Node * Get_loc(LSMtree *lsm, char * key){
 					int mid = (left + right) / 2;
 					if(strcmp(key , currentarray[left].key) == 0){
 						if(currentarray[left].flag){
+			pthread_rwlock_unlock(&lsm->GC_lock);
 							return &currentarray[left];
 						}else{
+			pthread_rwlock_unlock(&lsm->GC_lock);
 							return NULL;
 						}
 					}else if(strcmp( key , currentarray[right].key) == 0){
 						if(currentarray[right].flag){
+			pthread_rwlock_unlock(&lsm->GC_lock);
 							return &currentarray[right];
 						}else{
+			pthread_rwlock_unlock(&lsm->GC_lock);
 							return NULL;
 						}
 					}
 					while(left != mid){
 						if(strcmp( key , currentarray[mid].key) == 0){
 							if(currentarray[mid].flag){
+			pthread_rwlock_unlock(&lsm->GC_lock);
 								return &currentarray[mid];
 							}else{
+			pthread_rwlock_unlock(&lsm->GC_lock);
 								return NULL;
 							}
 						}else if(strcmp ( key , currentarray[mid].key) > 0){
@@ -703,10 +715,13 @@ Node * Get_loc(LSMtree *lsm, char * key){
 			current = current->next;
 		}
 	}
+			pthread_rwlock_unlock(&lsm->GC_lock);
 	return NULL;
 }
 
 void Delete(LSMtree *lsm, char * key){
+	pthread_rwlock_rdlock(&lsm->GC_lock);
+
 	int position = GetKeyPos(lsm, key);
 	int i;
 	if(position != -1){
@@ -763,6 +778,7 @@ void Delete(LSMtree *lsm, char * key){
 			current = current->next;
 		}
 	}
+	pthread_rwlock_unlock(&lsm->GC_lock);
 	return;
 }
 void *get_log(void *argument){
@@ -779,6 +795,8 @@ void *get_log(void *argument){
 }
 
 void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
+	pthread_rwlock_rdlock(&lsm->GC_lock);
+
 	printf("start range\n");
 	int i;
 	int j;
@@ -795,6 +813,7 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 		int r = pthread_create(&thread[i],NULL, get_log,arg);
 		if(r == -1){
 			printf("falut create thread\n");
+			pthread_rwlock_unlock(&lsm->GC_lock);
 			return;
 		}
 	}
@@ -845,6 +864,7 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 		int r = pthread_join(thread[i], &result);
 		if(r == -1){
 			printf("falut wait exit thread\n");
+			pthread_rwlock_unlock(&lsm->GC_lock);
 			return;
 		}
 	}
@@ -852,6 +872,7 @@ void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){
 	ClearQueue(q);
 	ClearTable(table);
 	free(arg);
+	pthread_rwlock_unlock(&lsm->GC_lock);
 }
 
 
@@ -893,12 +914,16 @@ void PrintStats(LSMtree *lsm, ValueLog *log){
 }
 
 int Get(LSMtree *lsm, char * key, ValueLog *log){
+	pthread_rwlock_rdlock(&lsm->GC_lock);
 	Node * dest = Get_loc(lsm,key);
 	if(dest == NULL){
 		printf("Don't find key\n");
+		pthread_rwlock_unlock(&lsm->GC_lock);
 		return -1;
 	}
 	printf("value %d\n",dest->value);
-	return (ValueGet(log,dest->value));
+	int re = (ValueGet(log,dest->value));
+	pthread_rwlock_unlock(&lsm->GC_lock);
+	return re;
 }
 
