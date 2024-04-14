@@ -22,7 +22,7 @@
 #define MAX_VALUE_SIZE 10
 
 #define MAX_PAGE (4096) //usually fix
-#define MAX_LOG_SIZE ( 4096 * 4 )
+#define MAX_LOG_SIZE ( 4096 * 35 )
 
 #define FAST_MAX_PAGE MAX_LOG_SIZE 
 #define MAPPING_LOG_SIZE (4096) //usually fix

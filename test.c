@@ -30,8 +30,9 @@ void *thread_function(void *argument){
 	int index = 0;
 	char input[10];
 
-	for(int i=0; i < 100 ; i++){
+	for(int i=0; i < 1000 ; i++){
 		//Make random key
+		printf("%d번째\n",i);
 		int w = 0;
 		for(w = 0 ; w < 9; w++){
 			input[w] = 'a' + rand() % 26;
@@ -42,7 +43,6 @@ void *thread_function(void *argument){
 		int key_value = rand()%1000 + 1;
 
 		sleep(1);
-		printf("%d 번째\n",i);
 		Put(lsm,input, key_value,true,log);
 
 		strcpy(Get_want[index],input);
@@ -54,7 +54,6 @@ void *thread_function(void *argument){
 	int false_count = 0;
 
 	for(int i = 0 ; i < index; i ++){
-		printf("hellol\n");
 		return_val = Get(lsm, Get_want[i], log);
 		char answer[10];
 		strcpy(answer,(return_val == Get_re[i])? "true" : "false");
@@ -73,7 +72,7 @@ void *thread_function(void *argument){
 
 }
 int main(){
-	LSMtree *lsm = CreateLSM(10, 10, 0.0000001);
+	LSMtree *lsm = CreateLSM(50, 50, 0.0000001);
 	ValueLog *log = CreateLog(0,0);
 	srand((unsigned int) time(NULL));
 	int d = 0;

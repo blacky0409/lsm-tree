@@ -135,7 +135,8 @@ int ValuePut(LSMtree *lsm,ValueLog *log, int *loc, const char * key, uint64_t ke
 	nextloc = nextloc % FAST_MAX_PAGE;
 
 	log->fast->head = nextloc;
-
+	
+	printf("fast current head : %d, max head : MAX_LOG_MAPPING: %ld\n",log->fast->head,MAX_LOG_MAPPING);
 	pthread_rwlock_unlock(&(log->fastlock));
 	free(save);	
 	return 1;
@@ -144,6 +145,7 @@ int ValuePut(LSMtree *lsm,ValueLog *log, int *loc, const char * key, uint64_t ke
 uint64_t ValueGet(ValueLog *log,int loc){
 
 	if(loc == -1){
+		printf("location is -1\n");
 		return -1;
 	}
 	uint64_t value = -1;
@@ -162,7 +164,7 @@ uint64_t ValueGet(ValueLog *log,int loc){
 	}
 	if(!slow){
 		if(log->fast->head > log->fast->tail && (log->fast->head <= loc || log->fast->tail > loc)){
-			printf("fault 1\n");
+			printf("fault 1 : %d\n",loc);
 			return value;
 		}
 		else if(log->fast->head < log->fast->tail && (log->fast->tail > loc && log->fast->head <=loc)){
@@ -249,7 +251,9 @@ void GC(LSMtree *lsm,ValueLog *log){
 			else{
 				SlowPut(log,&loc,str_key,save[size].key_len,save[size].value);
 			}
+			pthread_rwlock_wrlock(&lsm->GC_lock);
 			log->fast->utili -= sizeof(SaveLog);
+			SaveArray * dest = Get_array(lsm,str_key);
 			dest->array[dest->index].value = loc;
 
 			if(strcmp(dest->filename,"")!=0){
@@ -266,6 +270,7 @@ void GC(LSMtree *lsm,ValueLog *log){
 				memcpy(lsm->buffer->array,dest->array, dest->size * sizeof(Node));
 				pthread_rwlock_unlock(&lsm->buffer_lock);
 			}
+			pthread_rwlock_unlock(&lsm->GC_lock);
 		}
 		else
 			printf("Can't find key\n");
