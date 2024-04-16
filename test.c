@@ -30,7 +30,9 @@ void *thread_function(void *argument){
 	int index = 0;
 	char input[10];
 
-	for(int i=0; i < 1000 ; i++){
+	srand(time(NULL));
+	int ran;
+	for(int i=0; i < 200 ; i++){
 		//Make random key
 		printf("%d번째\n",i);
 		int w = 0;
@@ -42,6 +44,7 @@ void *thread_function(void *argument){
 		//Make random value
 		int key_value = rand()%1000 + 1;
 
+		//ran = rand()%4 +1;
 		sleep(1);
 		Put(lsm,input, key_value,true,log);
 
@@ -72,12 +75,12 @@ void *thread_function(void *argument){
 
 }
 int main(){
-	LSMtree *lsm = CreateLSM(50, 50, 0.0000001);
+	LSMtree *lsm = CreateLSM(10, 10, 0.0000001); //50
 	ValueLog *log = CreateLog(0,0);
 	srand((unsigned int) time(NULL));
 	int d = 0;
 
-	pthread_t thread[10];
+	pthread_t thread[5];
 	pthread_t GC_thread;
 
 	

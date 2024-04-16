@@ -20,17 +20,21 @@ Level *CreateLevel(int size, double fpr){
 //the structure of the level is a stack, 
 //both insertion and deletion happen at the end of the array.
 
-void InsertRun(Level *level, int count, int size, char * start, char * end){
+void InsertRun(LSMtree *lsm, Level *level, int count, int size, char * start, char * end){
+	pthread_rwlock_wrlock(&lsm->level_lock);
 	level->array[level->count].count = count;
 	level->array[level->count].size = size;
 	strcpy(level->array[level->count].start , start);
 	strcpy(level->array[level->count].end , end);
 	level->count += 1;
+	pthread_rwlock_unlock(&lsm->level_lock);
 }
 
-Run PopRun(Level *level){
+Run PopRun(LSMtree *lsm,Level *level){
+	pthread_rwlock_wrlock(&lsm->level_lock);
 	Run run = level->array[level->count - 1];
 	level->count -= 1;
+	pthread_rwlock_unlock(&lsm->level_lock);
 	return run;
 }
 

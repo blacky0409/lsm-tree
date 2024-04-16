@@ -22,7 +22,7 @@
 #define MAX_VALUE_SIZE 10
 
 #define MAX_PAGE (4096) //usually fix
-#define MAX_LOG_SIZE ( 4096 * 35 )
+#define MAX_LOG_SIZE ( 4096 * 4 ) //35
 
 #define FAST_MAX_PAGE MAX_LOG_SIZE 
 #define MAPPING_LOG_SIZE (4096) //usually fix
@@ -82,6 +82,7 @@ typedef struct LSMtree{
 	double fpr1;
 	pthread_rwlock_t buffer_lock;
 	pthread_rwlock_t file_lock;
+	pthread_rwlock_t level_lock;
 	pthread_rwlock_t GC_lock;
 } LSMtree;
 typedef struct Save_Log{
@@ -141,6 +142,11 @@ typedef struct TakeArg{
 	bool finish;
 }TakeArg;
 
+typedef struct Merge_Arg{
+	Node * array;
+	LSMtree *lsm;
+}Merge_Arg;
+
 //heap.c
 Heap *CreateHeap(int size);
 int GetKeyPos(LSMtree *lsm, char * key);
@@ -153,8 +159,8 @@ void ClearHeap(Heap *h);
 
 //level.c
 Level *CreateLevel(int size, double fpr);
-void InsertRun(Level *level, int count, int size, char * start, char * end);
-Run PopRun(Level *level);
+void InsertRun(LSMtree *lsm,Level *level, int count, int size, char * start, char * end);
+Run PopRun(LSMtree *lsm,Level *level);
 void ClearLevel(Level *l);
 
 //hashtable.c
@@ -165,7 +171,7 @@ void ClearTable(HashTable *table);
 void *get_log(void *argument);
 //lsm-tree.c
 LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr);
-void Merge(LevelNode *Current, int origin, int levelsize,
+void Merge(LSMtree *lsm, LevelNode *Current, int origin, int levelsize,
 	int runcount, int runsize, Node *sortedrun, double targetfpr);
 void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log);
 Node * Get_loc(LSMtree *lsm, char * key);
