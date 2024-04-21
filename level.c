@@ -13,6 +13,7 @@ Level *CreateLevel(int size, double fpr){
 		printf("There is not enough memory for the array of runs.");
 		return NULL;
 	}
+	pthread_rwlock_init(&level->level_lock,NULL);
 	level->targetfpr = fpr;
 	return level;
 }
@@ -21,20 +22,16 @@ Level *CreateLevel(int size, double fpr){
 //both insertion and deletion happen at the end of the array.
 
 void InsertRun(LSMtree *lsm, Level *level, int count, int size, char * start, char * end){
-	pthread_rwlock_wrlock(&lsm->level_lock);
 	level->array[level->count].count = count;
 	level->array[level->count].size = size;
 	strcpy(level->array[level->count].start , start);
 	strcpy(level->array[level->count].end , end);
 	level->count += 1;
-	pthread_rwlock_unlock(&lsm->level_lock);
 }
 
 Run PopRun(LSMtree *lsm,Level *level){
-	pthread_rwlock_wrlock(&lsm->level_lock);
 	Run run = level->array[level->count - 1];
 	level->count -= 1;
-	pthread_rwlock_unlock(&lsm->level_lock);
 	return run;
 }
 

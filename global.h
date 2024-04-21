@@ -22,11 +22,11 @@
 #define MAX_VALUE_SIZE 10
 
 #define MAX_PAGE (4096) //usually fix
-#define MAX_LOG_SIZE ( 4096 * 4 ) //35
+#define MAX_LOG_SIZE ( 4096 * 10 ) //35
 
 #define FAST_MAX_PAGE MAX_LOG_SIZE 
 #define MAPPING_LOG_SIZE (4096) //usually fix
-#define UTILIZATION (FAST_MAX_PAGE * 6 / 10)
+#define UTILIZATION (FAST_MAX_PAGE * 4 / 10)
 
 #define MAX_LOG_MAPPING ((int)(MAPPING_LOG_SIZE / sizeof(SaveLog))  * sizeof(SaveLog))
 
@@ -62,6 +62,7 @@ typedef struct Level{
 	int count;
 	int size;
 	double targetfpr;
+	pthread_rwlock_t level_lock; //각 level에 input output을 진행할 때 거는 lock
 } Level;
 
 typedef struct LevelNode{
@@ -80,10 +81,9 @@ typedef struct LSMtree{
 	int T;
 	LevelNode *L0;
 	double fpr1;
-	pthread_rwlock_t buffer_lock;
-	pthread_rwlock_t file_lock;
-	pthread_rwlock_t level_lock;
-	pthread_rwlock_t GC_lock;
+	pthread_rwlock_t buffer_lock; //buffer에 거는 lock
+	pthread_rwlock_t merge_lock; //GC가 일어날때 lsm tree의 구조 변화를 막기 위해 merge 불가 상태로 만드는 lock
+	pthread_mutex_t file_lock; //GC가 일어날때 lsm tree의 구조 변화를 막기 위해 merge 불가 상태로 만드는 lock
 } LSMtree;
 typedef struct Save_Log{
 	char key[STRING_SIZE];
@@ -111,8 +111,8 @@ typedef struct SlowMem{
 typedef struct ValueLog{
 	FastMem *fast;
 	SlowMem *slow;
-	pthread_rwlock_t fastlock;
-	pthread_rwlock_t slowlock;
+	pthread_rwlock_t fast_lock;
+	pthread_rwlock_t slow_lock;
 } ValueLog;
 
 typedef struct Save_Array{
@@ -121,6 +121,7 @@ typedef struct Save_Array{
 	int index;
 	char filename[FILE_NAME];
 	int size;
+	Level *level;
 }SaveArray;
 
 typedef struct Element{
@@ -133,7 +134,6 @@ typedef struct Queue{
 	int rear;
 	int size;
 	Element **array;
-	pthread_mutex_t lock;
 } Queue;
 
 typedef struct TakeArg{

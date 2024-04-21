@@ -79,25 +79,21 @@ void HeapifyTopBottom(Heap *h, int parent){
 }
 
 void InsertKey(LSMtree *lsm, char * key, int value, bool flag){
-	pthread_rwlock_wrlock(&lsm->buffer_lock);
 	Heap * h = lsm->buffer;
 	strcpy(h->array[h->count].key,key);
 	h->array[h->count].value = value;
 	h->array[h->count].flag = flag;
 	HeapifyBottomTop(h, h->count);
 	h->count += 1;
-	pthread_rwlock_unlock(&lsm->buffer_lock);
 }
 
 Node PopMin(LSMtree *lsm){
 	Heap *h = lsm->buffer;
-	pthread_rwlock_wrlock(&lsm->buffer_lock);
 	Node pair;
 	pair = h->array[0];
 	h->array[0] = h->array[h->count - 1];
 	h->count -= 1;
 	HeapifyTopBottom(h, 0);
-	pthread_rwlock_unlock(&lsm->buffer_lock);
 	return pair;
 }
 

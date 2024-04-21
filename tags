@@ -19,17 +19,16 @@ CreateLevel	level.c	/^Level *CreateLevel(int size, double fpr){$/;"	f
 CreateLog	value-log.c	/^ValueLog *CreateLog(int head, int tail){$/;"	f
 CreateQueue	queue.c	/^Queue *CreateQueue(int size){$/;"	f
 Delete	lsm-tree.c	/^void Delete(LSMtree *lsm, char * key){$/;"	f
-Delete_flag	lsm-tree.c	/^int Delete_flag(Node * sort, int size){$/;"	f
+Delete_flag	compaction.c	/^int Delete_flag(Node * sort, int size){$/;"	f
 Element	global.h	/^typedef struct Element{$/;"	s
 Element	global.h	/^}Element;$/;"	t	typeref:struct:Element
-FAST_MAX_PAGE	global.h	26;"	d
-FILE_NAME	global.h	38;"	d
+FAST_MAX_PAGE	global.h	27;"	d
+FILE_NAME	global.h	39;"	d
 FastMem	global.h	/^typedef struct FastMem{$/;"	s
 FastMem	global.h	/^}FastMem;$/;"	t	typeref:struct:FastMem
 GC	value-log.c	/^void GC(LSMtree *lsm,ValueLog *log){$/;"	f
 GC_function	test.c	/^void *GC_function(void *argument){$/;"	f
-GC_lock	global.h	/^	pthread_rwlock_t GC_lock;$/;"	m	struct:LSMtree
-Get	lsm-tree.c	/^int Get(LSMtree *lsm, char * key, ValueLog *log){$/;"	f
+Get	lsm-tree.c	/^int Get(LSMtree *lsm, char * key, ValueLog *log){	$/;"	f
 GetKeyPos	heap.c	/^int GetKeyPos(LSMtree *lsm, char * key){$/;"	f
 GetToQueue	queue.c	/^Element * GetToQueue(Queue *queue){$/;"	f
 Get_array	lsm-tree.c	/^SaveArray * Get_array(LSMtree *lsm, char * key){$/;"	f
@@ -40,13 +39,14 @@ Heap	global.h	/^typedef struct Heap{$/;"	s
 Heap	global.h	/^} Heap;$/;"	t	typeref:struct:Heap
 HeapifyBottomTop	heap.c	/^void HeapifyBottomTop(Heap *h, int index){$/;"	f
 HeapifyTopBottom	heap.c	/^void HeapifyTopBottom(Heap *h, int parent){$/;"	f
-INDEX	global.h	32;"	d
+INDEX	global.h	33;"	d
+INT_MAX	compaction.c	2;"	d	file:
 INT_MAX	lsm-tree.c	3;"	d	file:
 INT_MAX	test.c	4;"	d	file:
 InsertKey	heap.c	/^void InsertKey(LSMtree *lsm, char * key, int value, bool flag){$/;"	f
-InsertRun	level.c	/^void InsertRun(Level *level, int count, int size, char * start, char * end){$/;"	f
+InsertRun	level.c	/^void InsertRun(LSMtree *lsm, Level *level, int count, int size, char * start, char * end){$/;"	f
 L0	global.h	/^	LevelNode *L0;$/;"	m	struct:LSMtree
-LOC_FAST	global.h	37;"	d
+LOC_FAST	global.h	38;"	d
 LOC_SLOW	value-log.c	3;"	d	file:
 LSMtree	global.h	/^typedef struct LSMtree{$/;"	s
 LSMtree	global.h	/^} LSMtree;$/;"	t	typeref:struct:LSMtree
@@ -54,18 +54,21 @@ Level	global.h	/^typedef struct Level{$/;"	s
 Level	global.h	/^} Level;$/;"	t	typeref:struct:Level
 LevelNode	global.h	/^typedef struct LevelNode{$/;"	s
 LevelNode	global.h	/^} LevelNode;$/;"	t	typeref:struct:LevelNode
-MAPPING_LOG_SIZE	global.h	27;"	d
-MAX_LOG_MAPPING	global.h	30;"	d
-MAX_LOG_SIZE	global.h	24;"	d
-MAX_PAGE	global.h	23;"	d
-MAX_THREAD	global.h	36;"	d
-MAX_VALUE_SIZE	global.h	21;"	d
-Merge	lsm-tree.c	/^void Merge(LevelNode *Current, int origin, int levelsize,$/;"	f
+MAPPING_LOG_SIZE	global.h	28;"	d
+MAX_LOG_MAPPING	global.h	31;"	d
+MAX_LOG_SIZE	global.h	25;"	d
+MAX_PAGE	global.h	24;"	d
+MAX_THREAD	global.h	37;"	d
+MAX_VALUE_SIZE	global.h	22;"	d
+Merge	compaction.c	/^void Merge(LSMtree * lsm,LevelNode *Current, int origin, int levelsize,$/;"	f
+Merge_Arg	global.h	/^typedef struct Merge_Arg{$/;"	s
+Merge_Arg	global.h	/^}Merge_Arg;$/;"	t	typeref:struct:Merge_Arg
+Merge_routin	lsm-tree.c	/^void * Merge_routin(void * arg){$/;"	f
 Node	global.h	/^typedef struct Node{$/;"	s
 Node	global.h	/^} Node;$/;"	t	typeref:struct:Node
-OFFSET	global.h	33;"	d
+OFFSET	global.h	34;"	d
 PopMin	heap.c	/^Node PopMin(LSMtree *lsm){$/;"	f
-PopRun	level.c	/^Run PopRun(Level *level){$/;"	f
+PopRun	level.c	/^Run PopRun(LSMtree *lsm,Level *level){$/;"	f
 PrintNode	heap.c	/^void PrintNode(LSMtree * lsm, ValueLog *log){$/;"	f
 PrintStats	lsm-tree.c	/^void PrintStats(LSMtree *lsm, ValueLog *log){$/;"	f
 Put	lsm-tree.c	/^void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){$/;"	f
@@ -75,7 +78,7 @@ REPEAT	test.c	3;"	d	file:
 Range	lsm-tree.c	/^void Range(LSMtree *lsm, char * start, char * end,ValueLog *log){$/;"	f
 Run	global.h	/^typedef struct Run{$/;"	s
 Run	global.h	/^} Run;$/;"	t	typeref:struct:Run
-STRING_SIZE	global.h	20;"	d
+STRING_SIZE	global.h	21;"	d
 SaveArray	global.h	/^}SaveArray;$/;"	t	typeref:struct:Save_Array
 SaveLog	global.h	/^} SaveLog;$/;"	t	typeref:struct:Save_Log
 Save_Array	global.h	/^typedef struct Save_Array{$/;"	s
@@ -88,19 +91,20 @@ TO_SLOW	value-log.c	4;"	d	file:
 TakeArg	global.h	/^typedef struct TakeArg{$/;"	s
 TakeArg	global.h	/^}TakeArg;$/;"	t	typeref:struct:TakeArg
 Test_Arg	test.c	/^}Test_Arg;$/;"	t	typeref:struct:test_art	file:
-UTILIZATION	global.h	28;"	d
+UTILIZATION	global.h	29;"	d
 ValueGet	value-log.c	/^uint64_t ValueGet(ValueLog *log,int loc){$/;"	f
 ValueLog	global.h	/^typedef struct ValueLog{$/;"	s
 ValueLog	global.h	/^} ValueLog;$/;"	t	typeref:struct:ValueLog
 ValuePut	value-log.c	/^int ValuePut(LSMtree *lsm,ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value){$/;"	f
 array	global.h	/^	Element **array;$/;"	m	struct:Queue
+array	global.h	/^	Node * array;$/;"	m	struct:Merge_Arg
 array	global.h	/^	Node * array;$/;"	m	struct:Save_Array
 array	global.h	/^	Node *array;$/;"	m	struct:Heap
 array	global.h	/^	Run *array;$/;"	m	struct:Level
 array	global.h	/^	char **array;$/;"	m	struct:HashTable
 buffer	global.h	/^	Heap *buffer;$/;"	m	struct:LSMtree
-buffer_lock	global.h	/^	pthread_rwlock_t buffer_lock;$/;"	m	struct:LSMtree
-cmpfunc	lsm-tree.c	/^int cmpfunc(const void *a, const void *b){$/;"	f
+buffer_lock	global.h	/^	pthread_rwlock_t buffer_lock; \/\/buffer에 거는 lock$/;"	m	struct:LSMtree
+cmpfunc	compaction.c	/^int cmpfunc(const void *a, const void *b){$/;"	f
 count	global.h	/^	int count;$/;"	m	struct:HashTable
 count	global.h	/^	int count;$/;"	m	struct:Heap
 count	global.h	/^	int count;$/;"	m	struct:Level
@@ -111,8 +115,7 @@ curstart	global.h	/^	int curstart; \/\/current mapping start index$/;"	m	struct:
 dead	lsm-tree.c	/^int dead = 0;$/;"	v
 end	global.h	/^	char end[STRING_SIZE];$/;"	m	struct:Run
 fast	global.h	/^	FastMem *fast;$/;"	m	struct:ValueLog
-fastlock	global.h	/^	pthread_rwlock_t fastlock;$/;"	m	struct:ValueLog
-file_lock	global.h	/^	pthread_rwlock_t file_lock;$/;"	m	struct:LSMtree
+fast_lock	global.h	/^	pthread_rwlock_t fast_lock;$/;"	m	struct:ValueLog
 filename	global.h	/^	char filename[FILE_NAME];$/;"	m	struct:Save_Array
 finish	global.h	/^	bool finish;$/;"	m	struct:TakeArg
 flag	global.h	/^	bool flag;$/;"	m	struct:Node
@@ -131,14 +134,17 @@ key	global.h	/^	char key[STRING_SIZE];$/;"	m	struct:Node
 key	global.h	/^	char key[STRING_SIZE];$/;"	m	struct:Save_Log
 key_len	global.h	/^	int key_len;$/;"	m	struct:Save_Log
 level	global.h	/^	Level *level;$/;"	m	struct:LevelNode
+level_lock	global.h	/^	pthread_rwlock_t level_lock; \/\/각 level에 input output을 진행할 때 거는 lock$/;"	m	struct:Level
+ll	global.h	/^	pthread_mutex_t ll; \/\/GC가 일어날때 lsm tree의 구조 변화를 막기 위해 merge 불가 상태로 만드는 lock$/;"	m	struct:LSMtree
 loc	global.h	/^	int loc;$/;"	m	struct:Element
-lock	global.h	/^	pthread_mutex_t lock;$/;"	m	struct:Queue
 log	global.h	/^	ValueLog *log;$/;"	m	struct:TakeArg
 log	test.c	/^	ValueLog *log;$/;"	m	struct:test_art	file:
+lsm	global.h	/^	LSMtree *lsm;$/;"	m	struct:Merge_Arg
 lsm	test.c	/^	LSMtree *lsm;$/;"	m	struct:test_art	file:
 main	test.c	/^int main(){$/;"	f
 map	global.h	/^	SaveLog * map;$/;"	m	struct:FastMem
 map	global.h	/^	SaveLog * map;$/;"	m	struct:SlowMem
+merge_lock	global.h	/^	pthread_rwlock_t merge_lock; \/\/GC가 일어날때 lsm tree의 구조 변화를 막기 위해 merge 불가 상태로 만드는 lock$/;"	m	struct:LSMtree
 next	global.h	/^	struct LevelNode *next;$/;"	m	struct:LevelNode	typeref:struct:LevelNode::LevelNode
 number	global.h	/^	int number;$/;"	m	struct:LevelNode
 number	global.h	/^	int number;$/;"	m	struct:Save_Array
@@ -150,7 +156,7 @@ size	global.h	/^	int size;$/;"	m	struct:Queue
 size	global.h	/^	int size;$/;"	m	struct:Run
 size	global.h	/^	int size;$/;"	m	struct:Save_Array
 slow	global.h	/^	SlowMem *slow;$/;"	m	struct:ValueLog
-slowlock	global.h	/^	pthread_rwlock_t slowlock;$/;"	m	struct:ValueLog
+slow_lock	global.h	/^	pthread_rwlock_t slow_lock;$/;"	m	struct:ValueLog
 start	global.h	/^	char start[STRING_SIZE];$/;"	m	struct:Run
 tail	global.h	/^	int tail;$/;"	m	struct:FastMem
 targetfpr	global.h	/^	double targetfpr;$/;"	m	struct:Level

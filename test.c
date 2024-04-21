@@ -13,7 +13,7 @@ void *GC_function(void *argument){
 	ValueLog *log = arg->log;
 
 	while(1){
-		sleep(0.5);
+	//	sleep(0.5);
 		if(log->fast->utili >= UTILIZATION){
 			GC(lsm,log);
 		}
@@ -32,7 +32,7 @@ void *thread_function(void *argument){
 
 	srand(time(NULL));
 	int ran;
-	for(int i=0; i < 200 ; i++){
+	for(int i=0; i < 1000 ; i++){
 		//Make random key
 		printf("%d번째\n",i);
 		int w = 0;
@@ -45,14 +45,14 @@ void *thread_function(void *argument){
 		int key_value = rand()%1000 + 1;
 
 		//ran = rand()%4 +1;
-		sleep(1);
+	//	sleep(1);
 		Put(lsm,input, key_value,true,log);
 
 		strcpy(Get_want[index],input);
 		Get_re[index] = key_value;
 		index++;
 	}
-
+	sleep(1);
 	int return_val;
 	int false_count = 0;
 
@@ -80,7 +80,7 @@ int main(){
 	srand((unsigned int) time(NULL));
 	int d = 0;
 
-	pthread_t thread[5];
+	pthread_t thread[1];
 	pthread_t GC_thread;
 
 	
@@ -168,6 +168,7 @@ int main(){
 		}
 		sum += *ret;
 	}
+//	r = pthread_join(GC_thread, (void **)&ret);
 
 	/*	char start[10] = "aaaaaaaaa\0";
 		char end[10] = "ccccccccc\0";
