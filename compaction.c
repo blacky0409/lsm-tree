@@ -26,11 +26,15 @@ void Merge(LSMtree * lsm,LevelNode *Current, int origin, int levelsize,
 	printf("merge start\n");
 
 	if(Current->next == NULL){ //no level
+		pthread_mutex_lock(&lsm->make_level_lock);
 		Current->next = (LevelNode *) malloc(sizeof(LevelNode));
 		Current->next->level = CreateLevel(levelsize, targetfpr);
+		pthread_mutex_unlock(&lsm->make_level_lock);
+	
 		strcpy(start,sortedrun[0].key);
 		strcpy(end, sortedrun[runcount - 1].key);
 
+		pthread_rwlock_wrlock(&Current->next->level->level_lock);
 		runcount = Delete_flag(sortedrun, runcount);
 		char filename[FILE_NAME];
 		sprintf(filename, LOC_FAST"data/L%dN%d", (origin+1), Current->next->level->count);
@@ -43,6 +47,7 @@ void Merge(LSMtree * lsm,LevelNode *Current, int origin, int levelsize,
 		InsertRun(lsm,Current->next->level, runcount, runsize, start, end);
 		Current->next->number = origin + 1;
 		Current->next->next = NULL;
+		pthread_rwlock_unlock(&Current->next->level->level_lock);
 
 	}
 	else{ //exist level
@@ -57,7 +62,8 @@ void Merge(LSMtree * lsm,LevelNode *Current, int origin, int levelsize,
 
 		strcpy(start,sortedrun[0].key); //most small
 		strcpy(end,sortedrun[runcount - 1].key); //most large
-
+		
+		pthread_rwlock_wrlock(&destlevel->level_lock);
 		for(i = 0; i < destlevel->count; i++){
 			distance[i] = 0;
 			if(strcmp(destlevel->array[i].start , end) > 0){
@@ -110,6 +116,7 @@ void Merge(LSMtree * lsm,LevelNode *Current, int origin, int levelsize,
 				fclose(fp);
 
 				InsertRun(lsm,destlevel, runcount, runsize, start, end);
+
 			}else{
 				if(minpos != -1){
 					Run oldrun = destlevel->array[minpos];
@@ -488,6 +495,7 @@ void Merge(LSMtree * lsm,LevelNode *Current, int origin, int levelsize,
 		}
 		free(overlap);
 		free(distance);
+		pthread_rwlock_unlock(&destlevel->level_lock);
 	}
 	free(start);
 	free(end);

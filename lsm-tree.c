@@ -19,6 +19,7 @@ LSMtree *CreateLSM(int buffersize, int sizeratio, double fpr){
 	lsm->fpr1 = fpr; //delete
 	pthread_rwlock_init(&lsm->buffer_lock,NULL);
 	pthread_rwlock_init(&lsm->merge_lock,NULL);
+	pthread_mutex_init(&lsm->make_level_lock,NULL);
 	return lsm;
 }
 
@@ -32,10 +33,9 @@ void * Merge_routin(void * arg){
 }
 
 void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){
-
-	pthread_rwlock_rdlock(&lsm->merge_lock);
 	int loc;
-	ValuePut(lsm,log,&loc, key, strlen(key) + 1 , value);
+	ValuePut(lsm,log,&loc, key, strlen(key) + 1 , value,1);
+	pthread_rwlock_rdlock(&lsm->merge_lock);
 	int position = GetKeyPos(lsm, key);
 	if(position >= 0){
 		pthread_rwlock_wrlock(&lsm->buffer_lock);
@@ -43,10 +43,11 @@ void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){
 		lsm->buffer->array[position].flag = flag;
 		pthread_rwlock_unlock(&lsm->buffer_lock);
 	}else{
-	//	pthread_rwlock_wrlock(&lsm->buffer_lock);
+		pthread_rwlock_wrlock(&lsm->buffer_lock);
 		if(lsm->buffer->count < lsm->buffer->size){
-			InsertKey(lsm, key, loc, flag);
+			InsertKey(lsm, key, loc, flag,1);
 		}else if(lsm->buffer->count == lsm->buffer->size){
+			pthread_rwlock_wrlock(&lsm->buffer_lock);
 			int i;
 			Node *sortedrun = (Node *) malloc(lsm->buffer->size * sizeof(Node));
 			for(i = 0; i < lsm->buffer->size; i++){
@@ -62,7 +63,8 @@ void Put(LSMtree *lsm, char * key, int value, bool flag,ValueLog *log){
 			Merge(lsm,lsm->L0, 0, (lsm->T - 1), 
 				lsm->buffer->size, lsm->buffer->size, sortedrun, lsm->fpr1); //merge때, memmory의 값이 L1으로 이동된다면 그때 unlock해주기!
 
-			InsertKey(lsm, key, loc, flag);
+			InsertKey(lsm, key, loc, flag,0);
+			pthread_rwlock_unlock(&lsm->buffer_lock);
 		}
 	}
 	pthread_rwlock_unlock(&lsm->merge_lock);

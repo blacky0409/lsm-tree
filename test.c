@@ -32,7 +32,7 @@ void *thread_function(void *argument){
 
 	srand(time(NULL));
 	int ran;
-	for(int i=0; i < 1000 ; i++){
+	for(int i=0; i < 100 ; i++){
 		//Make random key
 		printf("%d번째\n",i);
 		int w = 0;
@@ -52,7 +52,6 @@ void *thread_function(void *argument){
 		Get_re[index] = key_value;
 		index++;
 	}
-	sleep(1);
 	int return_val;
 	int false_count = 0;
 
@@ -79,8 +78,9 @@ int main(){
 	ValueLog *log = CreateLog(0,0);
 	srand((unsigned int) time(NULL));
 	int d = 0;
-
-	pthread_t thread[1];
+	time_t start,end;
+	time(&start);
+	pthread_t thread[10];
 	pthread_t GC_thread;
 
 	
@@ -199,6 +199,8 @@ int main(){
 
 	printf("false count : %d\n",sum);
 	ClearLog(log);
+	time(&end);
+	printf("time = %f\n",(float)(end-start));
 
 
 	return 0;

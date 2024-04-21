@@ -22,7 +22,7 @@
 #define MAX_VALUE_SIZE 10
 
 #define MAX_PAGE (4096) //usually fix
-#define MAX_LOG_SIZE ( 4096 * 10 ) //35
+#define MAX_LOG_SIZE ( 4096 * 5 ) //35
 
 #define FAST_MAX_PAGE MAX_LOG_SIZE 
 #define MAPPING_LOG_SIZE (4096) //usually fix
@@ -63,6 +63,7 @@ typedef struct Level{
 	int size;
 	double targetfpr;
 	pthread_rwlock_t level_lock; //각 level에 input output을 진행할 때 거는 lock
+	pthread_rwlock_t global_lock; //각 level에 input output을 진행할 때 거는 lock
 } Level;
 
 typedef struct LevelNode{
@@ -83,7 +84,7 @@ typedef struct LSMtree{
 	double fpr1;
 	pthread_rwlock_t buffer_lock; //buffer에 거는 lock
 	pthread_rwlock_t merge_lock; //GC가 일어날때 lsm tree의 구조 변화를 막기 위해 merge 불가 상태로 만드는 lock
-	pthread_mutex_t file_lock; //GC가 일어날때 lsm tree의 구조 변화를 막기 위해 merge 불가 상태로 만드는 lock
+	pthread_mutex_t make_level_lock; //level를 만들떄 임시로 거는 lock
 } LSMtree;
 typedef struct Save_Log{
 	char key[STRING_SIZE];
@@ -111,8 +112,8 @@ typedef struct SlowMem{
 typedef struct ValueLog{
 	FastMem *fast;
 	SlowMem *slow;
-	pthread_rwlock_t fast_lock;
-	pthread_rwlock_t slow_lock;
+	pthread_mutex_t fast_lock;
+	pthread_cond_t cond;
 } ValueLog;
 
 typedef struct Save_Array{
@@ -152,7 +153,7 @@ Heap *CreateHeap(int size);
 int GetKeyPos(LSMtree *lsm, char * key);
 void HeapifyBottomTop(Heap *h, int index);
 void HeapifyTopBottom(Heap *h, int parent);
-void InsertKey(LSMtree *lsm, char * key, int value, bool flag);
+void InsertKey(LSMtree *lsm, char * key, int value, bool flag,int locking);
 Node PopMin(LSMtree * lsm);
 void PrintNode(LSMtree *lsm,ValueLog *log);
 void ClearHeap(Heap *h);
@@ -183,7 +184,7 @@ void Delete(LSMtree *lsm, char * key);
 
 //value-log.c
 ValueLog *CreateLog(int head, int tail);
-int ValuePut(LSMtree *lsm,ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value);
+int ValuePut(LSMtree *lsm,ValueLog *log, int *loc, const char * key, uint64_t key_len, uint64_t value,int flag);
 uint64_t ValueGet(ValueLog *log, int loc);
 void ClearLog(ValueLog *log);
 void GC(LSMtree *lsm,ValueLog *log);

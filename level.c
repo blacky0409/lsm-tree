@@ -14,6 +14,7 @@ Level *CreateLevel(int size, double fpr){
 		return NULL;
 	}
 	pthread_rwlock_init(&level->level_lock,NULL);
+	pthread_rwlock_init(&level->global_lock,NULL); //level에 수정이 있을 때, write시 중간에 level의 변화가 있으면 안되므로 걸어두는 lock
 	level->targetfpr = fpr;
 	return level;
 }
