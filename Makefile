@@ -1,19 +1,28 @@
 CC= gcc
-CFLAGS= -g -Wall
-OBJS= test.o lsm-tree.o level.o heap.o hashtable.o value-log.o queue.o compaction.o
-TARGET= test.out
+CFLAGS=-Wall -Wextra -fPIC -MMD
+OBJS= value-log.o hashtable.o compaction.o heap.o level.o lsm-tree.o queue.o test.o
+TARGET= test
+PATH_FSMALLOC=/home/soccer1356/malloc/FSmalloc
+DEPS=$(wildcard *.d)
+INCLUDE=/home/soccer1356/lsmtree
+
+%.o: %.c
+	$(CC) -c -o $@ $< $(CFLAGS) -I$(PATH_FSMALLOC) -I$(INCLUDE)
+
+debug: CFLAGS += -g
+debug: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) -o $@ $(OBJS) -lpthread
+	$(CC) -o $@ $^ $(CFLAGS) -L$(PATH_FSMALLOC) -L$(INCLUDE) -lpthread -lFSmalloc -lnuma
 
-level.o: global.h level.c
-heap.o: global.h heap.c
-hashtable.o: global.h hashtable.c
-value-log.o: global.h value-log.c
-queue.o: queue.c global.h
-lsm-tree.o: lsm-tree.c global.h
-test.o: test.c global.h
+value-log.o: value-log.c global.h
+hashtable.o: hashtable.c global.h
 compaction.o: compaction.c global.h
+heap.o: heap.c global.h
+level.o: level.c global.h
+lsm-tree.o: lsm-tree.c global.h
+queue.o: queue.c global.h
+test.o: test.c global.h
 
 
 .PHONY: clean
@@ -37,3 +46,9 @@ format:
 .PHONY: dis
 dis:
 	objdump -d -S nvmev.ko > nvmev.S
+
+.PHONY: start
+start:
+	@./start
+
+-include $(DEPS)

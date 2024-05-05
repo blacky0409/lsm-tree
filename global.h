@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -17,26 +18,36 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
+#include <numa.h>
+#include <numaif.h>
+#include <sched.h>
+#include <FSmalloc.h>
+#include <FSnuma.h>
 
 #define STRING_SIZE 10
 #define MAX_VALUE_SIZE 10
 
 #define MAX_PAGE (4096) //usually fix
-#define MAX_LOG_SIZE ( 4096 * 5 ) //35
+#define MAX_LOG_SIZE ( 4096 * 4096 * 4 ) //35
 
 #define FAST_MAX_PAGE MAX_LOG_SIZE 
 #define MAPPING_LOG_SIZE (4096) //usually fix
-#define UTILIZATION (FAST_MAX_PAGE * 4 / 10)
+#define UTILIZATION (500)
+#define SLOW_MAX_PAGE FAST_MAX_PAGE 
 
 #define MAX_LOG_MAPPING ((int)(MAPPING_LOG_SIZE / sizeof(SaveLog))  * sizeof(SaveLog))
 
 #define INDEX(X) (int)(X / MAPPING_LOG_SIZE)
-#define OFFSET(X) ((X % MAPPING_LOG_SIZE) / sizeof(SaveLog))
+#define FAST_OFFSET(X) (int)((X % FAST_MAX_PAGE) / sizeof(SaveLog))
+#define SLOW_OFFSET(X) (int)((X % SLOW_MAX_PAGE) / sizeof(SaveLog))
+#define OFFSET(X) (int)((X % MAPPING_LOG_SIZE) / sizeof(SaveLog))
 
 
 #define	MAX_THREAD 32
 #define LOC_FAST "FastMemory/"
 #define FILE_NAME 25
+
+extern int slow_intput;
 
 typedef struct Node{
 	char key[STRING_SIZE];
@@ -93,20 +104,15 @@ typedef struct Save_Log{
 } SaveLog;
 
 typedef struct FastMem{
-	int fp;
+	SaveLog * fp;
 	int head;
 	int tail;
-	int curstart; //current mapping start index
 	int utili;
-	SaveLog * map;
 }FastMem;
 
 typedef struct SlowMem{
-	int fp;
+	SaveLog * fp;
 	int head;
-	int curhead; //same to curstart in FastMem
-	int cursize;
-	SaveLog * map;
 }SlowMem;
 
 typedef struct ValueLog{

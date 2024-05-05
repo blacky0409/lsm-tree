@@ -1,7 +1,10 @@
 #include "global.h"
 
 Heap *CreateHeap(int size){
-	Heap *h = (Heap *) malloc(sizeof(Heap));
+	init_arenas();
+	set_fast_node(0);
+	set_slow_node(1);
+	Heap *h = fast_malloc(sizeof(Heap));
 	
 	if(h == NULL){
 		printf("There is not enough memory for heap.");
@@ -10,7 +13,7 @@ Heap *CreateHeap(int size){
 	
 	h->size = size;
 	h->count = 0;
-	h->array = (Node *) malloc(size*sizeof(Node));
+	h->array = fast_malloc(size*sizeof(Node));
 
 	if(h->array == NULL){
 		printf("There is not engouth memory for the array of nodes.");

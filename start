@@ -1,0 +1,9 @@
+# set LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/lib:
+sudo ldconfig
+
+# set FSmalloc LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/home/soccer1356/malloc/FSmalloc:$LD_LIBRARY_PATH
+
+
+echo "libarary export!"

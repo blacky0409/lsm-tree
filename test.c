@@ -2,6 +2,10 @@
 
 #define REPEAT 5
 #define INT_MAX 2147483647
+#define SIZE 5000
+#define THREAD_NUM 30
+
+int slow_input = 0;
 
 typedef struct test_art{
 	LSMtree *lsm;
@@ -25,14 +29,14 @@ void *thread_function(void *argument){
 	LSMtree * lsm = arg->lsm;
 	ValueLog *log = arg->log;
 
-	char Get_want[1000][10];
-	int Get_re[1000];
+	char Get_want[SIZE][10];
+	int Get_re[SIZE];
 	int index = 0;
 	char input[10];
 
 	srand(time(NULL));
 	int ran;
-	for(int i=0; i < 100 ; i++){
+	for(int i=0; i < SIZE ; i++){
 		//Make random key
 		printf("%d번째\n",i);
 		int w = 0;
@@ -73,14 +77,28 @@ void *thread_function(void *argument){
 	return (void *)ret;
 
 }
-int main(){
-	LSMtree *lsm = CreateLSM(10, 10, 0.0000001); //50
+int main(int argc ,char *argv[]){
+	if(argc > 1){
+		switch argv[1]{
+			case "0":
+				slow_input=1;
+				break;
+			case "1":
+				slow_input=2;
+				break;
+			default:
+				break;
+		}
+	}
+	LSMtree *lsm = CreateLSM(40, 40, 0.0000001); //50
 	ValueLog *log = CreateLog(0,0);
 	srand((unsigned int) time(NULL));
 	int d = 0;
-	time_t start,end;
-	time(&start);
-	pthread_t thread[10];
+	clock_t start,end;
+	double cpu_time_used;
+
+	start = clock();
+	pthread_t thread[THREAD_NUM];
 	pthread_t GC_thread;
 
 	
@@ -101,62 +119,6 @@ int main(){
 		printf("falut create thread\n");
 		return 0;
 	}
-
-	/*	for(int i=0; i < 1000 ; i++){
-	//Make random key
-	int w = 0;
-	for(w = 0 ; w < 9; w++){
-	input[w] = 'a' + rand() % 26;
-	}
-
-	input[w] = 0;
-	//Make random value
-	int key_value = rand()%1000 + 1;
-
-	Put(lsm,input, key_value,true,log);
-	printf("%d : %s : %d\n",i,input,key_value);
-
-	strcpy(Get_want[i],input);
-	Get_re[i] = key_value;
-	if(5 <= d && d < 8)
-	{
-	Delete(lsm,input);
-	}
-	d++;
-	if(i%5 == 0){
-	if(5 <= d && d < 8)
-	{
-	Delete(lsm,input);
-	}
-	d++;
-	strcpy(Get_want[index],input);
-	Get_re[index] = key_value;
-	index++;
-	d++;
-	}
-	strcpy(Get_want[index],input);
-	Get_re[index] = key_value;
-	index++;
-	if(i!=0 && i%200 == 0){
-	GC(lsm,log);
-	}
-	}
-
-
-	int return_val;
-	int false_count = 0;
-
-	for(int i = 0 ; i < index; i ++){
-	return_val = Get(lsm, Get_want[i], log);
-	char answer[10];
-	strcpy(answer,(return_val == Get_re[i])? "true" : "false");
-	printf("%d : value of key %s is %d, answer : %s\n", i,Get_want[i],return_val, answer);
-	if(strcmp(answer,"false") == 0){
-	printf("\n\n");
-	false_count++;
-	}
-	printf("\n");
-	}*/
 
 	int *ret;
 	int sum = 0;
@@ -199,8 +161,9 @@ int main(){
 
 	printf("false count : %d\n",sum);
 	ClearLog(log);
-	time(&end);
-	printf("time = %f\n",(float)(end-start));
+	end=clock();
+	cpu_time_used=((double) (end-start)) / CLOCKS_PER_SEC;
+	printf("time = %f\n",cpu_time_used);
 
 
 	return 0;
